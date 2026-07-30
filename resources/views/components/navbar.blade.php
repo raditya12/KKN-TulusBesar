@@ -8,10 +8,10 @@
     $inactiveMobile = "text-on-primary-container hover:text-tertiary-fixed hover:bg-primary/10 px-md py-sm rounded-lg font-label-md transition-colors";
 @endphp
 
-<header x-data="{ mobileMenuOpen: false }" class="bg-primary-container/80 backdrop-blur-md dark:bg-primary-container/90 font-display-md text-display-md docked full-width top-0 sticky z-50 border-b border-outline-variant/30 shadow-md shadow-primary/5 px-container-margin py-md max-w-screen-2xl mx-auto w-full">
-    <div class="flex justify-between items-center w-full">
-        <div class="font-display-md text-display-md font-bold text-on-primary-container flex items-center gap-sm">
-            <span class="material-symbols-outlined" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
+<header x-data="{ mobileMenuOpen: false }" class="bg-primary-container/80 backdrop-blur-md dark:bg-primary-container/90 top-0 sticky z-50 border-b border-outline-variant/30 shadow-md shadow-primary/5 w-full">
+    <div class="max-w-screen-2xl mx-auto px-4 md:px-container-margin py-3 flex justify-between items-center w-full">
+        <div class="font-display-md text-2xl md:text-3xl font-bold text-on-primary-container flex items-center gap-sm">
+            <span class="material-symbols-outlined text-[28px] md:text-[32px]" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
             Tulusbesar
         </div>
         
@@ -21,7 +21,10 @@
                 Beranda
             </a>
             <a href="{{ route('wisata') }}" class="{{ request()->routeIs('wisata') ? $activeDesktop : $inactiveDesktop }}">
-                Wisata & Kearifan Lokal
+                Wisata & Budaya
+            </a>
+            <a href="{{ route('umkm') }}" class="{{ request()->routeIs('umkm') ? $activeDesktop : $inactiveDesktop }}">
+                Potensi UMKM
             </a>
             <a href="{{ route('peta') }}" class="{{ request()->routeIs('peta') ? $activeDesktop : $inactiveDesktop }}">
                 Peta Interaktif (WebGIS)
@@ -53,7 +56,10 @@
                 Beranda
             </a>
             <a href="{{ route('wisata') }}" class="{{ request()->routeIs('wisata') ? $activeMobile : $inactiveMobile }}">
-                Wisata & Kearifan Lokal
+                Wisata & Budaya
+            </a>
+            <a href="{{ route('umkm') }}" class="{{ request()->routeIs('umkm') ? $activeMobile : $inactiveMobile }}">
+                Potensi UMKM
             </a>
             <a href="{{ route('peta') }}" class="{{ request()->routeIs('peta') ? $activeMobile : $inactiveMobile }}">
                 Peta Interaktif (WebGIS)
