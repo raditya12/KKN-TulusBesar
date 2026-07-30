@@ -28,7 +28,7 @@
             <div class="space-y-4">
                 <!-- Filter Item 1 -->
                 <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" checked class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary accent-primary">
+                    <input type="checkbox" checked value="Wisata" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary accent-primary">
                     <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[16px]">park</span>
                     </div>
@@ -37,7 +37,7 @@
 
                 <!-- Filter Item 2 -->
                 <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" checked class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary accent-secondary">
+                    <input type="checkbox" checked value="Peternakan" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary accent-secondary">
                     <div class="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[16px]">pets</span>
                     </div>
@@ -46,7 +46,7 @@
 
                 <!-- Filter Item 3 -->
                 <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" checked class="w-5 h-5 rounded border-outline-variant text-tertiary focus:ring-tertiary accent-tertiary">
+                    <input type="checkbox" checked value="Fasilitas Umum" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-tertiary focus:ring-tertiary accent-tertiary">
                     <div class="w-8 h-8 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[16px]">account_balance</span>
                     </div>
@@ -55,7 +55,7 @@
 
                 <!-- Filter Item 4 -->
                 <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" class="w-5 h-5 rounded border-outline-variant text-[#d97706] focus:ring-[#d97706] accent-[#d97706]">
+                    <input type="checkbox" checked value="PJU" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-[#d97706] focus:ring-[#d97706] accent-[#d97706]">
                     <div class="w-8 h-8 rounded-full bg-[#d97706]/10 text-[#d97706] flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[16px]">lightbulb</span>
                     </div>
@@ -64,7 +64,7 @@
 
                 <!-- Filter Item 5 -->
                 <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" class="w-5 h-5 rounded border-outline-variant text-[#059669] focus:ring-[#059669] accent-[#059669]">
+                    <input type="checkbox" checked value="Sampah" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-[#059669] focus:ring-[#059669] accent-[#059669]">
                     <div class="w-8 h-8 rounded-full bg-[#059669]/10 text-[#059669] flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[16px]">recycling</span>
                     </div>
@@ -84,77 +84,78 @@
     </aside>
 
     <!-- Map Canvas Area -->
-    <main class="flex-grow relative bg-surface-variant h-full overflow-hidden">
-        <!-- Dummy Map Background Image -->
-        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2000&auto=format&fit=crop" alt="Peta Desa Tulusbesar" class="w-full h-full object-cover filter contrast-125 saturate-50 sepia-[0.3]">
+    <main class="flex-grow relative bg-surface-variant h-full overflow-hidden z-10">
+        <!-- Leaflet CSS and JS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         
-        <!-- Map Overlay UI Controls -->
-        <div class="absolute top-4 right-4 z-20 flex flex-col gap-2 hidden md:flex">
-            <button class="w-10 h-10 bg-surface-container-lowest text-on-surface rounded-lg shadow-md border border-outline-variant/30 flex items-center justify-center hover:bg-surface-variant transition-colors" title="Zoom In">
-                <span class="material-symbols-outlined">add</span>
-            </button>
-            <button class="w-10 h-10 bg-surface-container-lowest text-on-surface rounded-lg shadow-md border border-outline-variant/30 flex items-center justify-center hover:bg-surface-variant transition-colors" title="Zoom Out">
-                <span class="material-symbols-outlined">remove</span>
-            </button>
-            <button class="w-10 h-10 bg-surface-container-lowest text-on-surface rounded-lg shadow-md border border-outline-variant/30 flex items-center justify-center mt-2 hover:bg-surface-variant transition-colors" title="Lokasi Saat Ini">
-                <span class="material-symbols-outlined">my_location</span>
-            </button>
-        </div>
+        <!-- Map Container -->
+        <div id="map" class="w-full h-full absolute inset-0 z-0"></div>
 
-        <!-- Dummy Map Markers -->
-        <!-- Marker 1 (Wisata) -->
-        <div class="absolute top-1/3 left-1/3 z-20 transform -translate-x-1/2 -translate-y-full group cursor-pointer">
-            <div class="relative flex flex-col items-center">
-                <div class="bg-primary text-on-primary p-2 rounded-full shadow-lg map-pin-active relative z-10 border-2 border-white">
-                    <span class="material-symbols-outlined text-[20px]">park</span>
-                </div>
-                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-primary -mt-1 relative z-0"></div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize Map pointing to Desa Tulusbesar
+                var map = L.map('map').setView([-8.015775, 112.765763], 15);
                 
-                <!-- Tooltip Popup -->
-                <div class="absolute bottom-full mb-2 bg-surface-container-lowest p-3 rounded-xl shadow-xl border border-outline-variant/30 w-48 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
-                    <img src="https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=300&auto=format&fit=crop" class="w-full h-20 object-cover rounded-lg mb-2" alt="Coban">
-                    <h4 class="font-label-md font-bold text-on-surface">Coban Tulus</h4>
-                    <p class="font-body-sm text-on-surface-variant text-[11px]">Wisata Alam</p>
-                </div>
-            </div>
-        </div>
+                // Add Google Maps Tile Layer
+                L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    attribution: '&copy; Google Maps'
+                }).addTo(map);
 
-        <!-- Marker 2 (Budaya) -->
-        <div class="absolute top-1/2 left-2/3 z-20 transform -translate-x-1/2 -translate-y-full group cursor-pointer">
-            <div class="relative flex flex-col items-center">
-                <div class="bg-tertiary text-on-tertiary p-2 rounded-full shadow-lg relative z-10 border-2 border-white">
-                    <span class="material-symbols-outlined text-[20px]">account_balance</span>
-                </div>
-                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-tertiary -mt-1 relative z-0"></div>
-                
-                <!-- Tooltip Popup -->
-                <div class="absolute bottom-full mb-2 bg-surface-container-lowest p-3 rounded-xl shadow-xl border border-outline-variant/30 w-48 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
-                    <h4 class="font-label-md font-bold text-on-surface">Kantor Desa Tulusbesar</h4>
-                    <p class="font-body-sm text-on-surface-variant text-[11px]">Fasilitas Umum</p>
-                </div>
-            </div>
-        </div>
+                // Initialize Layer Groups for filtering
+                var layerGroups = {
+                    'Wisata': L.layerGroup(),
+                    'Peternakan': L.layerGroup(),
+                    'Fasilitas Umum': L.layerGroup(),
+                    'PJU': L.layerGroup(),
+                    'Sampah': L.layerGroup()
+                };
 
-        <!-- Marker 3 (Peternakan) -->
-        <div class="absolute bottom-1/3 left-1/2 z-20 transform -translate-x-1/2 -translate-y-full group cursor-pointer">
-            <div class="relative flex flex-col items-center">
-                <div class="bg-secondary text-on-primary p-2 rounded-full shadow-lg relative z-10 border-2 border-white">
-                    <span class="material-symbols-outlined text-[20px]">pets</span>
-                </div>
-                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-secondary -mt-1 relative z-0"></div>
-            </div>
-        </div>
-        
-        <!-- Legend (Bottom Left) -->
-        <div class="absolute bottom-4 left-4 z-20 bg-surface-container-lowest/90 backdrop-blur-sm p-3 rounded-xl shadow-md border border-outline-variant/30 hidden md:block">
-            <div class="font-label-sm font-bold text-on-surface mb-2">Legenda Peta</div>
-            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="flex items-center gap-1 font-body-sm text-xs"><span class="w-3 h-3 rounded-full bg-primary"></span> Wisata</div>
-                <div class="flex items-center gap-1 font-body-sm text-xs"><span class="w-3 h-3 rounded-full bg-secondary"></span> Ternak</div>
-                <div class="flex items-center gap-1 font-body-sm text-xs"><span class="w-3 h-3 rounded-full bg-tertiary"></span> F. Umum</div>
-                <div class="flex items-center gap-1 font-body-sm text-xs"><span class="w-3 h-3 rounded-full bg-[#d97706]"></span> PJU</div>
-            </div>
-        </div>
+                // Loop through GIS Features from database
+                @if(isset($features) && count($features) > 0)
+                    @foreach($features as $feature)
+                        @if($feature->latitude && $feature->longitude)
+                            var marker = L.marker([{{ $feature->latitude }}, {{ $feature->longitude }}]);
+                            marker.bindPopup(`
+                                <div class="font-body-sm">
+                                    <h4 class="font-bold text-base mb-1">{{ addslashes($feature->name) }}</h4>
+                                    <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-xs rounded-md mb-2">{{ $feature->category }}</span>
+                                    <p class="text-sm mt-1">{{ addslashes($feature->description) }}</p>
+                                </div>
+                            `);
+                            
+                            var category = "{{ $feature->category }}";
+                            if (layerGroups[category]) {
+                                layerGroups[category].addLayer(marker);
+                            } else {
+                                // Default fallback if category doesn't strictly match
+                                marker.addTo(map);
+                            }
+                        @endif
+                    @endforeach
+                @endif
+
+                // Handle Checkbox Toggles
+                document.querySelectorAll('.filter-checkbox').forEach(function(checkbox) {
+                    var category = checkbox.value;
+                    
+                    // Initial load state based on checkbox
+                    if (checkbox.checked && layerGroups[category]) {
+                        layerGroups[category].addTo(map);
+                    }
+
+                    // Change event
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            layerGroups[category].addTo(map);
+                        } else {
+                            map.removeLayer(layerGroups[category]);
+                        }
+                    });
+                });
+            });
+        </script>
     </main>
 </div>
 @endsection
