@@ -3,7 +3,13 @@
 @section('content')
 <div class="w-full overflow-y-auto custom-scrollbar">
     <!-- 1. Hero & Kondisi Geografis -->
-    <section class="relative pt-32 pb-24 bg-surface-container-low overflow-hidden">
+    <section class="relative pt-24 md:pt-32 pb-16 md:pb-24 bg-surface-container-low overflow-hidden">
+        <!-- Hero Background Image (Dummy) -->
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('images/dummy/wisata_hero.jpg') }}" alt="Pemandangan Desa" class="w-full h-full object-cover opacity-20 filter contrast-125">
+            <div class="absolute inset-0 bg-gradient-to-b from-surface-container-low/50 via-surface-container-low/80 to-surface-container-low"></div>
+        </div>
+        
         <!-- Abstract Javanese Pattern Background -->
         <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%234a2b1d\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
         
@@ -55,7 +61,7 @@
     </section>
 
     <!-- 2. Sejarah Desa (Interactive Vertical Timeline) -->
-    <section class="py-24 bg-background relative" x-data="{ activeStep: 1 }">
+    <section class="py-16 md:py-24 bg-background relative" x-data="{ activeStep: 1 }">
         <div class="max-w-screen-xl mx-auto px-container-margin">
             <div class="text-center mb-16">
                 <h2 class="font-display-md text-4xl font-bold text-on-background mb-sm">Jejak Sejarah <span class="text-secondary">Babat Malang</span></h2>
@@ -66,66 +72,24 @@
                 <!-- Timeline Navigation (Left) -->
                 <div class="lg:w-1/3 relative">
                     <div class="sticky top-32 space-y-md relative before:absolute before:inset-y-0 before:left-[19px] before:w-[2px] before:bg-outline-variant/40">
+                        @php
+                            $histories = \App\Models\VillageHistory::orderBy('order_sequence')->get();
+                        @endphp
                         
-                        <!-- Step 1 -->
-                        <button @click="activeStep = 1" class="w-full text-left flex items-start gap-md relative z-10 group focus:outline-none">
+                        @foreach($histories as $index => $history)
+                        <button @click="activeStep = {{ $index + 1 }}" class="w-full text-left flex items-start gap-md relative z-10 group focus:outline-none">
                             <div class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition-colors duration-300 border-2"
-                                 :class="activeStep === 1 ? 'bg-primary border-primary text-on-primary shadow-lg shadow-primary/30' : 'bg-surface-container-lowest border-outline-variant text-on-surface-variant group-hover:border-primary'">
-                                <span class="material-symbols-outlined text-[20px]">swords</span>
+                                 :class="activeStep === {{ $index + 1 }} ? 'bg-primary border-primary text-on-primary shadow-lg shadow-primary/30' : 'bg-surface-container-lowest border-outline-variant text-on-surface-variant group-hover:border-primary'">
+                                <span class="material-symbols-outlined text-[20px]">history_edu</span>
                             </div>
                             <div class="pt-2">
-                                <h4 class="font-label-md font-bold transition-colors" :class="activeStep === 1 ? 'text-primary' : 'text-on-surface-variant'">Era Mataram & Babat Malang</h4>
-                                <p class="font-body-sm text-on-surface-variant mt-1" x-show="activeStep === 1" x-collapse>Pemberontakan Kadipaten Malang.</p>
+                                <h4 class="font-label-md font-bold transition-colors" :class="activeStep === {{ $index + 1 }} ? 'text-primary' : 'text-on-surface-variant'">{{ $history->year }}</h4>
+                                <p class="font-body-sm text-on-surface-variant mt-1" x-show="activeStep === {{ $index + 1 }}" x-collapse>{{ $history->title }}</p>
                             </div>
                         </button>
-
-                        <!-- Step 2 -->
-                        <button @click="activeStep = 2" class="w-full text-left flex items-start gap-md relative z-10 group focus:outline-none">
-                            <div class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition-colors duration-300 border-2"
-                                 :class="activeStep === 2 ? 'bg-secondary border-secondary text-on-primary shadow-lg shadow-secondary/30' : 'bg-surface-container-lowest border-outline-variant text-on-surface-variant group-hover:border-secondary'">
-                                <span class="material-symbols-outlined text-[20px]">directions_run</span>
-                            </div>
-                            <div class="pt-2">
-                                <h4 class="font-label-md font-bold transition-colors" :class="activeStep === 2 ? 'text-secondary' : 'text-on-surface-variant'">Pelarian Senopati</h4>
-                                <p class="font-body-sm text-on-surface-variant mt-1" x-show="activeStep === 2" x-collapse>Ke timur menghindari Patih Surontanu.</p>
-                            </div>
-                        </button>
-
-                        <!-- Step 3 -->
-                        <button @click="activeStep = 3" class="w-full text-left flex items-start gap-md relative z-10 group focus:outline-none">
-                            <div class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition-colors duration-300 border-2"
-                                 :class="activeStep === 3 ? 'bg-tertiary border-tertiary text-on-primary shadow-lg shadow-tertiary/30' : 'bg-surface-container-lowest border-outline-variant text-on-surface-variant group-hover:border-tertiary'">
-                                <span class="material-symbols-outlined text-[20px]">diversity_1</span>
-                            </div>
-                            <div class="pt-2">
-                                <h4 class="font-label-md font-bold transition-colors" :class="activeStep === 3 ? 'text-tertiary' : 'text-on-surface-variant'">Mbok Rondo Kuning</h4>
-                                <p class="font-body-sm text-on-surface-variant mt-1" x-show="activeStep === 3" x-collapse>Lahirnya Tulusayu & Kemulan.</p>
-                            </div>
-                        </button>
-
-                        <!-- Step 4 -->
-                        <button @click="activeStep = 4" class="w-full text-left flex items-start gap-md relative z-10 group focus:outline-none">
-                            <div class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition-colors duration-300 border-2"
-                                 :class="activeStep === 4 ? 'bg-primary-container border-primary-container text-on-primary-container shadow-lg shadow-primary-container/30' : 'bg-surface-container-lowest border-outline-variant text-on-surface-variant group-hover:border-primary-container'">
-                                <span class="material-symbols-outlined text-[20px]">water_drop</span>
-                            </div>
-                            <div class="pt-2">
-                                <h4 class="font-label-md font-bold transition-colors" :class="activeStep === 4 ? 'text-primary-container' : 'text-on-surface-variant'">Mbah Kerik & Mbah Mergo</h4>
-                                <p class="font-body-sm text-on-surface-variant mt-1" x-show="activeStep === 4" x-collapse>Babat alas Desa Mbesar.</p>
-                            </div>
-                        </button>
-
-                        <!-- Step 5 -->
-                        <button @click="activeStep = 5" class="w-full text-left flex items-start gap-md relative z-10 group focus:outline-none">
-                            <div class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition-colors duration-300 border-2"
-                                 :class="activeStep === 5 ? 'bg-inverse-surface border-inverse-surface text-inverse-on-surface shadow-lg' : 'bg-surface-container-lowest border-outline-variant text-on-surface-variant group-hover:border-inverse-surface'">
-                                <span class="material-symbols-outlined text-[20px]">account_balance</span>
-                            </div>
-                            <div class="pt-2">
-                                <h4 class="font-label-md font-bold transition-colors" :class="activeStep === 5 ? 'text-inverse-surface' : 'text-on-surface-variant'">Terbentuknya Desa (1870)</h4>
-                                <p class="font-body-sm text-on-surface-variant mt-1" x-show="activeStep === 5" x-collapse>Penggabungan Tulusayu & Mbesar.</p>
-                            </div>
-                        </button>
+                        @endforeach
+                        
+                    </div>
                     </div>
                 </div>
 
@@ -134,59 +98,32 @@
                     <!-- Decorative Background element -->
                     <span class="material-symbols-outlined absolute -bottom-10 -right-10 text-[200px] text-surface-container-high opacity-50 pointer-events-none" style="font-variation-settings: 'FILL' 1;">history_edu</span>
 
-                    <div class="relative z-10">
-                        <!-- Content 1 -->
-                        <div x-show="activeStep === 1" x-transition.opacity.duration.500ms class="space-y-md">
-                            <div class="inline-block px-sm py-1 bg-primary/10 text-primary font-label-sm rounded mb-sm">Awal Mula</div>
-                            <h3 class="font-display-md text-3xl font-bold text-on-surface">Era Mataram & Babat Malang</h3>
+                    <div class="relative z-10">                        
+                        @foreach($histories as $index => $history)
+                        <!-- Content {{ $index + 1 }} -->
+                        <div x-show="activeStep === {{ $index + 1 }}" x-transition.opacity.duration.500ms class="space-y-md" {!! $index > 0 ? 'style="display: none;"' : '' !!}>
+                            <div class="inline-block px-sm py-1 bg-primary text-on-primary font-label-sm rounded mb-sm">Tahun {{ $history->year }}</div>
+                            <h3 class="font-display-md text-3xl font-bold text-on-surface">{{ $history->title }}</h3>
                             <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                                Sejarah bermula dari era Kerajaan Mataram pimpinan Sultan Agung. Terjadi pemberontakan oleh Kadipaten Malang yang dipimpin Adipati Panji Pulang Jiwo dan Senopati Mangun Yudho (Mangun Dharmo) melawan Patih Surontanu dari Mataram. Konflik ini menjadi titik tolak penyebaran tokoh-tokoh penting ke wilayah timur.
+                                {{ $history->description }}
                             </p>
                         </div>
-
-                        <!-- Content 2 -->
-                        <div x-show="activeStep === 2" x-transition.opacity.duration.500ms class="space-y-md" style="display: none;">
-                            <div class="inline-block px-sm py-1 bg-secondary/10 text-secondary font-label-sm rounded mb-sm">Masa Pelarian</div>
-                            <h3 class="font-display-md text-3xl font-bold text-on-surface">Pelarian Senopati Mangun Yudho</h3>
-                            <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                                Setelah kekalahan prajurit Malang, Senopati Mangun Yudho lari dari kejaran Patih Surontanu ke arah timur. Dalam pelariannya yang terluka parah, ia bersembunyi di berbagai tempat yang kelak menjadi cikal bakal nama desa-desa di Malang (seperti Tumpang, Belung, dan Wates).
-                            </p>
-                        </div>
-
-                        <!-- Content 3 -->
-                        <div x-show="activeStep === 3" x-transition.opacity.duration.500ms class="space-y-md" style="display: none;">
-                            <div class="inline-block px-sm py-1 bg-tertiary/10 text-tertiary font-label-sm rounded mb-sm">Pertemuan Sakral</div>
-                            <h3 class="font-display-md text-3xl font-bold text-on-surface">Pertemuan dengan Mbok Rondo Kuning</h3>
-                            <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                                Di arah selatan timur, Senopati bertemu Mbok Rondo Kuning yang merawatnya. Karena kebaikan budinya, tempat itu dinamakan <strong>Tulusayu</strong>. Saat melanjutkan pelarian, Senopati meninggalkan selimut (jarik) pemberian Mbok Rondo Kuning, yang kemudian dibuatkan pusara (Kemulan) untuk mengelabuhi prajurit Mataram. Senopati sendiri menghilang (moksa/murco) di hutan Binangun.
-                            </p>
-                        </div>
-
-                        <!-- Content 4 -->
-                        <div x-show="activeStep === 4" x-transition.opacity.duration.500ms class="space-y-md" style="display: none;">
-                            <div class="inline-block px-sm py-1 bg-primary-container text-on-primary-container font-label-sm rounded mb-sm">Babat Alas</div>
-                            <h3 class="font-display-md text-3xl font-bold text-on-surface">Peran Mbah Kerik & Mbah Mergo</h3>
-                            <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                                Dua pengawal setia Senopati, Mbah Kerik dan Mbah Mergo, selamat dan membangun padepokan. Mereka membabat alas ke utara dan menemukan sumber mata air yang sangat besar. Daerah ini dinamakan <strong>Desa Mbesar</strong> (dari kata mbes-mbesan air yang besar). Makam tokoh-tokoh ini (Punden) masih dikeramatkan oleh warga hingga kini.
-                            </p>
-                        </div>
-
-                        <!-- Content 5 -->
-                        <div x-show="activeStep === 5" x-transition.opacity.duration.500ms class="space-y-md" style="display: none;">
-                            <div class="inline-block px-sm py-1 bg-inverse-surface text-inverse-on-surface font-label-sm rounded mb-sm">Administrasi Kolonial</div>
-                            <h3 class="font-display-md text-3xl font-bold text-on-surface">Terbentuknya Desa Tulusbesar (1870)</h3>
-                            <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                                Pada masa penjajahan Belanda tahun 1870, karena wilayah dan penduduk Tulusayu dinilai terlalu kecil, Belanda mengadakan undian untuk menggabungkannya. Tulusayu akhirnya digabung dengan Desa Mbesar, dan secara resmi lahirlah wilayah administratif yang kita kenal sekarang sebagai <strong>Desa Tulusbesar</strong>.
-                            </p>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
+            </div>
+            
+            <!-- Historic Dummy Image Gallery -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <img src="https://images.unsplash.com/photo-1533613220915-609f661a6fe1?q=80&w=600&auto=format&fit=crop" alt="Sejarah 1" class="w-full h-48 object-cover rounded-2xl shadow-md sepia-[0.4]">
+                <img src="https://images.unsplash.com/photo-1582572714421-4824888806fb?q=80&w=600&auto=format&fit=crop" alt="Sejarah 2" class="w-full h-48 object-cover rounded-2xl shadow-md sepia-[0.4]">
+                <img src="https://images.unsplash.com/photo-1629851608678-cbfcc9689fcc?q=80&w=600&auto=format&fit=crop" alt="Sejarah 3" class="w-full h-48 object-cover rounded-2xl shadow-md sepia-[0.4]">
             </div>
         </div>
     </section>
 
     <!-- 3. Demografi & Ekonomi (Infographic Grid) -->
-    <section class="py-24 bg-surface-container-low relative">
+    <section class="py-16 md:py-24 bg-surface-container-low relative">
         <div class="max-w-screen-xl mx-auto px-container-margin">
             <div class="text-center mb-16">
                 <h2 class="font-display-md text-4xl font-bold text-on-background mb-sm">Demografi & <span class="text-primary">Ekonomi</span></h2>
@@ -299,7 +236,7 @@
     </section>
 
     <!-- 4. Pemerintahan (Simple List / Table) -->
-    <section class="py-24 bg-background relative overflow-hidden">
+    <section class="py-16 md:py-24 bg-background relative overflow-hidden">
         <!-- Abstract Pattern -->
         <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-surface-container-low to-transparent opacity-50 pointer-events-none"></div>
 
@@ -308,9 +245,16 @@
                 <div class="lg:w-1/2 space-y-md">
                     <span class="font-label-md text-secondary tracking-widest uppercase">Struktur Tata Kelola</span>
                     <h2 class="font-display-md text-4xl font-bold text-on-background">Pemerintahan <br>Administratif</h2>
-                    <p class="font-body-md text-on-surface-variant text-lg leading-relaxed">
+                    <p class="font-body-md text-on-surface-variant text-lg leading-relaxed mb-6">
                         Saat ini, pemerintahan Desa Tulusbesar dipimpin oleh <strong>Bapak Hudi Mariono</strong> selaku Kepala Desa. Secara administratif wilayah ini dibagi untuk mengoptimalkan pelayanan kepada masyarakat.
                     </p>
+                    <div class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/30 shadow-sm w-max">
+                        <img src="{{ asset('images/dummy/kades.jpg') }}" alt="Kepala Desa" class="w-16 h-16 rounded-full object-cover">
+                        <div>
+                            <div class="font-label-md font-bold text-on-surface">Hudi Mariono</div>
+                            <div class="font-body-sm text-on-surface-variant">Kepala Desa Tulusbesar</div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="lg:w-1/2 w-full">

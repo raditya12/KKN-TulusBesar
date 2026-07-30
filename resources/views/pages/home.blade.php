@@ -6,7 +6,7 @@
     <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 w-full h-full">
-            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1552554792-5eb329a2862b?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('images/dummy/hero.jpg') }}');"></div>
             <div class="absolute inset-0 bg-primary/70 mix-blend-multiply"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
         </div>
@@ -37,7 +37,7 @@
     </section>
 
     <!-- Profil Singkat Section -->
-    <section class="py-24 bg-background relative overflow-hidden">
+    <section class="py-16 md:py-24 bg-background relative overflow-hidden">
         <div class="max-w-screen-xl mx-auto px-container-margin relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-2xl items-center">
                 <div class="space-y-lg relative">
@@ -50,25 +50,25 @@
                     </p>
                     <div class="grid grid-cols-2 gap-md pt-md">
                         <div class="bg-surface-container-low p-lg rounded-2xl border border-surface-dim shadow-sm">
-                            <div class="text-tertiary-container font-display-md text-3xl font-bold mb-xs">1,240</div>
-                            <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Penduduk</div>
+                            <div class="text-tertiary-container font-display-md text-3xl font-bold mb-xs">6.543</div>
+                            <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Jiwa Penduduk</div>
                         </div>
                         <div class="bg-surface-container-low p-lg rounded-2xl border border-surface-dim shadow-sm">
-                            <div class="text-secondary-container font-display-md text-3xl font-bold mb-xs">340</div>
-                            <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Hektar Area</div>
+                            <div class="text-secondary-container font-display-md text-3xl font-bold mb-xs">4.439</div>
+                            <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Km² Area</div>
                         </div>
                     </div>
                 </div>
                 <div class="relative group">
                     <div class="absolute inset-0 bg-secondary/10 rounded-[2rem] transform rotate-3 scale-105 transition-transform duration-500 group-hover:rotate-6"></div>
-                    <img src="https://images.unsplash.com/photo-1582572714421-4824888806fb?q=80&w=1000&auto=format&fit=crop" alt="Pemandangan Desa" class="relative rounded-[2rem] shadow-2xl w-full h-[500px] object-cover border border-outline-variant/30 transform transition-transform duration-500 group-hover:-translate-y-2">
+                    <img src="{{ asset('images/dummy/profil.jpg') }}" alt="Pemandangan Desa" class="relative rounded-[2rem] shadow-2xl w-full h-[500px] object-cover border border-outline-variant/30 transform transition-transform duration-500 group-hover:-translate-y-2">
                 </div>
             </div>
         </div>
     </section>
 
     <!-- WebGIS Preview Section -->
-    <section class="py-24 bg-surface-container-low relative">
+    <section class="py-16 md:py-24 bg-surface-container-low relative">
         <div class="max-w-screen-xl mx-auto px-container-margin">
             <div class="text-center max-w-[48rem] mx-auto mb-xl space-y-md">
                 <h2 class="font-display-md text-4xl font-bold text-on-background">Peta Cerdas <span class="text-tertiary">Tulusbesar</span></h2>
@@ -84,7 +84,7 @@
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </a>
                 </div>
-                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1500&auto=format&fit=crop" alt="WebGIS Preview" class="w-full h-[400px] md:h-[600px] object-cover rounded-[1.25rem] filter contrast-110 sepia-[0.2]">
+                <img src="{{ asset('images/dummy/webgis.jpg') }}" alt="WebGIS Preview" class="w-full h-[400px] md:h-[600px] object-cover rounded-[1.25rem] filter contrast-110 sepia-[0.2]">
                 
                 <!-- Dummy UI Overlays to look like a map -->
                 <div class="absolute top-lg left-lg bg-surface-container-lowest/90 backdrop-blur-md p-md rounded-xl shadow-lg border border-outline-variant/30 hidden md:block">
@@ -100,7 +100,7 @@
     </section>
 
     <!-- Highlight Berita Section -->
-    <section class="py-24 bg-background">
+    <section class="py-16 md:py-24 bg-background">
         <div class="max-w-screen-xl mx-auto px-container-margin">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-xl">
                 <div class="max-w-[42rem] space-y-sm">
@@ -113,48 +113,28 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-                <!-- News Card 1 -->
-                <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm shadow-[#4A2B1D]/5 border border-surface-dim hover:shadow-xl hover:shadow-[#4A2B1D]/10 transition-all duration-300 transform hover:-translate-y-2 group">
-                    <div class="h-56 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1596422846543-74c6eb0809ab?q=80&w=800&auto=format&fit=crop" alt="Berita 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    </div>
-                    <div class="p-lg">
-                        <div class="flex items-center gap-sm text-on-surface-variant font-label-sm mb-sm">
-                            <span class="material-symbols-outlined text-[16px]">calendar_today</span> 12 Ags 2026
-                        </div>
-                        <h3 class="font-headline-md text-xl font-bold text-on-surface mb-sm line-clamp-2 group-hover:text-secondary transition-colors">Sosialisasi Pengelolaan Sampah Mandiri di RT 04</h3>
-                        <p class="font-body-sm text-on-surface-variant line-clamp-3">Warga dihimbau untuk mulai memisahkan sampah organik dan anorganik sebagai langkah awal menuju desa mandiri energi.</p>
-                    </div>
-                </div>
-                
-                <!-- News Card 2 -->
-                <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm shadow-[#4A2B1D]/5 border border-surface-dim hover:shadow-xl hover:shadow-[#4A2B1D]/10 transition-all duration-300 transform hover:-translate-y-2 group">
+                @php
+                    $beritaList = \App\Models\NewsArticle::latest()->take(3)->get();
+                @endphp
+                @foreach($beritaList as $index => $berita)
+                <!-- News Card -->
+                <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm shadow-[#4A2B1D]/5 border border-surface-dim hover:shadow-xl hover:shadow-[#4A2B1D]/10 transition-all duration-300 transform hover:-translate-y-2 group flex flex-col">
                     <div class="h-56 overflow-hidden relative">
-                        <div class="absolute top-sm right-sm z-10 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm px-2 py-1 rounded-md shadow-md">Populer</div>
-                        <img src="https://images.unsplash.com/photo-1604928141064-207cea6f5722?q=80&w=800&auto=format&fit=crop" alt="Berita 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        @if($index === 0)
+                        <div class="absolute top-sm right-sm z-10 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm px-2 py-1 rounded-md shadow-md">Terbaru</div>
+                        @endif
+                        <img src="{{ Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : Storage::url($berita->image_path) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                     </div>
-                    <div class="p-lg">
+                    <div class="p-lg flex-grow flex flex-col">
                         <div class="flex items-center gap-sm text-on-surface-variant font-label-sm mb-sm">
-                            <span class="material-symbols-outlined text-[16px]">calendar_today</span> 10 Ags 2026
+                            <span class="material-symbols-outlined text-[16px]">calendar_today</span> 
+                            <time>{{ \Carbon\Carbon::parse($berita->published_at ?? $berita->created_at)->translatedFormat('d M Y') }}</time>
                         </div>
-                        <h3 class="font-headline-md text-xl font-bold text-on-surface mb-sm line-clamp-2 group-hover:text-secondary transition-colors">Peresmian Sistem Informasi Geografis (WebGIS)</h3>
-                        <p class="font-body-sm text-on-surface-variant line-clamp-3">Mahasiswa KKN bersama aparatur desa resmi meluncurkan platform pemetaan cerdas yang bisa diakses seluruh masyarakat.</p>
+                        <h3 class="font-headline-md text-xl font-bold text-on-surface mb-sm line-clamp-2 group-hover:text-secondary transition-colors">{{ $berita->title }}</h3>
+                        <p class="font-body-sm text-on-surface-variant line-clamp-3 text-justify">{!! strip_tags($berita->content) !!}</p>
                     </div>
                 </div>
-                
-                <!-- News Card 3 -->
-                <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm shadow-[#4A2B1D]/5 border border-surface-dim hover:shadow-xl hover:shadow-[#4A2B1D]/10 transition-all duration-300 transform hover:-translate-y-2 group">
-                    <div class="h-56 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1542621334-a2542d773e0b?q=80&w=800&auto=format&fit=crop" alt="Berita 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    </div>
-                    <div class="p-lg">
-                        <div class="flex items-center gap-sm text-on-surface-variant font-label-sm mb-sm">
-                            <span class="material-symbols-outlined text-[16px]">calendar_today</span> 08 Ags 2026
-                        </div>
-                        <h3 class="font-headline-md text-xl font-bold text-on-surface mb-sm line-clamp-2 group-hover:text-secondary transition-colors">Kunjungan Wisata ke Candi Sumberawan Meningkat</h3>
-                        <p class="font-body-sm text-on-surface-variant line-clamp-3">Sejak diterapkannya sistem katalog wisata digital, antusiasme pengunjung dari luar daerah semakin terlihat.</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
