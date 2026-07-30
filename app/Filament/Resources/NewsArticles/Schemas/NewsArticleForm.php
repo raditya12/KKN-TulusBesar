@@ -4,13 +4,13 @@ namespace App\Filament\Resources\NewsArticles\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Set;
-use Illuminate\Support\Str;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class NewsArticleForm
 {
@@ -18,7 +18,7 @@ class NewsArticleForm
     {
         return $schema
             ->components([
-                Grid::make(3)->schema([
+                Grid::make(['default' => 1, 'md' => 3])->schema([
                     Section::make('Konten Berita')
                         ->description('Masukkan judul dan isi berita utama.')
                         ->schema([
@@ -38,7 +38,7 @@ class NewsArticleForm
                                 ->required()
                                 ->columnSpanFull(),
                         ])->columnSpan(2),
-                        
+
                     Section::make('Media & Publikasi')
                         ->description('Kelola gambar dan tanggal rilis.')
                         ->schema([
