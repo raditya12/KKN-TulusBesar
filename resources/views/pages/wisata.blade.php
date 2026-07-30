@@ -66,7 +66,8 @@
 
             <!-- Grid Cards -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Card 1 -->
+                @foreach($sites as $site)
+                <!-- Card -->
                 <div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-outline-variant/30 group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col relative">
                     <!-- Smart QR Guide Label -->
                     <div class="absolute top-4 right-4 z-20 bg-inverse-surface/90 backdrop-blur-sm text-inverse-on-surface font-label-sm px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
@@ -76,17 +77,21 @@
                     
                     <div class="relative h-64 overflow-hidden">
                         <div class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-500 z-10 mix-blend-multiply"></div>
-                        <img src="{{ asset('images/dummy/wisata1.jpg') }}" alt="Pesarean Senopati" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.3]">
+                        <img src="{{ Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : Storage::url($site->image_path) }}" alt="{{ $site->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.3]">
                     </div>
                     
                     <div class="p-6 md:p-8 flex-grow flex flex-col bg-surface-container-lowest relative z-20 -mt-6 mx-4 rounded-2xl border border-outline-variant/20 shadow-md">
-                        <div class="text-secondary font-label-sm mb-2 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">location_on</span> Dusun Kemulan
+                        <h3 class="font-headline-md text-xl font-bold text-on-surface mb-2">{{ $site->name }}</h3>
+                        <div class="text-secondary font-label-sm mb-4 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">location_on</span> Koordinat: {{ $site->latitude ?? '-' }}, {{ $site->longitude ?? '-' }}
                         </div>
-                        <button class="w-full bg-primary/5 hover:bg-primary text-primary hover:text-on-primary font-label-md py-3 rounded-xl transition-colors border border-primary/20 hover:border-primary flex items-center justify-center gap-2">
+                        <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-4">{{ $site->description }}</p>
+                        <button class="w-full mt-auto bg-primary/5 hover:bg-primary text-primary hover:text-on-primary font-label-md py-3 rounded-xl transition-colors border border-primary/20 hover:border-primary flex items-center justify-center gap-2">
                             Lihat Detail <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>
                     </div>
+                </div>
+                @endforeach
             </div>
         </div>
     </section>

@@ -38,7 +38,7 @@
                         <span class="material-symbols-outlined">map</span>
                     </div>
                     <h3 class="font-headline-md text-xl font-bold text-on-surface mb-xs">Luas Wilayah</h3>
-                    <p class="font-body-sm text-on-surface-variant">Total luas 4.439,36 Km². Berbatasan dengan Tumpang, Belung, Duwet Dampul, dan Benjor.</p>
+                    <p class="font-body-sm text-on-surface-variant">Total luas {{ number_format($profile->area_size ?? 4439, 0, ',', '.') }} Km². Berbatasan dengan Tumpang, Belung, Duwet Dampul, dan Benjor.</p>
                 </div>
                 <!-- Card 3 -->
                 <div class="bg-surface-container-lowest p-lg rounded-2xl shadow-sm border border-outline-variant/30 hover:shadow-md transition-shadow group">
@@ -72,9 +72,6 @@
                 <!-- Timeline Navigation (Left) -->
                 <div class="lg:w-1/3 relative">
                     <div class="sticky top-32 space-y-md relative before:absolute before:inset-y-0 before:left-[19px] before:w-[2px] before:bg-outline-variant/40">
-                        @php
-                            $histories = \App\Models\VillageHistory::orderBy('order_sequence')->get();
-                        @endphp
                         
                         @foreach($histories as $index => $history)
                         <button @click="activeStep = {{ $index + 1 }}" class="w-full text-left flex items-start gap-md relative z-10 group focus:outline-none">
@@ -137,7 +134,7 @@
                         <span class="material-symbols-outlined text-[32px]">group</span>
                     </div>
                     <h3 class="font-headline-md text-2xl font-bold text-on-surface mb-xs">Kependudukan</h3>
-                    <div class="font-display-lg text-4xl font-bold text-primary mb-md">6.543 <span class="text-lg text-on-surface-variant font-body-md font-normal">Jiwa</span></div>
+                    <div class="font-display-lg text-4xl font-bold text-primary mb-md">{{ number_format($profile->total_population ?? 6543, 0, ',', '.') }} <span class="text-lg text-on-surface-variant font-body-md font-normal">Jiwa</span></div>
                     
                     <div class="w-full flex justify-between items-center text-sm font-label-sm mb-2 mt-4">
                         <span class="text-on-surface-variant flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Laki-laki (3.039)</span>

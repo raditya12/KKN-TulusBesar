@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\VillageHistories\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class VillageHistoryForm
@@ -14,7 +14,7 @@ class VillageHistoryForm
     {
         return $schema
             ->components([
-                Grid::make(3)->schema([
+                Grid::make(['default' => 1, 'md' => 3])->schema([
                     Section::make('Momen Sejarah')
                         ->description('Judul dan cerita peristiwa sejarah.')
                         ->schema([
@@ -27,7 +27,7 @@ class VillageHistoryForm
                                 ->helperText('Ceritakan peristiwa yang terjadi pada era tersebut.')
                                 ->columnSpanFull(),
                         ])->columnSpan(2),
-                        
+
                     Section::make('Pengaturan Waktu')
                         ->description('Atur era dan urutan kronologis.')
                         ->schema([

@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\GisFeatures\Schemas;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class GisFeatureForm
@@ -36,7 +36,7 @@ class GisFeatureForm
                                 ->label('Keterangan Singkat')
                                 ->columnSpanFull(),
                         ])->columnSpan(2),
-                        
+
                     Section::make('Titik Koordinat')
                         ->description('Data spasial lokasi.')
                         ->schema([

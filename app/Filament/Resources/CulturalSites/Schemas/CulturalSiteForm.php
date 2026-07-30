@@ -4,13 +4,13 @@ namespace App\Filament\Resources\CulturalSites\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Set;
-use Illuminate\Support\Str;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class CulturalSiteForm
 {
@@ -18,7 +18,7 @@ class CulturalSiteForm
     {
         return $schema
             ->components([
-                Grid::make(3)->schema([
+                Grid::make(['default' => 1, 'md' => 3])->schema([
                     Section::make('Informasi Situs')
                         ->description('Data utama situs budaya atau wisata.')
                         ->schema([
@@ -42,7 +42,7 @@ class CulturalSiteForm
                                 ->default('active')
                                 ->required(),
                         ])->columnSpan(2),
-                        
+
                     Section::make('Lokasi & Media')
                         ->description('Titik koordinat dan foto situs.')
                         ->schema([
