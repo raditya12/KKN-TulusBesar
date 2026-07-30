@@ -17,10 +17,11 @@ class GisFeatureForm
                     ->required(),
                 Select::make('category')
                     ->options([
-            'PJU' => 'P j u',
+            'PJU' => 'PJU',
             'Sampah' => 'Sampah',
             'Peternakan' => 'Peternakan',
             'Fasilitas Umum' => 'Fasilitas umum',
+            'Situs Budaya' => 'Situs budaya',
         ])
                     ->required(),
                 Textarea::make('description')

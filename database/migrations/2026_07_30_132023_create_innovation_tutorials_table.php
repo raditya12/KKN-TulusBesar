@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('umkms', function (Blueprint $table) {
+        Schema::create('innovation_tutorials', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->string('slug')->unique();
-            $table->string('category')->nullable();
             $table->text('description')->nullable();
-            $table->string('image_path')->nullable();
-            $table->decimal('latitude', 10, 8)->nullable();
-            $table->decimal('longitude', 11, 8)->nullable();
+            $table->longText('content')->nullable();
+            $table->string('video_url')->nullable();
+            $table->string('thumbnail_path')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('umkms');
+        Schema::dropIfExists('innovation_tutorials');
     }
 };

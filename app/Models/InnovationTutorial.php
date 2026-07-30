@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Umkm extends Model
+class InnovationTutorial extends Model
 {
     protected $guarded = [];
 }

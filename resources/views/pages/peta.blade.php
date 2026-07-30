@@ -84,77 +84,93 @@
     </aside>
 
     <!-- Map Canvas Area -->
-    <main class="flex-grow relative bg-surface-variant h-full overflow-hidden">
-        <!-- Dummy Map Background Image -->
-        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2000&auto=format&fit=crop" alt="Peta Desa Tulusbesar" class="w-full h-full object-cover filter contrast-125 saturate-50 sepia-[0.3]">
-        
-        <!-- Map Overlay UI Controls -->
-        <div class="absolute top-4 right-4 z-20 flex flex-col gap-2 hidden md:flex">
-            <button class="w-10 h-10 bg-surface-container-lowest text-on-surface rounded-lg shadow-md border border-outline-variant/30 flex items-center justify-center hover:bg-surface-variant transition-colors" title="Zoom In">
-                <span class="material-symbols-outlined">add</span>
-            </button>
-            <button class="w-10 h-10 bg-surface-container-lowest text-on-surface rounded-lg shadow-md border border-outline-variant/30 flex items-center justify-center hover:bg-surface-variant transition-colors" title="Zoom Out">
-                <span class="material-symbols-outlined">remove</span>
-            </button>
-            <button class="w-10 h-10 bg-surface-container-lowest text-on-surface rounded-lg shadow-md border border-outline-variant/30 flex items-center justify-center mt-2 hover:bg-surface-variant transition-colors" title="Lokasi Saat Ini">
-                <span class="material-symbols-outlined">my_location</span>
-            </button>
-        </div>
-
-        <!-- Dummy Map Markers -->
-        <!-- Marker 1 (Wisata) -->
-        <div class="absolute top-1/3 left-1/3 z-20 transform -translate-x-1/2 -translate-y-full group cursor-pointer">
-            <div class="relative flex flex-col items-center">
-                <div class="bg-primary text-on-primary p-2 rounded-full shadow-lg map-pin-active relative z-10 border-2 border-white">
-                    <span class="material-symbols-outlined text-[20px]">park</span>
-                </div>
-                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-primary -mt-1 relative z-0"></div>
-                
-                <!-- Tooltip Popup -->
-                <div class="absolute bottom-full mb-2 bg-surface-container-lowest p-3 rounded-xl shadow-xl border border-outline-variant/30 w-48 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
-                    <img src="https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=300&auto=format&fit=crop" class="w-full h-20 object-cover rounded-lg mb-2" alt="Coban">
-                    <h4 class="font-label-md font-bold text-on-surface">Coban Tulus</h4>
-                    <p class="font-body-sm text-on-surface-variant text-[11px]">Wisata Alam</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Marker 2 (Budaya) -->
-        <div class="absolute top-1/2 left-2/3 z-20 transform -translate-x-1/2 -translate-y-full group cursor-pointer">
-            <div class="relative flex flex-col items-center">
-                <div class="bg-tertiary text-on-tertiary p-2 rounded-full shadow-lg relative z-10 border-2 border-white">
-                    <span class="material-symbols-outlined text-[20px]">account_balance</span>
-                </div>
-                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-tertiary -mt-1 relative z-0"></div>
-                
-                <!-- Tooltip Popup -->
-                <div class="absolute bottom-full mb-2 bg-surface-container-lowest p-3 rounded-xl shadow-xl border border-outline-variant/30 w-48 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
-                    <h4 class="font-label-md font-bold text-on-surface">Kantor Desa Tulusbesar</h4>
-                    <p class="font-body-sm text-on-surface-variant text-[11px]">Fasilitas Umum</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Marker 3 (Peternakan) -->
-        <div class="absolute bottom-1/3 left-1/2 z-20 transform -translate-x-1/2 -translate-y-full group cursor-pointer">
-            <div class="relative flex flex-col items-center">
-                <div class="bg-secondary text-on-primary p-2 rounded-full shadow-lg relative z-10 border-2 border-white">
-                    <span class="material-symbols-outlined text-[20px]">pets</span>
-                </div>
-                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-secondary -mt-1 relative z-0"></div>
-            </div>
-        </div>
-        
-        <!-- Legend (Bottom Left) -->
-        <div class="absolute bottom-4 left-4 z-20 bg-surface-container-lowest/90 backdrop-blur-sm p-3 rounded-xl shadow-md border border-outline-variant/30 hidden md:block">
-            <div class="font-label-sm font-bold text-on-surface mb-2">Legenda Peta</div>
-            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div class="flex items-center gap-1 font-body-sm text-xs"><span class="w-3 h-3 rounded-full bg-primary"></span> Wisata</div>
-                <div class="flex items-center gap-1 font-body-sm text-xs"><span class="w-3 h-3 rounded-full bg-secondary"></span> Ternak</div>
-                <div class="flex items-center gap-1 font-body-sm text-xs"><span class="w-3 h-3 rounded-full bg-tertiary"></span> F. Umum</div>
-                <div class="flex items-center gap-1 font-body-sm text-xs"><span class="w-3 h-3 rounded-full bg-[#d97706]"></span> PJU</div>
-            </div>
-        </div>
+    <main class="flex-grow relative bg-surface-variant h-full overflow-hidden" id="map">
     </main>
 </div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('map').setView([-8.0583, 112.7845], 14);
+
+        // Google Maps Standard Layer
+        L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '© Google Maps'
+        }).addTo(map);
+
+        var dataUMKM = @json($umkms ?? []);
+        var dataCultural = @json($culturalSites ?? []);
+        var dataGis = @json($gisFeatures ?? []);
+
+        var umkmIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var culturalIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var gisIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var gisPeternakanIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var gisFasilitasIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        dataUMKM.forEach(function(item) {
+            L.marker([item.latitude, item.longitude], {icon: umkmIcon}).addTo(map)
+                .bindPopup("<b>" + item.name + "</b><br>Kategori: UMKM<br>Lat: " + item.latitude + ", Lng: " + item.longitude + "<br>" + (item.description || ""));
+        });
+
+        dataCultural.forEach(function(item) {
+            L.marker([item.latitude, item.longitude], {icon: culturalIcon}).addTo(map)
+                .bindPopup("<b>" + item.name + "</b><br>Kategori: Situs Budaya<br>Lat: " + item.latitude + ", Lng: " + item.longitude + "<br>" + (item.description || ""));
+        });
+
+        dataGis.forEach(function(item) {
+            var activeIcon = gisIcon;
+            if (item.category === 'Peternakan') activeIcon = gisPeternakanIcon;
+            else if (item.category === 'Fasilitas Umum') activeIcon = gisFasilitasIcon;
+            else if (item.category === 'Situs Budaya') activeIcon = culturalIcon;
+
+            L.marker([item.latitude, item.longitude], {icon: activeIcon}).addTo(map)
+                .bindPopup("<b>" + item.name + "</b><br>Kategori: " + item.category + "<br>Lat: " + item.latitude + ", Lng: " + item.longitude + "<br>" + (item.description || ""));
+        });
+    });
+</script>
 @endsection

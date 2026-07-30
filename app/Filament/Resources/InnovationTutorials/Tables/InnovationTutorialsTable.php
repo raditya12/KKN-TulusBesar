@@ -1,33 +1,27 @@
 <?php
 
-namespace App\Filament\Resources\CulturalSites\Tables;
+namespace App\Filament\Resources\InnovationTutorials\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class CulturalSitesTable
+class InnovationTutorialsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('latitude')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('longitude')
-                    ->numeric()
-                    ->sortable(),
-                ImageColumn::make('image_path'),
-                TextColumn::make('status')
-                    ->badge(),
+                TextColumn::make('video_url')
+                    ->searchable(),
+                TextColumn::make('thumbnail_path')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

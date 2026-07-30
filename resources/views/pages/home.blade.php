@@ -24,7 +24,7 @@
             </p>
             
             <div class="flex flex-wrap items-center justify-center gap-md mt-md">
-                <a href="#" class="bg-tertiary-fixed hover:bg-tertiary-fixed-dim text-on-tertiary-fixed font-label-md px-xl py-md rounded-xl transition-all duration-300 shadow-xl shadow-tertiary-fixed/20 flex items-center gap-sm transform hover:-translate-y-1">
+                <a href="{{ route('peta') }}" class="bg-tertiary-fixed hover:bg-tertiary-fixed-dim text-on-tertiary-fixed font-label-md px-xl py-md rounded-xl transition-all duration-300 shadow-xl shadow-tertiary-fixed/20 flex items-center gap-sm transform hover:-translate-y-1">
                     <span class="material-symbols-outlined">explore</span>
                     Jelajahi WebGIS
                 </a>
@@ -78,26 +78,84 @@
             </div>
             
             <div class="relative bg-surface-container-lowest rounded-3xl p-sm shadow-[0_20px_50px_rgba(74,43,29,0.1)] border border-outline-variant/30 overflow-hidden group">
-                <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent z-10 flex flex-col justify-end p-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <a href="#" class="self-center bg-primary text-on-primary font-label-md px-xl py-md rounded-xl transition-all duration-300 hover:scale-105 shadow-xl shadow-primary/30 flex items-center gap-sm">
-                        Buka WebGIS Penuh
-                        <span class="material-symbols-outlined">arrow_forward</span>
-                    </a>
-                </div>
-                <img src="{{ asset('images/dummy/webgis.jpg') }}" alt="WebGIS Preview" class="w-full h-[400px] md:h-[600px] object-cover rounded-[1.25rem] filter contrast-110 sepia-[0.2]">
+                <div id="home-map" class="w-full h-[400px] md:h-[600px] rounded-[1.25rem] z-10"></div>
                 
-                <!-- Dummy UI Overlays to look like a map -->
-                <div class="absolute top-lg left-lg bg-surface-container-lowest/90 backdrop-blur-md p-md rounded-xl shadow-lg border border-outline-variant/30 hidden md:block">
+                <!-- Legend Box Overlay -->
+                <div class="absolute top-lg left-lg bg-surface-container-lowest/90 backdrop-blur-md p-md rounded-xl shadow-lg border border-outline-variant/30 hidden md:block z-20">
                     <div class="font-label-md font-bold mb-sm text-on-surface">Kategori Tersedia</div>
                     <div class="space-y-xs">
-                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-primary-container"></span> Fasilitas Umum</div>
-                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-tertiary-container"></span> Situs Budaya</div>
-                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-secondary-container"></span> UMKM Desa</div>
+                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-[#8b5cf6]"></span> Fasilitas Umum</div>
+                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-[#10b981]"></span> Situs Budaya</div>
+                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-[#3b82f6]"></span> UMKM Desa</div>
+                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-[#f97316]"></span> Peternakan</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Leaflet CSS & JS for Home Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var homeMap = L.map('home-map').setView([-8.0583, 112.7845], 14);
+
+            L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '© Google Maps'
+            }).addTo(homeMap);
+
+            var dataUMKM = @json($umkms ?? []);
+            var dataCultural = @json($culturalSites ?? []);
+            var dataGis = @json($gisFeatures ?? []);
+
+            var umkmIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            });
+            var culturalIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            });
+            var gisIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            });
+            var gisPeternakanIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            });
+            var gisFasilitasIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            });
+
+            dataUMKM.forEach(function(item) {
+                L.marker([item.latitude, item.longitude], {icon: umkmIcon}).addTo(homeMap)
+                    .bindPopup("<b>" + item.name + "</b><br>Kategori: UMKM<br>Lat: " + item.latitude + ", Lng: " + item.longitude + "<br>" + (item.description || ""));
+            });
+            dataCultural.forEach(function(item) {
+                L.marker([item.latitude, item.longitude], {icon: culturalIcon}).addTo(homeMap)
+                    .bindPopup("<b>" + item.name + "</b><br>Kategori: Situs Budaya<br>Lat: " + item.latitude + ", Lng: " + item.longitude + "<br>" + (item.description || ""));
+            });
+            dataGis.forEach(function(item) {
+                var activeIcon = gisIcon;
+                if (item.category === 'Peternakan') activeIcon = gisPeternakanIcon;
+                else if (item.category === 'Fasilitas Umum') activeIcon = gisFasilitasIcon;
+                else if (item.category === 'Situs Budaya') activeIcon = culturalIcon;
+                
+                L.marker([item.latitude, item.longitude], {icon: activeIcon}).addTo(homeMap)
+                    .bindPopup("<b>" + item.name + "</b><br>Kategori: " + item.category + "<br>Lat: " + item.latitude + ", Lng: " + item.longitude + "<br>" + (item.description || ""));
+            });
+        });
+    </script>
 
     <!-- Highlight Berita Section -->
     <section class="py-16 md:py-24 bg-background">
