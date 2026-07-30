@@ -14,20 +14,26 @@ class GisFeatureForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nama Titik Lokasi')
+                    ->helperText('Contoh: Tiang Listrik PJU RT 01.')
                     ->required(),
                 Select::make('category')
+                    ->label('Kategori')
                     ->options([
-            'PJU' => 'P j u',
-            'Sampah' => 'Sampah',
-            'Peternakan' => 'Peternakan',
-            'Fasilitas Umum' => 'Fasilitas umum',
-        ])
+                        'PJU' => 'PJU (Penerangan Jalan)',
+                        'Sampah' => 'Tempat Sampah',
+                        'Peternakan' => 'Peternakan',
+                        'Fasilitas Umum' => 'Fasilitas Umum',
+                    ])
                     ->required(),
                 Textarea::make('description')
+                    ->label('Keterangan Singkat')
                     ->columnSpanFull(),
                 TextInput::make('latitude')
+                    ->label('Garis Lintang (Latitude)')
                     ->numeric(),
                 TextInput::make('longitude')
+                    ->label('Garis Bujur (Longitude)')
                     ->numeric(),
             ]);
     }

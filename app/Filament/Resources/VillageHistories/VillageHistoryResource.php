@@ -18,7 +18,11 @@ class VillageHistoryResource extends Resource
 {
     protected static ?string $model = VillageHistory::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $modelLabel = 'Garis Waktu Sejarah';
+    protected static ?string $pluralModelLabel = 'Garis Waktu Sejarah';
+    protected static ?string $navigationLabel = 'Garis Waktu Sejarah';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil Desa';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clock';
 
     public static function form(Schema $schema): Schema
     {

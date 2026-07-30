@@ -18,7 +18,11 @@ class GisFeatureResource extends Resource
 {
     protected static ?string $model = GisFeature::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $modelLabel = 'Data WebGIS';
+    protected static ?string $pluralModelLabel = 'Data WebGIS';
+    protected static ?string $navigationLabel = 'Data WebGIS';
+    protected static \UnitEnum|string|null $navigationGroup = 'Potensi Desa';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-map-pin';
 
     public static function form(Schema $schema): Schema
     {

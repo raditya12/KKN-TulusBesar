@@ -28,9 +28,13 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('Admin Tulusbesar')
+            ->font('Outfit')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#8C5A35'),
+                'gray' => Color::Stone,
             ])
+            ->topNavigation()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

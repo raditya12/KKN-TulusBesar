@@ -18,7 +18,11 @@ class CulturalSiteResource extends Resource
 {
     protected static ?string $model = CulturalSite::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $modelLabel = 'Situs Wisata & Budaya';
+    protected static ?string $pluralModelLabel = 'Situs Wisata & Budaya';
+    protected static ?string $navigationLabel = 'Situs Wisata & Budaya';
+    protected static \UnitEnum|string|null $navigationGroup = 'Potensi Desa';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-map';
 
     public static function form(Schema $schema): Schema
     {

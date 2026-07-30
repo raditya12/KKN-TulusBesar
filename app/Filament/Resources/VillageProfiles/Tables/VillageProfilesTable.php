@@ -15,16 +15,20 @@ class VillageProfilesTable
         return $table
             ->columns([
                 TextColumn::make('total_population')
+                    ->label('Total Penduduk')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('area_size')
+                    ->label('Luas Wilayah (Km2)')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Diperbarui Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

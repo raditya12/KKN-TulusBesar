@@ -14,13 +14,23 @@ class UmkmForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nama Usaha')
+                    ->helperText('Contoh: Sentra Tahu Tulusbesar.')
                     ->required(),
                 TextInput::make('slug')
+                    ->label('Slug')
+                    ->helperText('Otomatis terisi dari nama usaha.')
                     ->required(),
-                TextInput::make('category'),
+                TextInput::make('category')
+                    ->label('Kategori Usaha')
+                    ->helperText('Contoh: Kuliner, Kriya, Pertanian.'),
                 Textarea::make('description')
+                    ->label('Deskripsi')
+                    ->helperText('Ceritakan singkat tentang usaha ini.')
                     ->columnSpanFull(),
                 FileUpload::make('image_path')
+                    ->label('Foto Usaha')
+                    ->helperText('Unggah foto produk atau tempat usaha.')
                     ->image(),
             ]);
     }

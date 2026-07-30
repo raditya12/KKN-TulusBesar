@@ -16,23 +16,31 @@ class CulturalSitesTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nama Situs')
                     ->searchable(),
                 TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable(),
                 TextColumn::make('latitude')
+                    ->label('Latitude')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('longitude')
+                    ->label('Longitude')
                     ->numeric()
                     ->sortable(),
-                ImageColumn::make('image_path'),
+                ImageColumn::make('image_path')
+                    ->label('Foto'),
                 TextColumn::make('status')
+                    ->label('Status')
                     ->badge(),
                 TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Diperbarui Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
