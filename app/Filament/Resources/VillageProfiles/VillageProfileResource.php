@@ -18,7 +18,11 @@ class VillageProfileResource extends Resource
 {
     protected static ?string $model = VillageProfile::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $modelLabel = 'Data Profil Desa';
+    protected static ?string $pluralModelLabel = 'Data Profil Desa';
+    protected static ?string $navigationLabel = 'Data Profil Desa';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil Desa';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-library';
 
     public static function form(Schema $schema): Schema
     {

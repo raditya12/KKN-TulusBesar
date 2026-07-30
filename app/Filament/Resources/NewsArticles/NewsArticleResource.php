@@ -18,7 +18,11 @@ class NewsArticleResource extends Resource
 {
     protected static ?string $model = NewsArticle::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $modelLabel = 'Berita Desa';
+    protected static ?string $pluralModelLabel = 'Berita Desa';
+    protected static ?string $navigationLabel = 'Berita Desa';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi Publik';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
 
     public static function form(Schema $schema): Schema
     {

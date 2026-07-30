@@ -5,6 +5,9 @@ namespace App\Filament\Resources\CulturalSites\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -14,34 +17,51 @@ class CulturalSitesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->contentGrid([
+                'md' => 2,
+                'xl' => 3,
+            ])
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('latitude')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('longitude')
-                    ->numeric()
-                    ->sortable(),
-                ImageColumn::make('image_path'),
-                TextColumn::make('status')
-                    ->badge(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Stack::make([
+                    ImageColumn::make('image_path')
+                        ->height('200px')
+                        ->width('100%')
+                        ->extraImgAttributes(['style' => 'object-fit: cover; border-radius: 0.75rem 0.75rem 0 0; width: 100%;']),
+                    Stack::make([
+                        TextColumn::make('name')
+                            ->weight('bold')
+                            ->size('lg')
+                            ->searchable(),
+                        TextColumn::make('status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'active' => 'success',
+                                'inactive' => 'danger',
+                                default => 'gray',
+                            }),
+                    ])->space(2)->extraAttributes(['style' => 'padding: 1rem;']),
+                ])
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()->button(),
+                DeleteAction::make()->button(),
+                Action::make('active')
+                    ->label('Aktif')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->button()
+                    ->action(fn ($record) => $record->update(['status' => 'active']))
+                    ->visible(fn ($record) => $record->status !== 'active'),
+                Action::make('inactive')
+                    ->label('Nonaktif')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->button()
+                    ->action(fn ($record) => $record->update(['status' => 'inactive']))
+                    ->visible(fn ($record) => $record->status === 'active'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

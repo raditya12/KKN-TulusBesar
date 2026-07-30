@@ -6,6 +6,10 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 
 class NewsArticleForm
@@ -14,16 +18,40 @@ class NewsArticleForm
     {
         return $schema
             ->components([
-                TextInput::make('title')
-                    ->required(),
-                TextInput::make('slug')
-                    ->required(),
-                RichEditor::make('content')
-                    ->required()
-                    ->columnSpanFull(),
-                FileUpload::make('image_path')
-                    ->image(),
-                DateTimePicker::make('published_at'),
+                Grid::make(3)->schema([
+                    Section::make('Konten Berita')
+                        ->description('Masukkan judul dan isi berita utama.')
+                        ->schema([
+                            TextInput::make('title')
+                                ->label('Judul Berita')
+                                ->helperText('Tuliskan judul berita yang menarik.')
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
+                            TextInput::make('slug')
+                                ->label('Tautan (Slug)')
+                                ->helperText('Terisi otomatis dari judul, atau isi manual dengan format-kata-kunci.')
+                                ->required(),
+                            RichEditor::make('content')
+                                ->label('Isi Berita')
+                                ->helperText('Tuliskan isi detail dari berita atau pengumuman.')
+                                ->required()
+                                ->columnSpanFull(),
+                        ])->columnSpan(2),
+                        
+                    Section::make('Media & Publikasi')
+                        ->description('Kelola gambar dan tanggal rilis.')
+                        ->schema([
+                            FileUpload::make('image_path')
+                                ->label('Gambar Utama')
+                                ->helperText('Unggah gambar pendukung untuk berita ini (opsional).')
+                                ->image()
+                                ->directory('news-images'),
+                            DateTimePicker::make('published_at')
+                                ->label('Tanggal Publikasi')
+                                ->helperText('Kapan berita ini diterbitkan?'),
+                        ])->columnSpan(1),
+                ]),
             ]);
     }
 }
