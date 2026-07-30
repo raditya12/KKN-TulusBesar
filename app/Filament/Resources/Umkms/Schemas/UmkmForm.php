@@ -47,8 +47,11 @@ class UmkmForm
                             FileUpload::make('image_path')
                                 ->label('Foto Usaha')
                                 ->helperText('Unggah foto produk atau tempat usaha.')
+                                ->disk('public')
                                 ->image()
-                                ->directory('umkm-images'),
+                                ->directory('umkm-images')
+                                ->imagePreviewHeight('200')
+                                ->maxSize(5120),
                         ])->columnSpan(1),
                 ]),
             ]);

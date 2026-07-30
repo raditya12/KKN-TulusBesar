@@ -46,8 +46,11 @@ class NewsArticleForm
                             FileUpload::make('image_path')
                                 ->label('Gambar Utama')
                                 ->helperText('Unggah gambar pendukung untuk berita ini (opsional).')
+                                ->disk('public')
                                 ->image()
-                                ->directory('news-images'),
+                                ->directory('news-images')
+                                ->imagePreviewHeight('200')
+                                ->maxSize(5120),
                             DateTimePicker::make('published_at')
                                 ->label('Tanggal Publikasi')
                                 ->helperText('Kapan berita ini diterbitkan?'),
