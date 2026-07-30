@@ -49,7 +49,10 @@ Route::get('/wisata', function () {
     return view('pages.wisata', compact('sites'));
 })->name('wisata');
 
-Route::view('/peta', 'pages.peta')->name('peta');
+Route::get('/peta', function () {
+    $features = \App\Models\GisFeature::all();
+    return view('pages.peta', compact('features'));
+})->name('peta');
 
 Route::get('/publikasi', function () {
     $news = NewsArticle::latest('published_at')->get();

@@ -115,18 +115,53 @@
 
                 // Loop through GIS Features from database
                 @if(isset($features) && count($features) > 0)
+                    // Helper function to get marker style based on category
+                    function getMarkerStyle(category) {
+                        switch(category) {
+                            case 'Wisata': return { bg: 'bg-primary', border: 'border-t-primary', icon: 'park' };
+                            case 'Peternakan': return { bg: 'bg-secondary', border: 'border-t-secondary', icon: 'pets' };
+                            case 'Fasilitas Umum': return { bg: 'bg-tertiary', border: 'border-t-tertiary', icon: 'account_balance' };
+                            case 'PJU': return { bg: 'bg-[#d97706]', border: 'border-t-[#d97706]', icon: 'lightbulb' };
+                            case 'Sampah': return { bg: 'bg-[#059669]', border: 'border-t-[#059669]', icon: 'recycling' };
+                            default: return { bg: 'bg-primary', border: 'border-t-primary', icon: 'location_on' };
+                        }
+                    }
+
                     @foreach($features as $feature)
                         @if($feature->latitude && $feature->longitude)
-                            var marker = L.marker([{{ $feature->latitude }}, {{ $feature->longitude }}]);
+                            var lat = parseFloat("{{ str_replace(',', '.', $feature->latitude) }}");
+                            var lng = parseFloat("{{ str_replace(',', '.', $feature->longitude) }}");
+                            var name = {!! json_encode($feature->name) !!};
+                            var category = {!! json_encode($feature->category) !!};
+                            var desc = {!! json_encode($feature->description ?? '') !!};
+                            
+                            var style = getMarkerStyle(category);
+                            var iconHtml = `
+                                <div class="relative flex flex-col items-center">
+                                    <div class="${style.bg} text-white p-2 rounded-full shadow-lg relative z-10 border-2 border-white flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[16px]">${style.icon}</span>
+                                    </div>
+                                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] ${style.border} -mt-1 relative z-0"></div>
+                                </div>
+                            `;
+                            
+                            var customIcon = L.divIcon({
+                                html: iconHtml,
+                                className: 'bg-transparent',
+                                iconSize: [36, 46],
+                                iconAnchor: [18, 46],
+                                popupAnchor: [0, -46]
+                            });
+
+                            var marker = L.marker([lat, lng], {icon: customIcon});
                             marker.bindPopup(`
                                 <div class="font-body-sm">
-                                    <h4 class="font-bold text-base mb-1">{{ addslashes($feature->name) }}</h4>
-                                    <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-xs rounded-md mb-2">{{ $feature->category }}</span>
-                                    <p class="text-sm mt-1">{{ addslashes($feature->description) }}</p>
+                                    <h4 class="font-bold text-base mb-1">${name}</h4>
+                                    <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-xs rounded-md mb-2">${category}</span>
+                                    <p class="text-sm mt-1">${desc}</p>
                                 </div>
                             `);
                             
-                            var category = "{{ $feature->category }}";
                             if (layerGroups[category]) {
                                 layerGroups[category].addLayer(marker);
                             } else {
