@@ -97,10 +97,11 @@
                 // Initialize Map pointing to Desa Tulusbesar
                 var map = L.map('map').setView([-8.015775, 112.765763], 15);
                 
-                // Add Google Maps Tile Layer
-                L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-                    maxZoom: 20,
-                    attribution: '&copy; Google Maps'
+                // Add ArcGIS (Esri) Tile Layer
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 21,
+                    maxNativeZoom: 18,
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ'
                 }).addTo(map);
 
                 // Initialize Layer Groups for filtering
