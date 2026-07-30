@@ -27,21 +27,18 @@
     }
 
     .fi-topbar {
-        background: rgba(255, 255, 255, 0.6) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         border-bottom: 1px solid rgba(140, 90, 53, 0.2) !important;
     }
     
     .dark .fi-topbar {
-        background: rgba(30, 20, 15, 0.7) !important;
+        background: rgba(30, 20, 15, 0.95) !important;
         border-bottom: 1px solid rgba(140, 90, 53, 0.3) !important;
     }
 
     /* Content Cards Glassmorphism */
     .fi-ta-content, .fi-fo-content, .fi-section, .fi-wi-stats-overview-stat {
-        background: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(12px) !important;
+        background: rgba(255, 255, 255, 0.9) !important;
         border: 1px solid rgba(140, 90, 53, 0.2) !important;
         border-radius: 1rem !important;
         box-shadow: 0 10px 30px -10px rgba(74, 43, 29, 0.1) !important;

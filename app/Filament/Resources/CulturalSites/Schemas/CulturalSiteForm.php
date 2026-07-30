@@ -8,6 +8,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 
 class CulturalSiteForm
@@ -23,7 +25,9 @@ class CulturalSiteForm
                             TextInput::make('name')
                                 ->label('Nama Situs')
                                 ->helperText('Contoh: Pesarean Senopati Mangun Yudho.')
-                                ->required(),
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
                             TextInput::make('slug')
                                 ->label('Slug')
                                 ->helperText('Terisi otomatis.')
@@ -51,7 +55,8 @@ class CulturalSiteForm
                             FileUpload::make('image_path')
                                 ->label('Foto Situs')
                                 ->helperText('Unggah foto lokasi.')
-                                ->image(),
+                                ->image()
+                                ->directory('cultural-sites'),
                         ])->columnSpan(1),
                 ]),
             ]);

@@ -8,6 +8,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 
 class NewsArticleForm
@@ -23,7 +25,9 @@ class NewsArticleForm
                             TextInput::make('title')
                                 ->label('Judul Berita')
                                 ->helperText('Tuliskan judul berita yang menarik.')
-                                ->required(),
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
                             TextInput::make('slug')
                                 ->label('Tautan (Slug)')
                                 ->helperText('Terisi otomatis dari judul, atau isi manual dengan format-kata-kunci.')
@@ -41,7 +45,8 @@ class NewsArticleForm
                             FileUpload::make('image_path')
                                 ->label('Gambar Utama')
                                 ->helperText('Unggah gambar pendukung untuk berita ini (opsional).')
-                                ->image(),
+                                ->image()
+                                ->directory('news-images'),
                             DateTimePicker::make('published_at')
                                 ->label('Tanggal Publikasi')
                                 ->helperText('Kapan berita ini diterbitkan?'),

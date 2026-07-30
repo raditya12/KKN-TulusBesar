@@ -7,6 +7,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 
 class UmkmForm
@@ -22,7 +24,9 @@ class UmkmForm
                             TextInput::make('name')
                                 ->label('Nama Usaha')
                                 ->helperText('Contoh: Sentra Tahu Tulusbesar.')
-                                ->required(),
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
                             TextInput::make('slug')
                                 ->label('Slug')
                                 ->helperText('Otomatis terisi dari nama usaha.')
@@ -42,7 +46,8 @@ class UmkmForm
                             FileUpload::make('image_path')
                                 ->label('Foto Usaha')
                                 ->helperText('Unggah foto produk atau tempat usaha.')
-                                ->image(),
+                                ->image()
+                                ->directory('umkm-images'),
                         ])->columnSpan(1),
                 ]),
             ]);
