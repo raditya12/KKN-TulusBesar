@@ -50,11 +50,11 @@
                     </p>
                     <div class="grid grid-cols-2 gap-md pt-md">
                         <div class="bg-surface-container-low p-lg rounded-2xl border border-surface-dim shadow-sm">
-                            <div class="text-tertiary-container font-display-md text-3xl font-bold mb-xs">6.543</div>
+                            <div class="text-tertiary-container font-display-md text-3xl font-bold mb-xs">{{ number_format($profile->total_population ?? 6543, 0, ',', '.') }}</div>
                             <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Jiwa Penduduk</div>
                         </div>
                         <div class="bg-surface-container-low p-lg rounded-2xl border border-surface-dim shadow-sm">
-                            <div class="text-secondary-container font-display-md text-3xl font-bold mb-xs">4.439</div>
+                            <div class="text-secondary-container font-display-md text-3xl font-bold mb-xs">{{ number_format($profile->area_size ?? 4439, 0, ',', '.') }}</div>
                             <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Km² Area</div>
                         </div>
                     </div>
@@ -113,17 +113,14 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-                @php
-                    $beritaList = \App\Models\NewsArticle::latest()->take(3)->get();
-                @endphp
-                @foreach($beritaList as $index => $berita)
+                @foreach($news as $index => $berita)
                 <!-- News Card -->
                 <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm shadow-[#4A2B1D]/5 border border-surface-dim hover:shadow-xl hover:shadow-[#4A2B1D]/10 transition-all duration-300 transform hover:-translate-y-2 group flex flex-col">
                     <div class="h-56 overflow-hidden relative">
                         @if($index === 0)
                         <div class="absolute top-sm right-sm z-10 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm px-2 py-1 rounded-md shadow-md">Terbaru</div>
                         @endif
-                        <img src="{{ Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : Storage::url($berita->image_path) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ empty($berita->image_path) ? asset('images/dummy/hero.jpg') : (Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : Storage::url($berita->image_path)) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <div class="p-lg flex-grow flex flex-col">
                         <div class="flex items-center gap-sm text-on-surface-variant font-label-sm mb-sm">

@@ -3,13 +3,13 @@
 namespace App\Filament\Resources\Umkms\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Set;
-use Illuminate\Support\Str;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class UmkmForm
 {
@@ -17,7 +17,7 @@ class UmkmForm
     {
         return $schema
             ->components([
-                Grid::make(3)->schema([
+                Grid::make(['default' => 1, 'md' => 3])->schema([
                     Section::make('Informasi Usaha')
                         ->description('Data profil dan kategori UMKM.')
                         ->schema([
@@ -39,7 +39,7 @@ class UmkmForm
                                 ->helperText('Ceritakan singkat tentang usaha ini.')
                                 ->columnSpanFull(),
                         ])->columnSpan(2),
-                        
+
                     Section::make('Galeri')
                         ->description('Unggah dokumentasi usaha.')
                         ->schema([

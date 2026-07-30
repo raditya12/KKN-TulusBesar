@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\CulturalSite;
+use App\Models\NewsArticle;
+use App\Models\Umkm;
+use App\Models\VillageHistory;
+use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages.home')->name('home');

@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\VillageProfiles\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class VillageProfileForm
@@ -14,7 +14,7 @@ class VillageProfileForm
     {
         return $schema
             ->components([
-                Grid::make(3)->schema([
+                Grid::make(['default' => 1, 'md' => 3])->schema([
                     Section::make('Identitas & Narasi')
                         ->description('Visi, misi, dan sejarah singkat desa.')
                         ->schema([
@@ -28,7 +28,7 @@ class VillageProfileForm
                                 ->label('Sejarah Singkat')
                                 ->columnSpanFull(),
                         ])->columnSpan(2),
-                        
+
                     Section::make('Statistik Utama')
                         ->description('Data kependudukan dan kewilayahan.')
                         ->schema([
