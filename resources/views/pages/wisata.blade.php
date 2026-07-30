@@ -3,16 +3,73 @@
 @section('content')
 <div class="w-full overflow-y-auto custom-scrollbar" x-data="{ activeFilter: 'semua' }">
     
+    @php
+        // Kumpulkan semua foto yang sudah terupload dari data situs budaya
+        $slideImages = $sites
+            ->filter(fn($s) => !empty($s->image_path))
+            ->map(fn($s) => Str::startsWith($s->image_path, 'images/dummy/')
+                ? asset($s->image_path)
+                : asset('storage/' . $s->image_path)
+            )
+            ->values()
+            ->toArray();
+        // Fallback jika belum ada gambar terupload
+        if (empty($slideImages)) {
+            $slideImages = [
+                asset('images/dummy/wisata_hero.jpg'),
+                asset('images/dummy/wisata1.jpg'),
+                asset('images/dummy/tradisi1.jpg'),
+            ];
+        }
+    @endphp
+
     <!-- 1. Hero Section -->
-    <section class="relative pt-24 md:pt-32 pb-16 md:pb-24 bg-surface-container-low overflow-hidden">
-        <!-- Hero Background Image -->
+    <section
+        class="relative pt-24 md:pt-32 pb-16 md:pb-24 bg-surface-container-low overflow-hidden"
+        x-data="{
+            slides: {{ json_encode($slideImages) }},
+            current: 0,
+            timer: null,
+            init() {
+                this.timer = setInterval(() => {
+                    this.current = (this.current + 1) % this.slides.length;
+                }, 4500);
+            },
+            destroy() { clearInterval(this.timer); }
+        }"
+        x-init="init()"
+    >
+        <!-- Slideshow Background -->
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/dummy/wisata_hero.jpg') }}" alt="Pemandangan Budaya Desa" class="w-full h-full object-cover opacity-30 filter contrast-125 sepia-[0.2]">
-            <div class="absolute inset-0 bg-gradient-to-b from-surface-container-low/70 via-surface-container-low/90 to-surface-container-low"></div>
+            <template x-for="(slide, index) in slides" :key="index">
+                <div
+                    class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                    :style="{ opacity: current === index ? '1' : '0' }"
+                >
+                    <img
+                        :src="slide"
+                        alt="Foto Wisata Budaya Desa"
+                        class="w-full h-full object-cover opacity-60 filter contrast-110"
+                    >
+                </div>
+            </template>
+            <!-- Gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-b from-surface-container-low/30 via-surface-container-low/50 to-surface-container-low z-10"></div>
+        </div>
+
+        <!-- Slide Indicators -->
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            <template x-for="(slide, index) in slides" :key="index">
+                <button
+                    @click="current = index; clearInterval(timer); timer = setInterval(() => { current = (current + 1) % slides.length; }, 4500);"
+                    class="transition-all duration-300 rounded-full"
+                    :class="current === index ? 'w-6 h-2.5 bg-tertiary' : 'w-2.5 h-2.5 bg-surface-container/60 hover:bg-tertiary/60'"
+                ></button>
+            </template>
         </div>
         
         <!-- Abstract Javanese Pattern -->
-        <div class="absolute inset-0 opacity-[0.03] z-0 pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%234a2b1d\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        <div class="absolute inset-0 opacity-[0.03] z-0 pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%234a2b1d\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
         
         <div class="max-w-screen-xl mx-auto px-4 md:px-container-margin relative z-10 text-center">
             <span class="inline-block font-label-md text-tertiary bg-tertiary/10 border border-tertiary/20 px-4 py-2 rounded-full tracking-widest uppercase mb-6 shadow-sm">
@@ -77,7 +134,7 @@
                     
                     <div class="relative h-64 overflow-hidden">
                         <div class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-500 z-10 mix-blend-multiply"></div>
-                        <img src="{{ Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : Storage::url($site->image_path) }}" alt="{{ $site->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.3]">
+                        <img src="{{ empty($site->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : asset('storage/' . $site->image_path)) }}" alt="{{ $site->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.3]">
                     </div>
                     
                     <div class="p-6 md:p-8 flex-grow flex flex-col bg-surface-container-lowest relative z-20 -mt-6 mx-4 rounded-2xl border border-outline-variant/20 shadow-md">
@@ -85,10 +142,10 @@
                         <div class="text-secondary font-label-sm mb-4 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[16px]">location_on</span> Koordinat: {{ $site->latitude ?? '-' }}, {{ $site->longitude ?? '-' }}
                         </div>
-                        <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-4">{{ $site->description }}</p>
-                        <button class="w-full mt-auto bg-primary/5 hover:bg-primary text-primary hover:text-on-primary font-label-md py-3 rounded-xl transition-colors border border-primary/20 hover:border-primary flex items-center justify-center gap-2">
-                            Lihat Detail <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                        </button>
+                        <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-4">{!! strip_tags($site->description) !!}</p>
+                        <a href="{{ route('wisata.show', $site->slug) }}" class="w-full mt-auto bg-primary/5 hover:bg-primary text-primary hover:text-on-primary font-label-md py-3 rounded-xl transition-colors border border-primary/20 hover:border-primary flex items-center justify-center gap-2">
+                            Selengkapnya <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </a>
                     </div>
                 </div>
                 @endforeach

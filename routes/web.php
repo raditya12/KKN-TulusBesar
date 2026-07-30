@@ -12,7 +12,28 @@ Route::get('/', function () {
     $umkms = Umkm::latest()->take(3)->get();
     $profile = VillageProfile::first();
 
-    return view('pages.home', compact('news', 'umkms', 'profile'));
+    // Kumpulkan semua gambar dari semua konten untuk slideshow
+    $allImages = collect()
+        ->merge(
+            NewsArticle::whereNotNull('image_path')->latest('published_at')->get()
+                ->map(fn ($n) => asset('storage/'.$n->image_path))
+        )
+        ->merge(
+            Umkm::whereNotNull('image_path')->latest()->get()
+                ->map(fn ($u) => asset('storage/'.$u->image_path))
+        )
+        ->merge(
+            CulturalSite::whereNotNull('image_path')->where('status', 'active')->latest()->get()
+                ->map(fn ($s) => asset('storage/'.$s->image_path))
+        )
+        ->values()
+        ->toArray();
+
+    if (empty($allImages)) {
+        $allImages = [asset('images/dummy/profil.jpg')];
+    }
+
+    return view('pages.home', compact('news', 'umkms', 'profile', 'allImages'));
 })->name('home');
 
 Route::get('/profil', function () {
@@ -41,3 +62,21 @@ Route::get('/umkm', function () {
 
     return view('pages.umkm', compact('umkms'));
 })->name('umkm');
+
+Route::get('/berita/{slug}', function ($slug) {
+    $berita = NewsArticle::where('slug', $slug)->firstOrFail();
+
+    return view('pages.berita-show', compact('berita'));
+})->name('berita.show');
+
+Route::get('/umkm/{slug}', function ($slug) {
+    $umkm = Umkm::where('slug', $slug)->firstOrFail();
+
+    return view('pages.umkm-show', compact('umkm'));
+})->name('umkm.show');
+
+Route::get('/wisata/{slug}', function ($slug) {
+    $wisata = CulturalSite::where('slug', $slug)->firstOrFail();
+
+    return view('pages.wisata-show', compact('wisata'));
+})->name('wisata.show');

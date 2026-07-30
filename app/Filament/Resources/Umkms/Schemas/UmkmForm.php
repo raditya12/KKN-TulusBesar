@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Umkms\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -34,9 +34,10 @@ class UmkmForm
                             TextInput::make('category')
                                 ->label('Kategori Usaha')
                                 ->helperText('Contoh: Kuliner, Kriya, Pertanian.'),
-                            Textarea::make('description')
+                            RichEditor::make('description')
                                 ->label('Deskripsi')
-                                ->helperText('Ceritakan singkat tentang usaha ini.')
+                                ->helperText('Ceritakan lengkap tentang usaha ini beserta keunggulannya.')
+                                ->fileAttachmentsDirectory('umkm-images')
                                 ->columnSpanFull(),
                         ])->columnSpan(2),
 

@@ -6,7 +6,7 @@
     <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 w-full h-full">
-            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('images/dummy/hero.jpg') }}');"></div>
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('images/hero-bg.jpg') }}');"></div>
             <div class="absolute inset-0 bg-primary/70 mix-blend-multiply"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
         </div>
@@ -59,9 +59,44 @@
                         </div>
                     </div>
                 </div>
-                <div class="relative group">
+                <div
+                    class="relative group"
+                    x-data="{
+                        slides: {{ json_encode($allImages) }},
+                        current: 0,
+                        timer: null,
+                        init() {
+                            this.timer = setInterval(() => {
+                                this.current = (this.current + 1) % this.slides.length;
+                            }, 3500);
+                        },
+                        destroy() { clearInterval(this.timer); }
+                    }"
+                    x-init="init()"
+                >
+                    <!-- Decorative bg -->                    
                     <div class="absolute inset-0 bg-secondary/10 rounded-[2rem] transform rotate-3 scale-105 transition-transform duration-500 group-hover:rotate-6"></div>
-                    <img src="{{ asset('images/dummy/profil.jpg') }}" alt="Pemandangan Desa" class="relative rounded-[2rem] shadow-2xl w-full h-[500px] object-cover border border-outline-variant/30 transform transition-transform duration-500 group-hover:-translate-y-2">
+                    <!-- Slides -->
+                    <div class="relative rounded-[2rem] shadow-2xl w-full h-[500px] overflow-hidden border border-outline-variant/30">
+                        <template x-for="(slide, index) in slides" :key="index">
+                            <img
+                                :src="slide"
+                                alt="Foto Desa Tulusbesar"
+                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out"
+                                :style="{ opacity: current === index ? '1' : '0' }"
+                            >
+                        </template>
+                    </div>
+                    <!-- Indicators -->
+                    <div class="absolute -bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                        <template x-for="(slide, index) in slides" :key="index">
+                            <button
+                                @click="current = index; clearInterval(timer); timer = setInterval(() => { current = (current + 1) % slides.length; }, 3500);"
+                                class="transition-all duration-300 rounded-full"
+                                :class="current === index ? 'w-5 h-2 bg-secondary' : 'w-2 h-2 bg-outline-variant hover:bg-secondary/60'"
+                            ></button>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,7 +155,7 @@
                         @if($index === 0)
                         <div class="absolute top-sm right-sm z-10 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm px-2 py-1 rounded-md shadow-md">Terbaru</div>
                         @endif
-                        <img src="{{ empty($berita->image_path) ? asset('images/dummy/hero.jpg') : (Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : Storage::url($berita->image_path)) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ empty($berita->image_path) ? asset('images/dummy/hero.jpg') : (Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : asset('storage/' . $berita->image_path)) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <div class="p-lg flex-grow flex flex-col">
                         <div class="flex items-center gap-sm text-on-surface-variant font-label-sm mb-sm">
@@ -128,7 +163,10 @@
                             <time>{{ \Carbon\Carbon::parse($berita->published_at ?? $berita->created_at)->translatedFormat('d M Y') }}</time>
                         </div>
                         <h3 class="font-headline-md text-xl font-bold text-on-surface mb-sm line-clamp-2 group-hover:text-secondary transition-colors">{{ $berita->title }}</h3>
-                        <p class="font-body-sm text-on-surface-variant line-clamp-3 text-justify">{!! strip_tags($berita->content) !!}</p>
+                        <p class="font-body-sm text-on-surface-variant line-clamp-3 text-justify mb-4">{!! strip_tags($berita->content) !!}</p>
+                        <a href="{{ route('berita.show', $berita->slug) }}" class="w-full bg-surface-container hover:bg-primary text-primary hover:text-on-primary font-label-sm py-2 rounded-xl transition-colors border border-outline-variant/50 hover:border-primary flex items-center justify-center gap-2 mt-auto">
+                            Selengkapnya <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </a>
                     </div>
                 </div>
                 @endforeach

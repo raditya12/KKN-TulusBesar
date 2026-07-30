@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\CulturalSites\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -32,9 +32,10 @@ class CulturalSiteForm
                                 ->label('Slug')
                                 ->helperText('Terisi otomatis.')
                                 ->required(),
-                            Textarea::make('description')
+                            RichEditor::make('description')
                                 ->label('Deskripsi')
-                                ->helperText('Ceritakan nilai sejarah atau daya tarik situs ini.')
+                                ->helperText('Ceritakan lengkap nilai sejarah atau daya tarik situs ini.')
+                                ->fileAttachmentsDirectory('cultural-sites-images')
                                 ->columnSpanFull(),
                             Select::make('status')
                                 ->label('Status')
