@@ -11,6 +11,8 @@ class VillageProfile extends Model
     /** @use HasFactory<VillageProfileFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     protected $fillable = [
         'visi',
         'misi',

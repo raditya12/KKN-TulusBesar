@@ -11,6 +11,8 @@ class GisFeature extends Model
     /** @use HasFactory<GisFeatureFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     protected $fillable = [
         'name',
         'category',

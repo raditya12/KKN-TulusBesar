@@ -35,6 +35,7 @@ class NewsArticleForm
                             RichEditor::make('content')
                                 ->label('Isi Berita')
                                 ->helperText('Tuliskan isi detail dari berita atau pengumuman.')
+                                ->fileAttachmentsDirectory('news-images')
                                 ->required()
                                 ->columnSpanFull(),
                         ])->columnSpan(2),

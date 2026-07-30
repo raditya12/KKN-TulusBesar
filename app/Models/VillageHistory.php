@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class VillageHistory extends Model
 {
-    //
+    protected $guarded = [];
 }

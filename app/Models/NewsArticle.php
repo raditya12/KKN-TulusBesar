@@ -11,6 +11,8 @@ class NewsArticle extends Model
     /** @use HasFactory<NewsArticleFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     protected $fillable = [
         'title',
         'slug',
