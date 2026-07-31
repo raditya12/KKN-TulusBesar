@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\VillageProfile;
-use App\Models\Umkm;
 use App\Models\CulturalSite;
 use App\Models\NewsArticle;
 use App\Models\VillageHistory;
+use App\Models\VillageProfile;
+use Illuminate\Database\Seeder;
 
 class CmsSeeder extends Seeder
 {

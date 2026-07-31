@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\CulturalSite;
+use App\Http\Controllers\LocationSiteController;
+use App\Models\LocationSite;
 use App\Models\NewsArticle;
-use App\Models\Umkm;
 use App\Models\VillageHistory;
 use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $news = NewsArticle::latest('published_at')->take(3)->get();
-    $umkms = Umkm::latest()->take(3)->get();
+    $umkms = LocationSite::where('category', 'UMKM')->where('status', 'active')->latest()->take(3)->get();
     $profile = VillageProfile::first();
 
     // Kumpulkan semua gambar dari semua konten untuk slideshow
@@ -19,11 +19,7 @@ Route::get('/', function () {
                 ->map(fn ($n) => asset('storage/'.$n->image_path))
         )
         ->merge(
-            Umkm::whereNotNull('image_path')->latest()->get()
-                ->map(fn ($u) => asset('storage/'.$u->image_path))
-        )
-        ->merge(
-            CulturalSite::whereNotNull('image_path')->where('status', 'active')->latest()->get()
+            LocationSite::whereNotNull('image_path')->where('status', 'active')->latest()->get()
                 ->map(fn ($s) => asset('storage/'.$s->image_path))
         )
         ->values()
@@ -44,14 +40,15 @@ Route::get('/profil', function () {
 })->name('profil');
 
 Route::get('/wisata', function () {
-    $sites = CulturalSite::where('status', 'active')->latest()->get();
+    $sites = LocationSite::where('category', 'Situs Budaya')->where('status', 'active')->latest()->get();
 
     return view('pages.wisata', compact('sites'));
 })->name('wisata');
 
 Route::get('/peta', function () {
-    $features = \App\Models\GisFeature::all();
-    return view('pages.peta', compact('features'));
+    $features = LocationSite::with('locationCategory')->where('status', 'active')->get();
+    $categories = \App\Models\LocationCategory::all();
+    return view('pages.peta', compact('features', 'categories'));
 })->name('peta');
 
 Route::get('/publikasi', function () {
@@ -60,26 +57,16 @@ Route::get('/publikasi', function () {
     return view('pages.publikasi', compact('news'));
 })->name('publikasi');
 
-Route::get('/umkm', function () {
-    $umkms = Umkm::latest()->get();
-
-    return view('pages.umkm', compact('umkms'));
-})->name('umkm');
-
 Route::get('/berita/{slug}', function ($slug) {
     $berita = NewsArticle::where('slug', $slug)->firstOrFail();
 
     return view('pages.berita-show', compact('berita'));
 })->name('berita.show');
 
-Route::get('/umkm/{slug}', function ($slug) {
-    $umkm = Umkm::where('slug', $slug)->firstOrFail();
-
-    return view('pages.umkm-show', compact('umkm'));
-})->name('umkm.show');
-
 Route::get('/wisata/{slug}', function ($slug) {
-    $wisata = CulturalSite::where('slug', $slug)->firstOrFail();
+    $wisata = LocationSite::where('slug', $slug)->firstOrFail();
 
     return view('pages.wisata-show', compact('wisata'));
 })->name('wisata.show');
+
+Route::get('/qr/{qr_code}', [LocationSiteController::class, 'qrRedirect'])->name('qr.redirect');

@@ -23,9 +23,6 @@
             <a href="{{ route('wisata') }}" class="{{ request()->routeIs('wisata') ? $activeDesktop : $inactiveDesktop }}">
                 Wisata & Budaya
             </a>
-            <a href="{{ route('umkm') }}" class="{{ request()->routeIs('umkm') ? $activeDesktop : $inactiveDesktop }}">
-                Potensi UMKM
-            </a>
             <a href="{{ route('peta') }}" class="{{ request()->routeIs('peta') ? $activeDesktop : $inactiveDesktop }}">
                 Peta Interaktif (WebGIS)
             </a>
@@ -57,9 +54,6 @@
             </a>
             <a href="{{ route('wisata') }}" class="{{ request()->routeIs('wisata') ? $activeMobile : $inactiveMobile }}">
                 Wisata & Budaya
-            </a>
-            <a href="{{ route('umkm') }}" class="{{ request()->routeIs('umkm') ? $activeMobile : $inactiveMobile }}">
-                Potensi UMKM
             </a>
             <a href="{{ route('peta') }}" class="{{ request()->routeIs('peta') ? $activeMobile : $inactiveMobile }}">
                 Peta Interaktif (WebGIS)
