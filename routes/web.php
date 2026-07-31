@@ -53,9 +53,15 @@ Route::get('/peta', function () {
 
 Route::get('/publikasi', function () {
     $news = NewsArticle::latest('published_at')->get();
+    $publications = \App\Models\Publication::where('is_active', true)->latest()->get();
 
-    return view('pages.publikasi', compact('news'));
+    return view('pages.publikasi', compact('news', 'publications'));
 })->name('publikasi');
+
+Route::get('/publikasi/inovasi/{id}', function ($id) {
+    $publikasi = \App\Models\Publication::findOrFail($id);
+    return view('pages.publikasi-show', compact('publikasi'));
+})->name('publikasi.inovasi.show');
 
 Route::get('/umkm', function () {
     $umkms = Umkm::latest()->get();
