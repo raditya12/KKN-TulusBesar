@@ -56,8 +56,11 @@ class CulturalSiteForm
                             FileUpload::make('image_path')
                                 ->label('Foto Situs')
                                 ->helperText('Unggah foto lokasi.')
+                                ->disk('public')
                                 ->image()
-                                ->directory('cultural-sites'),
+                                ->directory('cultural-sites')
+                                ->imagePreviewHeight('200')
+                                ->maxSize(5120),
                         ])->columnSpan(1),
                 ]),
             ]);

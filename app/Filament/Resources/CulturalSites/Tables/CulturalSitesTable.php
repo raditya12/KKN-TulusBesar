@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\CulturalSites\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -24,9 +24,12 @@ class CulturalSitesTable
             ->columns([
                 Stack::make([
                     ImageColumn::make('image_path')
-                        ->height('200px')
+                        ->disk('public')
+                        ->height(200)
                         ->width('100%')
-                        ->extraImgAttributes(['style' => 'object-fit: cover; border-radius: 0.75rem 0.75rem 0 0; width: 100%;']),
+                        ->defaultImageUrl(asset('images/dummy/wisata1.jpg'))
+                        ->extraAttributes(['class' => 'rounded-t-xl overflow-hidden'])
+                        ->extraImgAttributes(['class' => 'w-full h-[200px] object-cover rounded-t-xl']),
                     Stack::make([
                         TextColumn::make('name')
                             ->weight('bold')
@@ -40,7 +43,7 @@ class CulturalSitesTable
                                 default => 'gray',
                             }),
                     ])->space(2)->extraAttributes(['style' => 'padding: 1rem;']),
-                ])
+                ]),
             ])
             ->filters([
                 //
