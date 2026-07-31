@@ -11,7 +11,6 @@ use App\Models\VillageProfile;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class VillageProfileResource extends Resource
@@ -19,9 +18,13 @@ class VillageProfileResource extends Resource
     protected static ?string $model = VillageProfile::class;
 
     protected static ?string $modelLabel = 'Data Profil Desa';
+
     protected static ?string $pluralModelLabel = 'Data Profil Desa';
+
     protected static ?string $navigationLabel = 'Data Profil Desa';
+
     protected static \UnitEnum|string|null $navigationGroup = 'Profil Desa';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-library';
 
     public static function form(Schema $schema): Schema

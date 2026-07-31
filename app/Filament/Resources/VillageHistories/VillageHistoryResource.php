@@ -11,7 +11,6 @@ use App\Models\VillageHistory;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class VillageHistoryResource extends Resource
@@ -19,9 +18,13 @@ class VillageHistoryResource extends Resource
     protected static ?string $model = VillageHistory::class;
 
     protected static ?string $modelLabel = 'Garis Waktu Sejarah';
+
     protected static ?string $pluralModelLabel = 'Garis Waktu Sejarah';
+
     protected static ?string $navigationLabel = 'Garis Waktu Sejarah';
+
     protected static \UnitEnum|string|null $navigationGroup = 'Profil Desa';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clock';
 
     public static function form(Schema $schema): Schema

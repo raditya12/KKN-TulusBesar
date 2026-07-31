@@ -21,55 +21,28 @@
         </div>
 
         <div class="p-6 flex-grow overflow-y-auto custom-scrollbar">
+            <!-- Search Bar -->
+            <div class="mb-6 relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="material-symbols-outlined text-gray-400">search</span>
+                </div>
+                <input type="text" id="searchInput" placeholder="Cari nama lokasi..." class="w-full pl-10 pr-4 py-2 border border-outline-variant/50 rounded-xl focus:ring-primary focus:border-primary bg-surface text-sm transition-shadow shadow-sm focus:shadow-md">
+            </div>
+
             <h3 class="font-label-md font-bold text-on-surface mb-4 uppercase tracking-wider flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">layers</span> Layer Aktif
             </h3>
 
-            <div class="space-y-4">
-                <!-- Filter Item 1 -->
+            <div class="space-y-4" id="categoryFilters">
+                @foreach($categories as $category)
                 <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" checked value="Wisata" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary accent-primary">
-                    <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[16px]">park</span>
+                    <input type="checkbox" checked value="{{ $category->name }}" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-[{{ $category->color }}] focus:ring-[{{ $category->color }}] accent-[{{ $category->color }}]" style="accent-color: {{ $category->color }};">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background-color: {{ $category->color }}20; color: {{ $category->color }};">
+                        <span class="material-symbols-outlined text-[16px]">{{ $category->icon }}</span>
                     </div>
-                    <span class="font-body-md text-on-surface">Potensi Wisata</span>
+                    <span class="font-body-md text-on-surface">{{ $category->name }}</span>
                 </label>
-
-                <!-- Filter Item 2 -->
-                <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" checked value="Peternakan" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary accent-secondary">
-                    <div class="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[16px]">pets</span>
-                    </div>
-                    <span class="font-body-md text-on-surface">Peternakan Warga</span>
-                </label>
-
-                <!-- Filter Item 3 -->
-                <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" checked value="Fasilitas Umum" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-tertiary focus:ring-tertiary accent-tertiary">
-                    <div class="w-8 h-8 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[16px]">account_balance</span>
-                    </div>
-                    <span class="font-body-md text-on-surface">Fasilitas Umum & Desa</span>
-                </label>
-
-                <!-- Filter Item 4 -->
-                <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" checked value="PJU" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-[#d97706] focus:ring-[#d97706] accent-[#d97706]">
-                    <div class="w-8 h-8 rounded-full bg-[#d97706]/10 text-[#d97706] flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[16px]">lightbulb</span>
-                    </div>
-                    <span class="font-body-md text-on-surface">PJU Bambu (Penerangan)</span>
-                </label>
-
-                <!-- Filter Item 5 -->
-                <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/30 cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
-                    <input type="checkbox" checked value="Sampah" class="filter-checkbox w-5 h-5 rounded border-outline-variant text-[#059669] focus:ring-[#059669] accent-[#059669]">
-                    <div class="w-8 h-8 rounded-full bg-[#059669]/10 text-[#059669] flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[16px]">recycling</span>
-                    </div>
-                    <span class="font-body-md text-on-surface">Titik Pengelolaan Sampah</span>
-                </label>
+                @endforeach
             </div>
             
             <div class="mt-8 pt-6 border-t border-outline-variant/30">
@@ -77,7 +50,7 @@
                     <h4 class="font-label-md font-bold text-primary flex items-center gap-2 mb-2">
                         <span class="material-symbols-outlined text-[18px]">info</span> Status Integrasi
                     </h4>
-                    <p class="font-body-sm text-on-surface-variant">Peta ini menggunakan data spasial satelit resolusi tinggi. Fitur interaktif masih dalam mode pratinjau (dummy).</p>
+                    <p class="font-body-sm text-on-surface-variant">Peta interaktif ini dilengkapi dengan fitur pencarian lokasi dan mode lacak GPS untuk pengunjung secara langsung.</p>
                 </div>
             </div>
         </div>
@@ -89,59 +62,67 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         
+        <!-- Leaflet MarkerCluster CSS and JS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+        <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+        
         <!-- Map Container -->
         <div id="map" class="w-full h-full absolute inset-0 z-0"></div>
+
+        <!-- Custom Controls Overlay -->
+        <div class="absolute bottom-6 right-6 z-[400] flex flex-col gap-2">
+            <button id="btnLocate" class="bg-white text-primary p-3 rounded-full shadow-lg hover:bg-gray-50 transition-colors flex items-center justify-center" title="Lokasi Saya">
+                <span class="material-symbols-outlined">my_location</span>
+            </button>
+        </div>
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Initialize Map pointing to Desa Tulusbesar
-                var map = L.map('map').setView([-8.015775, 112.765763], 15);
+                var map = L.map('map', {zoomControl: false}).setView([-8.015775, 112.765763], 15);
                 
+                L.control.zoom({
+                    position: 'topright'
+                }).addTo(map);
+
                 // Add ArcGIS (Esri) Tile Layer
                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
                     maxZoom: 21,
                     maxNativeZoom: 18,
-                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ'
+                    attribution: 'Tiles &copy; Esri'
                 }).addTo(map);
 
-                // Initialize Layer Groups for filtering
-                var layerGroups = {
-                    'Wisata': L.layerGroup(),
-                    'Peternakan': L.layerGroup(),
-                    'Fasilitas Umum': L.layerGroup(),
-                    'PJU': L.layerGroup(),
-                    'Sampah': L.layerGroup()
-                };
+                // GeoJSON border removed based on user request
 
-                // Loop through GIS Features from database
+                // Initialize Layer Groups dynamically
+                var layerGroups = {};
+                var categoriesData = @json($categories);
+                categoriesData.forEach(function(cat) {
+                    layerGroups[cat.name] = L.markerClusterGroup({ chunkedLoading: true });
+                });
+
+                var allMarkers = [];
+
                 @if(isset($features) && count($features) > 0)
-                    // Helper function to get marker style based on category
-                    function getMarkerStyle(category) {
-                        switch(category) {
-                            case 'Wisata': return { bg: 'bg-primary', border: 'border-t-primary', icon: 'park' };
-                            case 'Peternakan': return { bg: 'bg-secondary', border: 'border-t-secondary', icon: 'pets' };
-                            case 'Fasilitas Umum': return { bg: 'bg-tertiary', border: 'border-t-tertiary', icon: 'account_balance' };
-                            case 'PJU': return { bg: 'bg-[#d97706]', border: 'border-t-[#d97706]', icon: 'lightbulb' };
-                            case 'Sampah': return { bg: 'bg-[#059669]', border: 'border-t-[#059669]', icon: 'recycling' };
-                            default: return { bg: 'bg-primary', border: 'border-t-primary', icon: 'location_on' };
-                        }
-                    }
-
                     @foreach($features as $feature)
-                        @if($feature->latitude && $feature->longitude)
+                        @if($feature->latitude && $feature->longitude && $feature->locationCategory)
                             var lat = parseFloat("{{ str_replace(',', '.', $feature->latitude) }}");
                             var lng = parseFloat("{{ str_replace(',', '.', $feature->longitude) }}");
                             var name = {!! json_encode($feature->name) !!};
-                            var category = {!! json_encode($feature->category) !!};
+                            var categoryName = {!! json_encode($feature->locationCategory->name) !!};
+                            var catColor = {!! json_encode($feature->locationCategory->color) !!};
+                            var catIcon = {!! json_encode($feature->locationCategory->icon) !!};
                             var desc = {!! json_encode($feature->description ?? '') !!};
+                            var shortUrl = {!! json_encode($feature->short_url ?? '') !!};
+                            var whatsapp = {!! json_encode($feature->whatsapp_number ?? '') !!};
                             
-                            var style = getMarkerStyle(category);
                             var iconHtml = `
                                 <div class="relative flex flex-col items-center">
-                                    <div class="${style.bg} text-white p-2 rounded-full shadow-lg relative z-10 border-2 border-white flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-[16px]">${style.icon}</span>
+                                    <div style="background-color: ${catColor}; border-color: white;" class="text-white p-2 rounded-full shadow-lg relative z-10 border-2 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[16px]">${catIcon}</span>
                                     </div>
-                                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] ${style.border} -mt-1 relative z-0"></div>
+                                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] -mt-1 relative z-0" style="border-top-color: ${catColor};"></div>
                                 </div>
                             `;
                             
@@ -153,42 +134,120 @@
                                 popupAnchor: [0, -46]
                             });
 
-                            var marker = L.marker([lat, lng], {icon: customIcon});
-                            marker.bindPopup(`
-                                <div class="font-body-sm">
-                                    <h4 class="font-bold text-base mb-1">${name}</h4>
-                                    <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-xs rounded-md mb-2">${category}</span>
-                                    <p class="text-sm mt-1">${desc}</p>
-                                </div>
-                            `);
+                            var marker = L.marker([lat, lng], {icon: customIcon, title: name});
+                            allMarkers.push({marker: marker, name: name, category: categoryName});
                             
-                            if (layerGroups[category]) {
-                                layerGroups[category].addLayer(marker);
-                            } else {
-                                // Default fallback if category doesn't strictly match
-                                marker.addTo(map);
+                            var popupContent = `
+                                <div class="font-sans w-64 flex flex-col gap-2 pt-1">
+                                    <div class="flex flex-col gap-1 border-b border-gray-100 pb-2">
+                                        <h4 class="font-bold text-lg leading-tight text-gray-900 m-0" style="margin: 0;">${name}</h4>
+                                        <div class="flex items-center gap-1.5 mt-0.5">
+                                            <span class="material-symbols-outlined text-[14px]" style="color: ${catColor}">${catIcon}</span>
+                                            <span class="text-xs font-semibold uppercase tracking-wide" style="color: ${catColor}">${categoryName}</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 leading-snug mt-1 mb-2 line-clamp-3">${desc ? desc.substring(0, 120) + (desc.length > 120 ? '...' : '') : '<i class="text-gray-400">Tidak ada deskripsi</i>'}</p>
+                                    
+                                    <div class="flex gap-2 w-full mt-1">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="color: white !important; text-decoration: none;" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-2 rounded-lg flex justify-center items-center gap-1 transition-all shadow-sm text-sm">
+                                            <span class="material-symbols-outlined text-[16px]">directions</span> Rute
+                                        </a>
+                                        ${whatsapp ? `
+                                        <a href="https://wa.me/${whatsapp}" target="_blank" style="color: white !important; text-decoration: none;" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-2 rounded-lg flex justify-center items-center gap-1 transition-all shadow-sm text-sm">
+                                            <span class="material-symbols-outlined text-[16px]">chat</span> Chat
+                                        </a>
+                                        ` : ''}
+                                        <a href="/wisata/${{!! json_encode($feature->slug ?? '') !!}}" style="color: white !important; text-decoration: none;" class="bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-3 rounded-lg flex justify-center items-center transition-all shadow-sm">
+                                            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            marker.bindPopup(popupContent);
+                            
+                            if (layerGroups[categoryName]) {
+                                layerGroups[categoryName].addLayer(marker);
                             }
                         @endif
                     @endforeach
                 @endif
 
-                // Handle Checkbox Toggles
+                // Handle Checkbox Toggles & Add Initial Layers
                 document.querySelectorAll('.filter-checkbox').forEach(function(checkbox) {
                     var category = checkbox.value;
-                    
-                    // Initial load state based on checkbox
                     if (checkbox.checked && layerGroups[category]) {
-                        layerGroups[category].addTo(map);
+                        map.addLayer(layerGroups[category]);
                     }
-
-                    // Change event
                     checkbox.addEventListener('change', function() {
                         if (this.checked) {
-                            layerGroups[category].addTo(map);
+                            map.addLayer(layerGroups[category]);
                         } else {
                             map.removeLayer(layerGroups[category]);
                         }
                     });
+                });
+
+                // Search Bar Logic
+                var searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', function(e) {
+                    var query = e.target.value.toLowerCase();
+                    
+                    // Clear all layers first
+                    for (var cat in layerGroups) {
+                        layerGroups[cat].clearLayers();
+                    }
+
+                    // Re-add markers that match the search (and whose category is checked)
+                    allMarkers.forEach(function(item) {
+                        var checkbox = document.querySelector(`.filter-checkbox[value="${item.category}"]`);
+                        if (checkbox && checkbox.checked && item.name.toLowerCase().includes(query)) {
+                            layerGroups[item.category].addLayer(item.marker);
+                        }
+                    });
+                });
+
+                // User Location (GPS Tracking)
+                var locateBtn = document.getElementById('btnLocate');
+                var userMarker = null;
+                var userCircle = null;
+
+                locateBtn.addEventListener('click', function() {
+                    locateBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span>';
+                    map.locate({setView: true, maxZoom: 16});
+                });
+
+                map.on('locationfound', function(e) {
+                    var radius = e.accuracy / 2;
+                    locateBtn.innerHTML = '<span class="material-symbols-outlined">my_location</span>';
+                    locateBtn.classList.add('bg-primary', 'text-white');
+                    locateBtn.classList.remove('bg-white', 'text-primary');
+
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                        map.removeLayer(userCircle);
+                    }
+
+                    var userIcon = L.divIcon({
+                        html: '<div class="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-md shadow-blue-500/50 relative"><div class="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-75"></div></div>',
+                        className: 'bg-transparent',
+                        iconSize: [16, 16],
+                        iconAnchor: [8, 8]
+                    });
+
+                    userMarker = L.marker(e.latlng, {icon: userIcon}).addTo(map)
+                        .bindPopup("Anda berada dalam radius " + radius.toFixed(0) + " meter dari titik ini.").openPopup();
+                    userCircle = L.circle(e.latlng, radius, {
+                        color: '#3b82f6',
+                        fillColor: '#3b82f6',
+                        fillOpacity: 0.15,
+                        weight: 1
+                    }).addTo(map);
+                });
+
+                map.on('locationerror', function(e) {
+                    locateBtn.innerHTML = '<span class="material-symbols-outlined">my_location</span>';
+                    alert(e.message);
                 });
             });
         </script>

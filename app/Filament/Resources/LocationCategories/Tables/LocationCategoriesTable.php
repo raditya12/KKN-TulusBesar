@@ -1,35 +1,35 @@
 <?php
 
-namespace App\Filament\Resources\VillageProfiles\Tables;
+namespace App\Filament\Resources\LocationCategories\Tables;
 
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class VillageProfilesTable
+class LocationCategoriesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('total_population')
-                    ->label('Total Penduduk')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('area_size')
-                    ->label('Luas Wilayah (Km2)')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('slug')
+                    ->searchable(),
+                TextColumn::make('icon')
+                    ->html()
+                    ->formatStateUsing(fn ($state) => '<span class="material-symbols-outlined">'.$state.'</span>')
+                    ->searchable(),
+                ColorColumn::make('color')
+                    ->searchable(),
                 TextColumn::make('created_at')
-                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label('Diperbarui Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -38,8 +38,7 @@ class VillageProfilesTable
                 //
             ])
             ->recordActions([
-                EditAction::make()->button(),
-                DeleteAction::make()->button(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

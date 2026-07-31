@@ -1,6 +1,7 @@
 <?php
-$img_dir = __DIR__ . '/public/images/dummy/';
-if (!is_dir($img_dir)) {
+
+$img_dir = __DIR__.'/public/images/dummy/';
+if (! is_dir($img_dir)) {
     mkdir($img_dir, 0777, true);
 }
 
@@ -20,13 +21,13 @@ $urls = [
     'tradisi2' => 'https://images.unsplash.com/photo-1511219983944-118bdcc4944d?q=80&w=1000&auto=format&fit=crop',
     'tradisi3' => 'https://images.unsplash.com/photo-1574676435345-3db5fbcf6e83?q=80&w=1000&auto=format&fit=crop',
     'umkm1' => 'https://images.unsplash.com/photo-1628187834571-0815eb00c735?q=80&w=400&auto=format&fit=crop',
-    'kades' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop'
+    'kades' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
 ];
 
 echo "Downloading images...\n";
 foreach ($urls as $name => $url) {
-    $file_path = $img_dir . $name . '.jpg';
-    if (!file_exists($file_path)) {
+    $file_path = $img_dir.$name.'.jpg';
+    if (! file_exists($file_path)) {
         // use curl for better reliability
         $ch = curl_init($url);
         $fp = fopen($file_path, 'wb');
@@ -44,23 +45,22 @@ foreach ($urls as $name => $url) {
 }
 
 // Now replace in all blade files
-$views_dir = __DIR__ . '/resources/views/pages/';
-$files = glob($views_dir . '*.blade.php');
+$views_dir = __DIR__.'/resources/views/pages/';
+$files = glob($views_dir.'*.blade.php');
 
 foreach ($files as $file) {
     $content = file_get_contents($file);
-    
+
     foreach ($urls as $name => $url) {
         // Convert to asset() syntax
         $asset_url = "{{ asset('images/dummy/$name.jpg') }}";
-        
+
         // Escape special chars in regex
         $safe_url = preg_quote($url, '/');
-        
-        $content = preg_replace('/' . $safe_url . '/', $asset_url, $content);
+
+        $content = preg_replace('/'.$safe_url.'/', $asset_url, $content);
     }
-    
+
     file_put_contents($file, $content);
-    echo "Updated links in " . basename($file) . "\n";
+    echo 'Updated links in '.basename($file)."\n";
 }
-?>
