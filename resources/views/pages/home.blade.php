@@ -340,34 +340,77 @@
 
     
 
-    <!-- WebGIS Preview Section -->
-    <section class="py-16 md:py-24 bg-surface-container-low relative">
-        <div class="max-w-screen-xl mx-auto px-container-margin">
-            <div class="text-center max-w-[48rem] mx-auto mb-xl space-y-md">
-                <h2 class="font-display-md text-4xl font-bold text-on-background">Peta Cerdas <span class="text-tertiary">Tulusbesar</span></h2>
-                <p class="font-body-md text-on-surface-variant text-lg">
-                    Sistem Informasi Geografis interaktif yang memetakan potensi wisata, UMKM, fasilitas umum, hingga infrastruktur desa secara akurat dan real-time.
-                </p>
-            </div>
-            
-            <div class="relative bg-surface-container-lowest rounded-3xl p-sm shadow-[0_20px_50px_rgba(74,43,29,0.1)] border border-outline-variant/30 overflow-hidden group">
-                <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent z-10 flex flex-col justify-end p-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <a href="#" class="self-center bg-primary text-on-primary font-label-md px-xl py-md rounded-xl transition-all duration-300 hover:scale-105 shadow-xl shadow-primary/30 flex items-center gap-sm">
-                        Buka WebGIS Penuh
-                        <span class="material-symbols-outlined">arrow_forward</span>
-                    </a>
-                </div>
-                <img src="{{ asset('images/dummy/webgis.jpg') }}" alt="WebGIS Preview" class="w-full h-[400px] md:h-[600px] object-cover rounded-[1.25rem] filter contrast-110 sepia-[0.2]">
+    <!-- Peta Cerdas / WebGIS Preview Section -->
+    <section class="py-16 md:py-24 bg-surface-container-low border-y border-outline-variant/20">
+        <div class="max-w-screen-xl mx-auto px-4 lg:px-container-margin">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 
-                <!-- Dummy UI Overlays to look like a map -->
-                <div class="absolute top-lg left-lg bg-surface-container-lowest/90 backdrop-blur-md p-md rounded-xl shadow-lg border border-outline-variant/30 hidden md:block">
-                    <div class="font-label-md font-bold mb-sm text-on-surface">Kategori Tersedia</div>
-                    <div class="space-y-xs">
-                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-primary-container"></span> Fasilitas Umum</div>
-                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-tertiary-container"></span> Situs Budaya</div>
-                        <div class="flex items-center gap-sm font-body-sm"><span class="w-3 h-3 rounded-full bg-secondary-container"></span> UMKM Desa</div>
+                <!-- Left: Maps Embed -->
+                <div class="w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-xl border border-outline-variant/30">
+                    <iframe 
+                        src="https://maps.google.com/maps?q=Desa%20Tulusbesar,%20Kec.%20Tumpang,%20Kabupaten%20Malang&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+
+                <!-- Right: Village Info & Buttons -->
+                <div class="space-y-8">
+                    <div>
+                        <h2 class="font-display-lg text-4xl md:text-5xl font-bold text-on-background mb-6 uppercase tracking-tight">
+                            Desa Tulusbesar
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4 text-on-surface-variant font-body-md">
+                                <span class="material-symbols-outlined mt-1 text-on-surface">location_on</span>
+                                <span>Kantor Desa Tulusbesar, Kec. Tumpang, Kabupaten Malang, Jawa Timur</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-on-surface-variant font-body-md">
+                                <span class="material-symbols-outlined text-on-surface">call</span>
+                                <span>(0341) -</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-on-surface-variant font-body-md">
+                                <span class="material-symbols-outlined text-on-surface">mail</span>
+                                <span>pemdes.tulusbesar@gmail.com</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-on-surface-variant font-body-md">
+                                <span class="material-symbols-outlined text-on-surface">language</span>
+                                <span>tulusbesar.desa.id</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-outline-variant/30">
+                        <div class="mb-6">
+                            <h3 class="font-headline-sm font-bold text-on-surface mb-3">Follow Us:</h3>
+                            <div class="flex gap-2">
+                                <a href="#" class="w-10 h-10 rounded-full bg-[#CD201F] text-white flex items-center justify-center hover:opacity-90 transition-opacity shadow-sm">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"></path></svg>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:opacity-90 transition-opacity shadow-sm">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path></svg>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888] text-white flex items-center justify-center hover:opacity-90 transition-opacity shadow-sm">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <!-- Button WebGIS -->
+                            <a href="{{ route('peta') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-on-primary font-label-md font-bold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                                <span class="material-symbols-outlined text-[20px]">explore</span>
+                                Buka Peta WebGIS
+                            </a>
+                            <!-- Button Maps -->
+                            <a href="https://www.google.com/maps/place/Tulusbesar,+Kec.+Tumpang,+Kabupaten+Malang,+Jawa+Timur/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-surface-container border border-outline-variant/50 text-on-surface font-label-md font-bold hover:bg-surface-variant transition-all hover:border-outline">
+                                <span class="material-symbols-outlined text-[20px]">map</span>
+                                Kunjungi Desa Tulusbesar
+                            </a>
+                        </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </section>
