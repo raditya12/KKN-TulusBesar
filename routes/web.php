@@ -5,6 +5,7 @@ use App\Models\NewsArticle;
 use App\Models\Umkm;
 use App\Models\VillageHistory;
 use App\Models\VillageProfile;
+use App\Models\VillageOfficial;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,15 +34,11 @@ Route::get('/', function () {
         $allImages = [asset('images/dummy/profil.jpg')];
     }
 
-    return view('pages.home', compact('news', 'umkms', 'profile', 'allImages'));
-})->name('home');
-
-Route::get('/profil', function () {
-    $profile = VillageProfile::first();
     $histories = VillageHistory::orderBy('order_sequence')->orderBy('year')->get();
+    $officials = VillageOfficial::orderBy('order')->get();
 
-    return view('pages.profil', compact('profile', 'histories'));
-})->name('profil');
+    return view('pages.home', compact('news', 'umkms', 'profile', 'allImages', 'histories', 'officials'));
+})->name('home');
 
 Route::get('/wisata', function () {
     $sites = CulturalSite::where('status', 'active')->latest()->get();
@@ -68,18 +65,21 @@ Route::get('/umkm', function () {
 
 Route::get('/berita/{slug}', function ($slug) {
     $berita = NewsArticle::where('slug', $slug)->firstOrFail();
+    $recommendations = NewsArticle::where('id', '!=', $berita->id)->latest('published_at')->take(4)->get();
 
-    return view('pages.berita-show', compact('berita'));
+    return view('pages.berita-show', compact('berita', 'recommendations'));
 })->name('berita.show');
 
 Route::get('/umkm/{slug}', function ($slug) {
     $umkm = Umkm::where('slug', $slug)->firstOrFail();
+    $recommendations = Umkm::where('id', '!=', $umkm->id)->latest()->take(4)->get();
 
-    return view('pages.umkm-show', compact('umkm'));
+    return view('pages.umkm-show', compact('umkm', 'recommendations'));
 })->name('umkm.show');
 
 Route::get('/wisata/{slug}', function ($slug) {
     $wisata = CulturalSite::where('slug', $slug)->firstOrFail();
+    $recommendations = CulturalSite::where('id', '!=', $wisata->id)->where('status', 'active')->latest()->take(4)->get();
 
-    return view('pages.wisata-show', compact('wisata'));
+    return view('pages.wisata-show', compact('wisata', 'recommendations'));
 })->name('wisata.show');
