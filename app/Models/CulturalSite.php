@@ -15,6 +15,7 @@ class CulturalSite extends Model
 
     protected $fillable = [
         'name',
+        'category',
         'slug',
         'description',
         'latitude',

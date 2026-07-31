@@ -85,6 +85,9 @@
     </section>
 
     <!-- Navigation / Filter Bar -->
+    @php
+        $customCategories = $sites->pluck('category')->unique()->filter(fn($c) => !in_array($c, ['sejarah', 'budaya']));
+    @endphp
     <div class="bg-surface-container-lowest border-b border-outline-variant/30 sticky top-0 z-40 shadow-sm">
         <div class="max-w-screen-xl mx-auto px-4 md:px-container-margin py-4">
             <div class="flex overflow-x-auto custom-scrollbar gap-2 md:gap-4 md:justify-center items-center pb-2 md:pb-0">
@@ -103,6 +106,14 @@
                         :class="activeFilter === 'budaya' ? 'bg-tertiary text-on-primary shadow-md' : 'bg-surface-container border border-outline-variant/50 text-on-surface-variant hover:bg-surface-variant'">
                     Seni & Tradisi
                 </button>
+                @foreach($customCategories as $cat)
+                @php $catSlug = Str::slug($cat); @endphp
+                <button @click="activeFilter = '{{ $catSlug }}'" 
+                        class="px-6 py-2 rounded-full font-label-md transition-all shrink-0 whitespace-nowrap"
+                        :class="activeFilter === '{{ $catSlug }}' ? 'bg-primary text-on-primary shadow-md' : 'bg-surface-container border border-outline-variant/50 text-on-surface-variant hover:bg-surface-variant'">
+                    {{ $cat }}
+                </button>
+                @endforeach
             </div>
         </div>
     </div>
@@ -123,7 +134,7 @@
 
             <!-- Grid Cards -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                @foreach($sites as $site)
+                @foreach($sites->where('category', 'sejarah') as $site)
                 <!-- Card -->
                 <div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-outline-variant/30 group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col relative">
                     <!-- Smart QR Guide Label -->
@@ -165,89 +176,103 @@
             </div>
 
             <div class="space-y-16 md:space-y-24">
-                
-                <!-- Zig-zag Item 1 -->
-                <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+                @forelse($sites->where('category', 'budaya') as $index => $site)
+                <!-- Zig-zag Item -->
+                <div class="flex flex-col {{ $loop->even ? 'md:flex-row-reverse' : 'md:flex-row' }} items-center gap-8 md:gap-16">
                     <div class="w-full md:w-1/2">
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl group">
-                            <div class="absolute inset-0 bg-tertiary/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-                            <img src="{{ asset('images/dummy/tradisi1.jpg') }}" alt="Grebeg Suro" class="w-full h-[300px] md:h-[400px] object-cover transform transition-transform duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 {{ $loop->even ? 'bg-secondary/10' : 'bg-tertiary/10' }} group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+                            <img src="{{ empty($site->image_path) ? asset('images/dummy/tradisi1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : asset('storage/' . $site->image_path)) }}" alt="{{ $site->name }}" class="w-full h-[300px] md:h-[400px] object-cover transform transition-transform duration-700 group-hover:scale-105">
                             
-                            <div class="absolute bottom-6 left-6 z-20 bg-surface-container-lowest p-4 rounded-2xl shadow-lg border border-outline-variant/30 flex items-center gap-4">
+                            <div class="absolute bottom-6 {{ $loop->even ? 'right-6' : 'left-6' }} z-20 bg-surface-container-lowest p-4 rounded-2xl shadow-lg border border-outline-variant/30 flex items-center gap-4">
+                                @if($loop->even)
+                                <div class="text-right">
+                                    <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Seni & Budaya</div>
+                                    <div class="font-headline-md font-bold text-on-surface">Kearifan Lokal</div>
+                                </div>
+                                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined">theater_comedy</span>
+                                </div>
+                                @else
                                 <div class="w-12 h-12 bg-tertiary/10 text-tertiary rounded-full flex items-center justify-center">
                                     <span class="material-symbols-outlined">celebration</span>
                                 </div>
                                 <div>
-                                    <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Ritual Tahunan</div>
-                                    <div class="font-headline-md font-bold text-on-surface">Bulan Suro</div>
+                                    <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Seni & Budaya</div>
+                                    <div class="font-headline-md font-bold text-on-surface">Kearifan Lokal</div>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                     <div class="w-full md:w-1/2 space-y-4">
-                        <h3 class="font-display-md text-3xl font-bold text-on-background text-tertiary">Ritual Adat & Seni Keagamaan</h3>
-                        <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                            Ritual tahunan setiap bulan Suro yang menjadi puncak rasa syukur masyarakat desa, selamatan desa, hingga adat keagamaan seperti Albanjari dan Terbang Jidor. Tradisi ini melibatkan seluruh elemen warga untuk memanjatkan doa bersama.
+                        <h3 class="font-display-md text-3xl font-bold text-on-background {{ $loop->even ? 'text-secondary' : 'text-tertiary' }}">{{ $site->name }}</h3>
+                        <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify line-clamp-4">
+                            {!! strip_tags($site->description) !!}
                         </p>
+                        <a href="{{ route('wisata.show', $site->slug) }}" class="inline-flex items-center gap-2 mt-4 font-label-md text-primary hover:text-primary-fixed-dim transition-colors">
+                            Baca Selengkapnya <span class="material-symbols-outlined text-[18px]">arrow_right_alt</span>
+                        </a>
                     </div>
                 </div>
-
-                <!-- Zig-zag Item 2 (Reversed) -->
-                <div class="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
-                    <div class="w-full md:w-1/2">
-                        <div class="relative rounded-3xl overflow-hidden shadow-2xl group">
-                            <div class="absolute inset-0 bg-secondary/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-                            <img src="{{ asset('images/dummy/tradisi2.jpg') }}" alt="Tradisi Daur Hidup" class="w-full h-[300px] md:h-[400px] object-cover transform transition-transform duration-700 group-hover:scale-105 filter sepia-[0.2]">
-                            
-                            <div class="absolute bottom-6 right-6 z-20 bg-surface-container-lowest p-4 rounded-2xl shadow-lg border border-outline-variant/30 flex items-center gap-4">
-                                <div class="text-right">
-                                    <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Keagamaan</div>
-                                    <div class="font-headline-md font-bold text-on-surface">Akulturasi</div>
-                                </div>
-                                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-full flex items-center justify-center">
-                                    <span class="material-symbols-outlined">mosque</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-1/2 space-y-4">
-                        <h3 class="font-display-md text-3xl font-bold text-on-background text-secondary">Tradisi Daur Hidup & Keagamaan</h3>
-                        <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                            Sebuah bukti indah dari akulturasi budaya Islam dan Jawa yang sangat kental. Masyarakat Tulusbesar senantiasa menjaga keutuhan religiusitas melalui rangkaian tradisi Nyadran (ziarah leluhur), Mithoni (syukuran tujuh bulanan), dan Tahlilan rutin di pelosok RT.
-                        </p>
-                    </div>
+                @empty
+                <div class="text-center py-12 text-on-surface-variant font-body-md">
+                    Belum ada data Seni & Tradisi yang ditambahkan.
                 </div>
-
-                <!-- Zig-zag Item 3 -->
-                <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
-                    <div class="w-full md:w-1/2">
-                        <div class="relative rounded-3xl overflow-hidden shadow-2xl group">
-                            <div class="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-                            <img src="{{ asset('images/dummy/tradisi3.jpg') }}" alt="Bantengan" class="w-full h-[300px] md:h-[400px] object-cover transform transition-transform duration-700 group-hover:scale-105 filter contrast-125">
-                            
-                            <div class="absolute bottom-6 left-6 z-20 bg-surface-container-lowest p-4 rounded-2xl shadow-lg border border-outline-variant/30 flex items-center gap-4">
-                                <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center">
-                                    <span class="material-symbols-outlined">theater_comedy</span>
-                                </div>
-                                <div>
-                                    <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Identitas Sosial</div>
-                                    <div class="font-headline-md font-bold text-on-surface">Seni Rakyat</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-1/2 space-y-4">
-                        <h3 class="font-display-md text-3xl font-bold text-on-background text-primary">Kesenian Tradisional & Modern</h3>
-                        <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                            Desa Tulusbesar adalah desa binaan Wisata Seni Budaya. Terdapat beragam kesenian seperti Wayang Kulit, Karawitan, Kuda Lumping (Jaranan), Wayang Topeng Malangan, hingga kesenian modern. Pertunjukan sering digelar di Panggung Terbuka (Open Stage) dan Padepokan Seni Mangun Dharmo.
-                        </p>
-                    </div>
-                </div>
-
+                @endforelse
             </div>
         </div>
     </section>
 
+
+    <!-- 4. Dynamic Categories (Custom Categories) -->
+    @foreach($customCategories as $cat)
+    @php $catSlug = Str::slug($cat); @endphp
+    <section x-show="activeFilter === 'semua' || activeFilter === '{{ $catSlug }}'" x-transition.opacity.duration.500ms class="py-16 md:py-24 bg-background border-t border-outline-variant/20">
+        <div class="max-w-screen-xl mx-auto px-4 md:px-container-margin">
+            
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[24px]">explore</span>
+                </div>
+                <div>
+                    <h2 class="font-display-md text-3xl font-bold text-on-background">{{ $cat }}</h2>
+                    <p class="font-body-sm text-on-surface-variant mt-1">Eksplorasi destinasi dan kekayaan desa untuk kategori {{ $cat }}.</p>
+                </div>
+            </div>
+
+            <!-- Grid Cards -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                @forelse($sites->where('category', $cat) as $site)
+                <!-- Card -->
+                <div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-outline-variant/30 group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col relative">
+                    <div class="relative h-64 overflow-hidden">
+                        <div class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-500 z-10 mix-blend-multiply"></div>
+                        <img src="{{ empty($site->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : asset('storage/' . $site->image_path)) }}" alt="{{ $site->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.3]">
+                    </div>
+                    
+                    <div class="p-6 md:p-8 flex-grow flex flex-col bg-surface-container-lowest relative z-20 -mt-6 mx-4 rounded-2xl border border-outline-variant/20 shadow-md">
+                        <h3 class="font-headline-md text-xl font-bold text-on-surface mb-2">{{ $site->name }}</h3>
+                        @if(!empty($site->latitude) && !empty($site->longitude))
+                        <div class="text-secondary font-label-sm mb-4 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">location_on</span> Koordinat: {{ $site->latitude }}, {{ $site->longitude }}
+                        </div>
+                        @endif
+                        <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-4">{!! strip_tags($site->description) !!}</p>
+                        <a href="{{ route('wisata.show', $site->slug) }}" class="w-full mt-auto bg-primary/5 hover:bg-primary text-primary hover:text-on-primary font-label-md py-3 rounded-xl transition-colors border border-primary/20 hover:border-primary flex items-center justify-center gap-2">
+                            Selengkapnya <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+                @empty
+                <div class="col-span-full text-center py-8 text-on-surface-variant font-body-md">
+                    Belum ada data untuk kategori ini.
+                </div>
+                @endforelse
+            </div>
+        </div>
+    </section>
+    @endforeach
 
     <!-- 5. CTA (Call-to-Action) ke WebGIS -->
     <section class="py-16 md:py-20 bg-primary relative overflow-hidden">

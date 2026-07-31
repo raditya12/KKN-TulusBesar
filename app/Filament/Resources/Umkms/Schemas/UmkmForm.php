@@ -20,6 +20,7 @@ class UmkmForm
                 Grid::make(['default' => 1, 'md' => 3])->schema([
                     Section::make('Informasi Usaha')
                         ->description('Data profil dan kategori UMKM.')
+                        ->columns(2)
                         ->schema([
                             TextInput::make('name')
                                 ->label('Nama Usaha')
@@ -33,7 +34,8 @@ class UmkmForm
                                 ->required(),
                             TextInput::make('category')
                                 ->label('Kategori Usaha')
-                                ->helperText('Contoh: Kuliner, Kriya, Pertanian.'),
+                                ->helperText('Contoh: Kuliner, Kriya, Pertanian.')
+                                ->columnSpanFull(),
                             RichEditor::make('description')
                                 ->label('Deskripsi')
                                 ->helperText('Ceritakan lengkap tentang usaha ini beserta keunggulannya.')

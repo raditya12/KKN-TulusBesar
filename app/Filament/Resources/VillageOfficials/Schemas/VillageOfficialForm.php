@@ -12,22 +12,28 @@ class VillageOfficialForm
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->label('Nama Lengkap')
-                    ->required(),
-                TextInput::make('position')
-                    ->label('Jabatan')
-                    ->required(),
-                FileUpload::make('image_path')
-                    ->label('Foto Profil')
-                    ->directory('officials')
-                    ->image(),
-                TextInput::make('order')
-                    ->label('Urutan Tampil')
-                    ->helperText('Angka lebih kecil akan tampil lebih awal (contoh: 1 untuk Kades)')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
+                \Filament\Schemas\Components\Section::make('Informasi Perangkat Desa')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Nama Lengkap')
+                            ->required(),
+                        TextInput::make('position')
+                            ->label('Jabatan')
+                            ->required(),
+                        TextInput::make('order')
+                            ->label('Urutan Tampil')
+                            ->helperText('Angka lebih kecil akan tampil lebih awal (contoh: 1 untuk Kades)')
+                            ->required()
+                            ->numeric()
+                            ->default(0)
+                            ->columnSpanFull(),
+                        FileUpload::make('image_path')
+                            ->label('Foto Profil')
+                            ->directory('officials')
+                            ->image()
+                            ->columnSpanFull(),
+                    ])
             ]);
     }
 }

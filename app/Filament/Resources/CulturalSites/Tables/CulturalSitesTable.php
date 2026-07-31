@@ -35,6 +35,18 @@ class CulturalSitesTable
                             ->weight('bold')
                             ->size('lg')
                             ->searchable(),
+                        TextColumn::make('category')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'sejarah' => 'primary',
+                                'budaya' => 'warning',
+                                default => 'gray',
+                            })
+                            ->formatStateUsing(fn (string $state): string => match ($state) {
+                                'sejarah' => 'Sejarah & Religi',
+                                'budaya' => 'Seni & Tradisi',
+                                default => $state,
+                            }),
                         TextColumn::make('status')
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
@@ -46,7 +58,23 @@ class CulturalSitesTable
                 ]),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\SelectFilter::make('category')
+                    ->label('Kategori')
+                    ->options(function () {
+                        $defaults = [
+                            'sejarah' => 'Sejarah & Religi',
+                            'budaya'  => 'Seni & Tradisi',
+                        ];
+                        $existing = \App\Models\CulturalSite::query()
+                            ->whereNotNull('category')
+                            ->distinct()
+                            ->pluck('category', 'category')
+                            ->toArray();
+                        
+                        unset($existing['sejarah'], $existing['budaya']);
+                        
+                        return $defaults + $existing;
+                    }),
             ])
             ->recordActions([
                 EditAction::make()->button(),

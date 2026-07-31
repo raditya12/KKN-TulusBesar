@@ -21,6 +21,7 @@ class NewsArticleForm
                 Grid::make(['default' => 1, 'md' => 3])->schema([
                     Section::make('Konten Berita')
                         ->description('Masukkan judul dan isi berita utama.')
+                        ->columns(2)
                         ->schema([
                             TextInput::make('title')
                                 ->label('Judul Berita')

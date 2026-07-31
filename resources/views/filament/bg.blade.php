@@ -68,8 +68,12 @@
         box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5) !important;
     }
 
-    /* Full width for page wrapper */
-    .fi-page {
+    /* Full width for page wrapper — override Filament default max-w-7xl */
+    .fi-main {
+        max-width: 100% !important;
+    }
+
+    .fi-page, .fi-main-ctn {
         width: 100% !important;
         max-width: 100% !important;
     }

@@ -36,6 +36,7 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::hex('#8C5A35'),
                 'gray' => Color::Stone,
             ])
+            ->maxContentWidth('full')
             ->topNavigation()
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
