@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\GisFeatures\Schemas;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
@@ -14,38 +15,50 @@ class GisFeatureForm
     {
         return $schema
             ->components([
-                Grid::make(3)->schema([
+                Grid::make(1)->schema([
                     Section::make('Informasi Fasilitas')
                         ->description('Data fasilitas umum atau titik penting.')
                         ->schema([
-                            TextInput::make('name')
-                                ->label('Nama Titik Lokasi')
-                                ->helperText('Contoh: Tiang Listrik PJU RT 01.')
-                                ->required(),
-                            Select::make('category')
-                                ->label('Kategori')
-                                ->options([
-                                    'PJU' => 'PJU (Penerangan Jalan)',
-                                    'Sampah' => 'Tempat Sampah',
-                                    'Peternakan' => 'Peternakan',
-                                    'Fasilitas Umum' => 'Fasilitas Umum',
-                                ])
-                                ->required(),
+                            Grid::make(2)->schema([
+                                TextInput::make('name')
+                                    ->label('Nama Titik Lokasi')
+                                    ->helperText('Contoh: Tiang Listrik PJU RT 01.')
+                                    ->required(),
+                                Select::make('category')
+                                    ->label('Kategori')
+                                    ->options([
+                                        'PJU' => 'PJU (Penerangan Jalan)',
+                                        'Sampah' => 'Tempat Sampah',
+                                        'Peternakan' => 'Peternakan',
+                                        'Fasilitas Umum' => 'Fasilitas Umum',
+                                    ])
+                                    ->required(),
+                            ]),
                             Textarea::make('description')
                                 ->label('Keterangan Singkat')
                                 ->columnSpanFull(),
-                        ])->columnSpan(2),
+                        ]),
 
                     Section::make('Titik Koordinat')
                         ->description('Data spasial lokasi.')
                         ->schema([
-                            TextInput::make('latitude')
-                                ->label('Garis Lintang (Latitude)')
-                                ->numeric(),
-                            TextInput::make('longitude')
-                                ->label('Garis Bujur (Longitude)')
-                                ->numeric(),
-                        ])->columnSpan(1),
+                            \Filament\Forms\Components\Placeholder::make('map_preview')
+                                ->hiddenLabel()
+                                ->content(view('filament.forms.components.map-preview'))
+                                ->columnSpanFull(),
+                            Grid::make(2)->schema([
+                                TextInput::make('latitude')
+                                    ->label('Garis Lintang (Latitude)')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->helperText('Terisi otomatis dari peta.'),
+                                TextInput::make('longitude')
+                                    ->label('Garis Bujur (Longitude)')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->helperText('Terisi otomatis dari peta.'),
+                            ]),
+                        ]),
                 ]),
             ]);
     }
