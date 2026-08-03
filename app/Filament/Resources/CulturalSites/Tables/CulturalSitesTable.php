@@ -79,7 +79,7 @@ class CulturalSitesTable
             ->recordActions([
                 EditAction::make()->button(),
                 DeleteAction::make()->button(),
-                \Filament\Tables\Actions\Action::make('qr_code')
+                Action::make('qr_code')
                     ->label('QR Code')
                     ->icon('heroicon-o-qr-code')
                     ->color('info')
