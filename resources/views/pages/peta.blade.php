@@ -176,6 +176,7 @@
                     @endforeach
                 @endif
 
+
                 // Loop through Cultural Sites
                 @if(isset($culturalSites) && count($culturalSites) > 0)
                     @foreach($culturalSites as $site)
@@ -228,6 +229,49 @@
                     @endforeach
                 @endif
 
+                // 2. Tampilkan Batas Wilayah Desa Tulusbesar (Sesuai Adaptasi Peta Referensi)
+                var boundaryLayer = L.layerGroup().addTo(map);
+                
+                // Fetch GeoJSON dari file statis yang telah dibuat khusus untuk Desa Tulusbesar
+                var geojsonUrl = '/geojson/batas_desa.geojson?v=' + new Date().getTime();
+                
+                fetch(geojsonUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error("File GeoJSON tidak ditemukan");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if(data) {
+                            var geojsonFeature = L.geoJSON(data, {
+                                style: {
+                                    color: '#ef4444', // Garis batas merah persis seperti di Google Maps
+                                    weight: 4,        // Lebih tebal agar terlihat jelas
+                                    opacity: 0.9,
+                                    dashArray: '8, 8',// Garis putus-putus (dotted line style)
+                                    fillColor: '#ef4444',
+                                    fillOpacity: 0.05 // Transparan tipis
+                                },
+                                onEachFeature: function(feature, layer) {
+                                    layer.bindPopup(`<div class="font-body-sm">
+                                        <h4 class="font-bold text-base mb-1">Batas Wilayah Administratif</h4>
+                                        <p class="text-sm">Desa Tulusbesar, Kec. Tumpang</p>
+                                        <p class="text-xs text-on-surface-variant mt-1">Sesuai referensi peta desa</p>
+                                    </div>`);
+                                }
+                            }).addTo(boundaryLayer);
+                            
+                            // Arahkan pandangan peta pas di tengah batas wilayah
+                            map.fitBounds(geojsonFeature.getBounds(), { padding: [50, 50] });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Gagal memuat batas wilayah: ", error);
+                    });
+
+                // Tambahkan checkbox filter batas wilayah jika diinginkan
+                // layerGroups['Batas Wilayah'] = boundaryLayer;
+
+
                 // Handle Checkbox Toggles
                 document.querySelectorAll('.filter-checkbox').forEach(function(checkbox) {
                     var category = checkbox.value;
@@ -250,12 +294,5 @@
         </script>
     </main>
 </div>
-@endsectionCMS & Workflow Optimizations:
-- Expanded `Create` and `Edit` form containers to utilize full screen width for better admin readability.
-- Implemented automatic redirection to the data table index upon successful data creation and updates.
-- Calibrated default map picker coordinates to precisely target the center of Desa Tulusbesar (-8.0093, 112.7666).
-WebGIS Interface Enhancements:
-- [Fix] Resolved a JavaScript scope error (`getMarkerStyle` undefined) that prevented map rendering when the GIS database was empty.
-- Redesigned map popups with dynamic text truncation (max 100/120 chars) and "Read More" links to keep the UI compact.
-- Fixed button color contrast issues to properly match the application's color palette.
-- Integrated a dynamic "Rute ke Lokasi" button that generates a Google Maps route directly from the user's current physical location.
+@endsection
+
