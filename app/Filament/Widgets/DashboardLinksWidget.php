@@ -31,12 +31,7 @@ class DashboardLinksWidget extends Widget
                     'url' => \App\Filament\Resources\CulturalSites\CulturalSiteResource::getUrl(),
                     'description' => 'Kelola informasi destinasi wisata dan situs budaya.',
                 ],
-                [
-                    'name' => 'Garis Waktu Sejarah',
-                    'icon' => 'heroicon-o-clock',
-                    'url' => \App\Filament\Resources\VillageHistories\VillageHistoryResource::getUrl(),
-                    'description' => 'Kelola rentetan sejarah desa Tulusbesar.',
-                ],
+
                 [
                     'name' => 'Profil Desa',
                     'icon' => 'heroicon-o-building-library',
