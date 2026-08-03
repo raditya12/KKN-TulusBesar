@@ -19,6 +19,16 @@ class EditCulturalSite extends EditRecord
 
     public function getMaxContentWidth(): \Filament\Support\Enums\Width | string | null
     {
-        return \Filament\Support\Enums\Width::Full;
+        return 'full';
+    }
+
+    public function hasFullWidthFormActions(): bool
+    {
+        return true;
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }

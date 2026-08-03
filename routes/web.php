@@ -47,7 +47,11 @@ Route::get('/wisata', function () {
 
 Route::get('/peta', function () {
     $features = \App\Models\GisFeature::all();
-    return view('pages.peta', compact('features'));
+    $culturalSites = \App\Models\CulturalSite::whereNotNull('latitude')
+                        ->whereNotNull('longitude')
+                        ->where('status', 'active')
+                        ->get();
+    return view('pages.peta', compact('features', 'culturalSites'));
 })->name('peta');
 
 Route::get('/publikasi', function () {

@@ -95,7 +95,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Initialize Map pointing to Desa Tulusbesar
-                var map = L.map('map').setView([-8.015775, 112.765763], 15);
+                var map = L.map('map').setView([-8.0093, 112.7666], 15);
                 
                 // Add ArcGIS (Esri) Tile Layer
                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
@@ -113,27 +113,28 @@
                     'Sampah': L.layerGroup()
                 };
 
+                // Helper function to get marker style based on category
+                function getMarkerStyle(category) {
+                    switch(category) {
+                        case 'Wisata': return { bg: 'bg-primary', border: 'border-t-primary', icon: 'park' };
+                        case 'Peternakan': return { bg: 'bg-secondary', border: 'border-t-secondary', icon: 'pets' };
+                        case 'Fasilitas Umum': return { bg: 'bg-tertiary', border: 'border-t-tertiary', icon: 'account_balance' };
+                        case 'PJU': return { bg: 'bg-[#d97706]', border: 'border-t-[#d97706]', icon: 'lightbulb' };
+                        case 'Sampah': return { bg: 'bg-[#059669]', border: 'border-t-[#059669]', icon: 'recycling' };
+                        default: return { bg: 'bg-primary', border: 'border-t-primary', icon: 'location_on' };
+                    }
+                }
+
                 // Loop through GIS Features from database
                 @if(isset($features) && count($features) > 0)
-                    // Helper function to get marker style based on category
-                    function getMarkerStyle(category) {
-                        switch(category) {
-                            case 'Wisata': return { bg: 'bg-primary', border: 'border-t-primary', icon: 'park' };
-                            case 'Peternakan': return { bg: 'bg-secondary', border: 'border-t-secondary', icon: 'pets' };
-                            case 'Fasilitas Umum': return { bg: 'bg-tertiary', border: 'border-t-tertiary', icon: 'account_balance' };
-                            case 'PJU': return { bg: 'bg-[#d97706]', border: 'border-t-[#d97706]', icon: 'lightbulb' };
-                            case 'Sampah': return { bg: 'bg-[#059669]', border: 'border-t-[#059669]', icon: 'recycling' };
-                            default: return { bg: 'bg-primary', border: 'border-t-primary', icon: 'location_on' };
-                        }
-                    }
-
                     @foreach($features as $feature)
                         @if($feature->latitude && $feature->longitude)
                             var lat = parseFloat("{{ str_replace(',', '.', $feature->latitude) }}");
                             var lng = parseFloat("{{ str_replace(',', '.', $feature->longitude) }}");
                             var name = {!! json_encode($feature->name) !!};
                             var category = {!! json_encode($feature->category) !!};
-                            var desc = {!! json_encode($feature->description ?? '') !!};
+                            var rawDesc = {!! json_encode(strip_tags($feature->description ?? '')) !!};
+                            var desc = rawDesc.length > 120 ? rawDesc.substring(0, 120) + '...' : rawDesc;
                             
                             var style = getMarkerStyle(category);
                             var iconHtml = `
@@ -155,10 +156,13 @@
 
                             var marker = L.marker([lat, lng], {icon: customIcon});
                             marker.bindPopup(`
-                                <div class="font-body-sm">
-                                    <h4 class="font-bold text-base mb-1">${name}</h4>
-                                    <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-xs rounded-md mb-2">${category}</span>
-                                    <p class="text-sm mt-1">${desc}</p>
+                                <div class="font-body-sm min-w-[220px] max-w-[280px]">
+                                    <h4 class="font-bold text-base mb-1 text-on-surface">${name}</h4>
+                                    <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] uppercase tracking-wider font-bold rounded-md mb-2">${category}</span>
+                                    <p class="text-sm mt-1 mb-4 text-on-surface-variant leading-relaxed">${desc}</p>
+                                    <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="inline-flex items-center justify-center gap-1 bg-primary !text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-primary/90 transition-colors w-full text-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[16px]">directions</span> Rute ke Lokasi
+                                    </a>
                                 </div>
                             `);
                             
@@ -169,6 +173,58 @@
                                 marker.addTo(map);
                             }
                         @endif
+                    @endforeach
+                @endif
+
+                // Loop through Cultural Sites
+                @if(isset($culturalSites) && count($culturalSites) > 0)
+                    @foreach($culturalSites as $site)
+                        var lat = parseFloat("{{ str_replace(',', '.', $site->latitude) }}");
+                        var lng = parseFloat("{{ str_replace(',', '.', $site->longitude) }}");
+                        var name = {!! json_encode($site->name) !!};
+                        var url = "{{ route('wisata.show', $site->slug) }}";
+                        var rawDesc = {!! json_encode(strip_tags($site->description)) !!};
+                        var desc = rawDesc.length > 100 
+                                    ? rawDesc.substring(0, 100) + '... <a href="' + url + '" class="!text-primary font-bold hover:underline">Baca selengkapnya</a>' 
+                                    : rawDesc;
+                        
+                        // force category 'Wisata' for layer group
+                        var style = getMarkerStyle('Wisata');
+                        var iconHtml = `
+                            <div class="relative flex flex-col items-center">
+                                <div class="${style.bg} text-white p-2 rounded-full shadow-lg relative z-10 border-2 border-white flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[16px]">${style.icon}</span>
+                                </div>
+                                <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] ${style.border} -mt-1 relative z-0"></div>
+                            </div>
+                        `;
+                        
+                        var customIcon = L.divIcon({
+                            html: iconHtml,
+                            className: 'bg-transparent',
+                            iconSize: [36, 46],
+                            iconAnchor: [18, 46],
+                            popupAnchor: [0, -46]
+                        });
+
+                        var marker = L.marker([lat, lng], {icon: customIcon});
+                        marker.bindPopup(`
+                            <div class="font-body-sm min-w-[220px] max-w-[280px]">
+                                <h4 class="font-bold text-base mb-1 text-on-surface">${name}</h4>
+                                <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] uppercase tracking-wider font-bold rounded-md mb-2">Situs Budaya</span>
+                                <p class="text-sm mt-1 mb-4 text-on-surface-variant leading-relaxed">${desc}</p>
+                                <div class="flex flex-col gap-2">
+                                    <a href="${url}" class="inline-flex items-center justify-center bg-primary !text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-primary/90 transition-colors w-full text-center shadow-sm">Lihat Detail</a>
+                                    <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="inline-flex items-center justify-center gap-1 bg-surface-variant !text-primary border border-primary/20 px-3 py-2 rounded-lg text-xs font-bold hover:bg-surface-variant/80 transition-colors w-full text-center">
+                                        <span class="material-symbols-outlined text-[16px]">directions</span> Rute via Google Maps
+                                    </a>
+                                </div>
+                            </div>
+                        `);
+                        
+                        if (layerGroups['Wisata']) {
+                            layerGroups['Wisata'].addLayer(marker);
+                        }
                     @endforeach
                 @endif
 
@@ -194,4 +250,12 @@
         </script>
     </main>
 </div>
-@endsection
+@endsectionCMS & Workflow Optimizations:
+- Expanded `Create` and `Edit` form containers to utilize full screen width for better admin readability.
+- Implemented automatic redirection to the data table index upon successful data creation and updates.
+- Calibrated default map picker coordinates to precisely target the center of Desa Tulusbesar (-8.0093, 112.7666).
+WebGIS Interface Enhancements:
+- [Fix] Resolved a JavaScript scope error (`getMarkerStyle` undefined) that prevented map rendering when the GIS database was empty.
+- Redesigned map popups with dynamic text truncation (max 100/120 chars) and "Read More" links to keep the UI compact.
+- Fixed button color contrast issues to properly match the application's color palette.
+- Integrated a dynamic "Rute ke Lokasi" button that generates a Google Maps route directly from the user's current physical location.
