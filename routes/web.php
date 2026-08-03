@@ -45,6 +45,10 @@ Route::get('/wisata', function () {
     return view('pages.wisata', compact('sites'));
 })->name('wisata');
 
+Route::get('/sejarah', function () {
+    return view('pages.sejarah');
+})->name('sejarah');
+
 Route::get('/peta', function () {
     $features = \App\Models\GisFeature::all();
     return view('pages.peta', compact('features'));

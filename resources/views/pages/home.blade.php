@@ -172,6 +172,13 @@
                 </div>
             </div>
 
+            <div class="mt-12 text-center">
+                <a href="{{ route('sejarah') }}" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-surface-container border border-outline-variant/50 text-on-surface font-label-md font-bold hover:bg-primary hover:text-on-primary hover:border-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1">
+                    <span class="material-symbols-outlined text-[20px]">menu_book</span>
+                    Baca Sejarah Lengkap Desa Tulusbesar
+                </a>
+            </div>
+
         </div>
     </section>
 
