@@ -30,9 +30,22 @@
                 <!-- Main Article -->
                 <div class="lg:w-2/3">
                     <!-- Featured Image -->
-                    <div class="w-full h-[300px] md:h-[500px] rounded-3xl overflow-hidden shadow-md mb-12">
+                    <div class="w-full h-[300px] md:h-[500px] rounded-3xl overflow-hidden shadow-md mb-8">
                         <img src="{{ empty($berita->image_path) ? asset('images/dummy/hero.jpg') : (Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : asset('storage/' . $berita->image_path)) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover">
                     </div>
+
+                    @if($berita->video_link)
+                        @php
+                            $ytId = null;
+                            preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/\s]{11})%i', $berita->video_link, $match);
+                            $ytId = $match[1] ?? null;
+                        @endphp
+                        @if($ytId)
+                            <div class="w-full aspect-video rounded-3xl overflow-hidden shadow-md mb-12">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $ytId }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        @endif
+                    @endif
 
                     <!-- Article Body -->
                     <article class="prose prose-lg prose-headings:font-display-md prose-headings:font-bold prose-headings:text-on-background prose-p:font-body-md prose-p:text-on-surface-variant prose-a:text-primary hover:prose-a:text-secondary max-w-none text-justify

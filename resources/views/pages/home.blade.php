@@ -95,6 +95,35 @@
     </section>
 
     <!-- 2. Sejarah Desa (Interactive Vertical Timeline) -->
+    @php
+    $histories = [
+        (object)[
+            'year' => '1614',
+            'title' => 'Era Kadipaten Malang',
+            'description' => 'Dipimpin oleh Adipati Ronggo Tohjiwo, berpusat di Kuta Bedah, Buring.'
+        ],
+        (object)[
+            'year' => '1614-1628',
+            'title' => 'Pertahanan Tumenggung Alap-alap',
+            'description' => 'Membangun pertahanan tangguh hingga memaksa Sultan Agung (Mataram) turun tangan langsung.'
+        ],
+        (object)[
+            'year' => '1638-1643',
+            'title' => 'Eksodus ke Tengger',
+            'description' => 'Pasca gugurnya Senopati Jolosutro, para pengikut setianya mengamankan pusaka ke wilayah Tengger.'
+        ],
+        (object)[
+            'year' => '1743',
+            'title' => 'Penguasaan VOC',
+            'description' => 'Berdasarkan Perjanjian Mataram & VOC, wilayah Malang Timur (termasuk Tumpang) mulai diawasi VOC.'
+        ],
+        (object)[
+            'year' => '1830',
+            'title' => 'Berdirinya Desa Tulusbesar',
+            'description' => 'Senopati Mangun Yudho secara resmi menetapkan area ini sebagai Desa Tulusbesar.'
+        ]
+    ];
+    @endphp
     <section class="py-16 md:py-24 bg-background relative" x-data="{ activeStep: 1 }">
         <div class="max-w-screen-xl mx-auto px-container-margin">
             <div class="text-center mb-16">

@@ -17,6 +17,7 @@ class NewsArticle extends Model
         'title',
         'slug',
         'content',
+        'video_link',
         'image_path',
         'published_at',
     ];

@@ -34,10 +34,9 @@ Route::get('/', function () {
         $allImages = [asset('images/dummy/profil.jpg')];
     }
 
-    $histories = VillageHistory::orderBy('order_sequence')->orderBy('year')->get();
     $officials = VillageOfficial::orderBy('order')->get();
 
-    return view('pages.home', compact('news', 'umkms', 'profile', 'allImages', 'histories', 'officials'));
+    return view('pages.home', compact('news', 'umkms', 'profile', 'allImages', 'officials'));
 })->name('home');
 
 Route::get('/wisata', function () {
@@ -53,15 +52,9 @@ Route::get('/peta', function () {
 
 Route::get('/publikasi', function () {
     $news = NewsArticle::latest('published_at')->get();
-    $publications = \App\Models\Publication::where('is_active', true)->latest()->get();
 
-    return view('pages.publikasi', compact('news', 'publications'));
+    return view('pages.publikasi', compact('news'));
 })->name('publikasi');
-
-Route::get('/publikasi/inovasi/{id}', function ($id) {
-    $publikasi = \App\Models\Publication::findOrFail($id);
-    return view('pages.publikasi-show', compact('publikasi'));
-})->name('publikasi.inovasi.show');
 
 Route::get('/umkm', function () {
     $umkms = Umkm::latest()->get();

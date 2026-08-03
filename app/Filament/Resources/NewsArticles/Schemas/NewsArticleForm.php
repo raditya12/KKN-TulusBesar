@@ -52,6 +52,11 @@ class NewsArticleForm
                                 ->directory('news-images')
                                 ->imagePreviewHeight('200')
                                 ->maxSize(5120),
+                            TextInput::make('video_link')
+                                ->label('Tautan Video (YouTube)')
+                                ->helperText('Masukkan tautan video YouTube (opsional).')
+                                ->url()
+                                ->maxLength(255),
                             DateTimePicker::make('published_at')
                                 ->label('Tanggal Publikasi')
                                 ->helperText('Kapan berita ini diterbitkan?'),
