@@ -172,6 +172,48 @@
                     @endforeach
                 @endif
 
+                // 2. Tampilkan Batas Wilayah Desa Tulusbesar (Sesuai Adaptasi Peta Referensi)
+                var boundaryLayer = L.layerGroup().addTo(map);
+                
+                // Fetch GeoJSON dari file statis yang telah dibuat khusus untuk Desa Tulusbesar
+                var geojsonUrl = '/geojson/batas_desa.geojson?v=' + new Date().getTime();
+                
+                fetch(geojsonUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error("File GeoJSON tidak ditemukan");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if(data) {
+                            var geojsonFeature = L.geoJSON(data, {
+                                style: {
+                                    color: '#ef4444', // Garis batas merah persis seperti di Google Maps
+                                    weight: 4,        // Lebih tebal agar terlihat jelas
+                                    opacity: 0.9,
+                                    dashArray: '8, 8',// Garis putus-putus (dotted line style)
+                                    fillColor: '#ef4444',
+                                    fillOpacity: 0.05 // Transparan tipis
+                                },
+                                onEachFeature: function(feature, layer) {
+                                    layer.bindPopup(`<div class="font-body-sm">
+                                        <h4 class="font-bold text-base mb-1">Batas Wilayah Administratif</h4>
+                                        <p class="text-sm">Desa Tulusbesar, Kec. Tumpang</p>
+                                        <p class="text-xs text-on-surface-variant mt-1">Sesuai referensi peta desa</p>
+                                    </div>`);
+                                }
+                            }).addTo(boundaryLayer);
+                            
+                            // Arahkan pandangan peta pas di tengah batas wilayah
+                            map.fitBounds(geojsonFeature.getBounds(), { padding: [50, 50] });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Gagal memuat batas wilayah: ", error);
+                    });
+
+                // Tambahkan checkbox filter batas wilayah jika diinginkan
+                // layerGroups['Batas Wilayah'] = boundaryLayer;
+
                 // Handle Checkbox Toggles
                 document.querySelectorAll('.filter-checkbox').forEach(function(checkbox) {
                     var category = checkbox.value;
