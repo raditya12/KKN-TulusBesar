@@ -2,7 +2,6 @@
 
 namespace App\Filament\Widgets;
 
-
 use Filament\Widgets\Widget;
 
 class DashboardLinksWidget extends Widget
@@ -32,8 +31,8 @@ class DashboardLinksWidget extends Widget
                     'url' => \App\Filament\Resources\CulturalSites\CulturalSiteResource::getUrl(),
                     'description' => 'Kelola informasi destinasi wisata dan situs budaya.',
                 ],
-                [
 
+                [
                     'name' => 'Profil Desa',
                     'icon' => 'heroicon-o-building-library',
                     'url' => \App\Filament\Resources\VillageProfiles\VillageProfileResource::getUrl(),
