@@ -7,7 +7,6 @@ use App\Models\VillageProfile;
 use App\Models\Umkm;
 use App\Models\CulturalSite;
 use App\Models\NewsArticle;
-use App\Models\VillageHistory;
 
 class CmsSeeder extends Seeder
 {
@@ -22,22 +21,7 @@ class CmsSeeder extends Seeder
             'area_size' => 460,
         ]);
 
-        // 2. Village History
-        $histories = [
-            ['year' => '1614', 'title' => 'Era Kadipaten Malang', 'description' => 'Dipimpin oleh Adipati Ronggo Tohjiwo, berpusat di Kuta Bedah, Buring.'],
-            ['year' => '1614-1628', 'title' => 'Pertahanan Tumenggung Alap-alap', 'description' => 'Membangun pertahanan tangguh hingga memaksa Sultan Agung (Mataram) turun tangan langsung.'],
-            ['year' => '1638-1643', 'title' => 'Eksodus ke Tengger', 'description' => 'Pasca gugurnya Senopati Jolosutro, para pengikut setianya mengamankan pusaka ke wilayah Tengger.'],
-            ['year' => '1743', 'title' => 'Penguasaan VOC', 'description' => 'Berdasarkan Perjanjian Mataram & VOC, wilayah Malang Timur (termasuk Tumpang) mulai diawasi VOC.'],
-            ['year' => '1830', 'title' => 'Berdirinya Desa Tulusbesar', 'description' => 'Senopati Mangun Yudho secara resmi menetapkan area ini sebagai Desa Tulusbesar.'],
-        ];
-        foreach ($histories as $idx => $history) {
-            VillageHistory::create([
-                'year' => $history['year'],
-                'title' => $history['title'],
-                'description' => $history['description'],
-                'order_sequence' => $idx + 1,
-            ]);
-        }
+
 
         // 3. Cultural Sites (Wisata)
         CulturalSite::create([
