@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CulturalSites\Pages;
 use App\Filament\Resources\CulturalSites\CulturalSiteResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\Width;
 
 class EditCulturalSite extends EditRecord
 {
@@ -17,7 +18,7 @@ class EditCulturalSite extends EditRecord
         ];
     }
 
-    public function getMaxContentWidth(): \Filament\Support\Enums\Width | string | null
+    public function getMaxContentWidth(): Width|string|null
     {
         return 'full';
     }

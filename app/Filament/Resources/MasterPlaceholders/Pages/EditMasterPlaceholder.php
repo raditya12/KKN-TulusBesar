@@ -14,4 +14,9 @@ class EditMasterPlaceholder extends EditRecord
     {
         return [DeleteAction::make()];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

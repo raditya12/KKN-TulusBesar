@@ -17,4 +17,9 @@ class EditJenisSurat extends EditRecord
                 ->hidden(fn () => $this->record->is_system),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

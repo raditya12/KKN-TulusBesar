@@ -1,11 +1,11 @@
 <?php
 
 use App\Models\CulturalSite;
+use App\Models\GisFeature;
 use App\Models\NewsArticle;
 use App\Models\Umkm;
-use App\Models\VillageHistory;
-use App\Models\VillageProfile;
 use App\Models\VillageOfficial;
+use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -50,11 +50,12 @@ Route::get('/sejarah', function () {
 })->name('sejarah');
 
 Route::get('/peta', function () {
-    $features = \App\Models\GisFeature::all();
-    $culturalSites = \App\Models\CulturalSite::whereNotNull('latitude')
-                        ->whereNotNull('longitude')
-                        ->where('status', 'active')
-                        ->get();
+    $features = GisFeature::all();
+    $culturalSites = CulturalSite::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->where('status', 'active')
+        ->get();
+
     return view('pages.peta', compact('features', 'culturalSites'));
 })->name('peta');
 

@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateGisFeature extends CreateRecord
 {
     protected static string $resource = GisFeatureResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
