@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources\CulturalSites\Schemas;
 
+use App\Models\CulturalSite;
+use Dotswan\MapPicker\Fields\Map;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -17,19 +20,18 @@ class CulturalSiteForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->columns(3)
             ->components([
-                Grid::make(['default' => 1, 'lg' => 2])->schema([
+                Grid::make(['default' => 1])->schema([
                     Section::make('Informasi Situs')
                         ->description('Data utama situs budaya atau wisata.')
-                        ->columns(2)
+                        ->columns(['default' => 1, 'md' => 2])
                         ->schema([
                             TextInput::make('name')
                                 ->label('Nama Situs')
                                 ->helperText('Contoh: Pesarean Senopati Mangun Yudho.')
                                 ->required()
                                 ->live(onBlur: true)
-                                ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
+                                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
                             TextInput::make('slug')
                                 ->label('Slug')
                                 ->helperText('Terisi otomatis.')
@@ -42,12 +44,13 @@ class CulturalSiteForm
                                 ->columnSpanFull(),
                             Select::make('category')
                                 ->label('Kategori')
-                                ->options(function (\Filament\Forms\Components\Select $component) {
+                                ->options(function (Select $component) {
                                     $defaults = [
                                         'sejarah' => 'Sejarah & Religi',
                                         'budaya' => 'Seni & Tradisi',
+                                        'budaya' => 'Seni & Tradisi',
                                     ];
-                                    $existing = \App\Models\CulturalSite::query()
+                                    $existing = CulturalSite::query()
                                         ->whereNotNull('category')
                                         ->distinct()
                                         ->pluck('category', 'category')
@@ -60,7 +63,7 @@ class CulturalSiteForm
                                     // Make sure the currently selected state is present in the options array
                                     // so that Filament validation allows newly created (but not yet saved) categories.
                                     $state = $component->getState();
-                                    if ($state && !isset($options[$state])) {
+                                    if ($state && ! isset($options[$state])) {
                                         $options[$state] = $state;
                                     }
 
@@ -82,13 +85,13 @@ class CulturalSiteForm
                                 ->options(['active' => 'Aktif', 'inactive' => 'Tidak Aktif'])
                                 ->default('active')
                                 ->required(),
-                        ])->columnSpan(1),
+                        ])->columnSpanFull(),
 
                     Section::make('Lokasi & Media')
                         ->description('Titik koordinat dan foto situs.')
-                        ->columns(1)
+                        ->columns(['default' => 1, 'md' => 2])
                         ->schema([
-                            \Dotswan\MapPicker\Fields\Map::make('location')
+                            Map::make('location')
                                 ->label('Pilih Lokasi di Peta')
                                 ->helperText('Geser penanda merah pada peta untuk menentukan lokasi yang tepat.')
                                 ->columnSpanFull()
@@ -104,25 +107,24 @@ class CulturalSiteForm
                                 })
                                 ->extraStyles([
                                     'min-height: 60vh',
-                                    'border-radius: 12px'
+                                    'border-radius: 12px',
                                 ])
                                 ->showMarker()
                                 ->draggable()
                                 ->zoom(14)
                                 ->live(onBlur: true),
-                            \Filament\Forms\Components\Hidden::make('latitude'),
-                            \Filament\Forms\Components\Hidden::make('longitude'),
+                            Hidden::make('latitude'),
+                            Hidden::make('longitude'),
                             FileUpload::make('image_path')
                                 ->label('Foto Situs')
                                 ->helperText('Unggah foto lokasi.')
-                                ->disk('public')
                                 ->image()
                                 ->directory('cultural-sites')
                                 ->imagePreviewHeight('250')
                                 ->maxSize(5120)
                                 ->columnSpanFull(),
-                        ])->columnSpan(1),
-                ])->columnSpan(3),
+                        ])->columnSpanFull(),
+                ]),
             ]);
     }
 }

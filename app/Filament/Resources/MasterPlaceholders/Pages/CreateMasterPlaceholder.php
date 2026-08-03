@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateMasterPlaceholder extends CreateRecord
 {
     protected static string $resource = MasterPlaceholderResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

@@ -4,12 +4,13 @@ namespace App\Filament\Resources\CulturalSites\Pages;
 
 use App\Filament\Resources\CulturalSites\CulturalSiteResource;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\Width;
 
 class CreateCulturalSite extends CreateRecord
 {
     protected static string $resource = CulturalSiteResource::class;
 
-    public function getMaxContentWidth(): \Filament\Support\Enums\Width|string|null
+    public function getMaxContentWidth(): Width|string|null
     {
         return 'full';
     }
