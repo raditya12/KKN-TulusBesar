@@ -498,6 +498,32 @@
                 </div>
             </section>
 
+            <!-- Section 7: Foto Kegiatan Desa -->
+            @if(isset($activities) && $activities->count() > 0)
+            <section id="kegiatan-desa" class="mt-24">
+                <div class="text-center mb-16 relative">
+                    <div class="absolute left-1/2 -top-12 -ml-0.5 w-1 h-12 bg-outline-variant"></div>
+                    <h2 class="font-display-md text-3xl md:text-4xl font-black tracking-tight uppercase">FOTO-FOTO KEGIATAN DESA <br> 
+                </h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border-t-2 border-l-2 border-primary/30 max-w-5xl mx-auto bg-surface-container-lowest">
+                    @foreach($activities as $activity)
+                    <div class="border-b-2 border-r-2 border-primary/30 p-4 md:p-8 flex flex-col group hover:bg-primary/5 transition-colors">
+                        <div class="aspect-[4/3] overflow-hidden rounded-xl shadow-md mb-6 relative">
+                            <img src="{{ asset('storage/' . $activity->image_path) }}" alt="Kegiatan Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        </div>
+                        @if($activity->description)
+                        <div class="text-center flex-grow flex items-center justify-center px-4">
+                            <p class="font-body-lg text-primary text-lg md:text-xl">{{ $activity->description }}</p>
+                        </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+            </section>
+            @endif
+
         </div>
 
         <x-footer />

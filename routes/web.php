@@ -46,7 +46,8 @@ Route::get('/wisata', function () {
 })->name('wisata');
 
 Route::get('/sejarah', function () {
-    return view('pages.sejarah');
+    $activities = \App\Models\ActivityPhoto::latest()->get();
+    return view('pages.sejarah', compact('activities'));
 })->name('sejarah');
 
 Route::get('/peta', function () {
