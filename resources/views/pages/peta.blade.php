@@ -134,7 +134,6 @@
                             var name = {!! json_encode($feature->name) !!};
                             var category = {!! json_encode($feature->category) !!};
                             var rawDesc = {!! json_encode(strip_tags($feature->description ?? '')) !!};
-                            var desc = rawDesc.length > 120 ? rawDesc.substring(0, 120) + '...' : rawDesc;
                             
                             var style = getMarkerStyle(category);
                             var iconHtml = `
@@ -159,9 +158,11 @@
                                 <div class="font-body-sm min-w-[220px] max-w-[280px]">
                                     <h4 class="font-bold text-base mb-1 text-on-surface">${name}</h4>
                                     <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] uppercase tracking-wider font-bold rounded-md mb-2">${category}</span>
-                                    <p class="text-sm mt-1 mb-4 text-on-surface-variant leading-relaxed">${desc}</p>
-                                    <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="inline-flex items-center justify-center gap-1 bg-primary !text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-primary/90 transition-colors w-full text-center shadow-sm">
-                                        <span class="material-symbols-outlined text-[16px]">directions</span> Rute ke Lokasi
+                                    <div class="max-h-[120px] overflow-y-auto custom-scrollbar mb-4 pr-1">
+                                        <p class="text-sm mt-1 text-on-surface-variant leading-relaxed">${rawDesc}</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="inline-flex items-center justify-center gap-1 bg-surface-variant !text-primary border border-primary/20 px-3 py-2 rounded-lg text-xs font-bold hover:bg-surface-variant/80 transition-colors w-full text-center">
+                                        <span class="material-symbols-outlined text-[16px]">directions</span> Rute via Google Maps
                                     </a>
                                 </div>
                             `);

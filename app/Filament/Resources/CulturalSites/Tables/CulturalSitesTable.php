@@ -79,6 +79,18 @@ class CulturalSitesTable
             ->recordActions([
                 EditAction::make()->button(),
                 DeleteAction::make()->button(),
+                Action::make('qr_code')
+                    ->label('QR Code')
+                    ->icon('heroicon-o-qr-code')
+                    ->color('info')
+                    ->button()
+                    ->modalHeading('QR Code Situs Wisata')
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup')
+                    ->modalContent(fn ($record) => view('filament.components.qr-code', [
+                        'url' => route('wisata.show', $record->slug),
+                        'title' => $record->name,
+                    ])),
                 Action::make('active')
                     ->label('Aktif')
                     ->icon('heroicon-o-check-circle')
