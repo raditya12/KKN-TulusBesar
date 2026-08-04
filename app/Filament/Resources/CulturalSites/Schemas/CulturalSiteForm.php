@@ -48,7 +48,6 @@ class CulturalSiteForm
                                     $defaults = [
                                         'sejarah' => 'Sejarah & Religi',
                                         'budaya' => 'Seni & Tradisi',
-                                        'budaya' => 'Seni & Tradisi',
                                     ];
                                     $existing = CulturalSite::query()
                                         ->whereNotNull('category')
@@ -123,6 +122,7 @@ class CulturalSiteForm
                                 ->image()
                                 ->directory('cultural-sites')
                                 ->imagePreviewHeight('250')
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120)
                                 ->columnSpanFull(),
                         ])->columnSpanFull(),

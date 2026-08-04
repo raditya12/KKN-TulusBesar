@@ -80,7 +80,7 @@
                         prose-figure:max-w-full prose-figure:m-0 prose-figcaption:text-center prose-figcaption:text-sm prose-figcaption:text-on-surface-variant
                         prose-video:w-full prose-video:rounded-2xl
                         [&>figure>img]:w-full [&>figure>img]:object-contain">
-                        {!! $wisata->description !!}
+                        {!! clean($wisata->description) !!}
                     </article>
 
                     <!-- Share & Maps -->

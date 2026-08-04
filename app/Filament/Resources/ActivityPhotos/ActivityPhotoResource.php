@@ -22,6 +22,12 @@ class ActivityPhotoResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'description';
 
+    protected static ?string $modelLabel = 'Foto Kegiatan';
+
+    protected static ?string $pluralModelLabel = 'Foto Kegiatan';
+
+    protected static ?string $navigationLabel = 'Foto Kegiatan';
+
     protected static \UnitEnum|string|null $navigationGroup = 'CMS';
 
     public static function form(Schema $schema): Schema

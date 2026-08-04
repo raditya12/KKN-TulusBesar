@@ -32,6 +32,8 @@ class VillageOfficialForm
                             ->label('Foto Profil')
                             ->directory('officials')
                             ->image()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                            ->maxSize(5120)
                             ->columnSpanFull(),
                     ])
             ]);

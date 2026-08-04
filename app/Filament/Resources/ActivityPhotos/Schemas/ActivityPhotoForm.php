@@ -14,6 +14,8 @@ class ActivityPhotoForm
             ->components([
                 FileUpload::make('image_path')
                     ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(5120)
                     ->required(),
                 Textarea::make('description')
                     ->columnSpanFull(),
