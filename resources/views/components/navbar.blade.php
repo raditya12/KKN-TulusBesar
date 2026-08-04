@@ -20,6 +20,9 @@
             <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? $activeDesktop : $inactiveDesktop }}">
                 Beranda
             </a>
+            <a href="{{ route('sejarah') }}" class="{{ request()->routeIs('sejarah') ? $activeDesktop : $inactiveDesktop }}">
+                Sejarah
+            </a>
             <a href="{{ route('wisata') }}" class="{{ request()->routeIs('wisata') ? $activeDesktop : $inactiveDesktop }}">
                 Wisata & Budaya
             </a>
@@ -54,6 +57,9 @@
         <nav class="flex flex-col p-md gap-sm">
             <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? $activeMobile : $inactiveMobile }}">
                 Beranda
+            </a>
+            <a href="{{ route('sejarah') }}" class="{{ request()->routeIs('sejarah') ? $activeMobile : $inactiveMobile }}">
+                Sejarah
             </a>
             <a href="{{ route('wisata') }}" class="{{ request()->routeIs('wisata') ? $activeMobile : $inactiveMobile }}">
                 Wisata & Budaya
