@@ -46,7 +46,9 @@ class UmkmForm
                     Section::make('Galeri')
                         ->description('Unggah dokumentasi usaha.')
                         ->schema([
-                            FileUpload::make('image_path')
+                            FileUpload::make('images')
+                                ->multiple()
+                                ->reorderable()
                                 ->label('Foto Usaha')
                                 ->helperText('Unggah foto produk atau tempat usaha.')
                                 ->disk('public')

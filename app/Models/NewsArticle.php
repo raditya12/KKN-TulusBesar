@@ -19,6 +19,29 @@ class NewsArticle extends Model
         'content',
         'video_link',
         'image_path',
+        'images',
         'published_at',
     ];
+
+    protected $appends = ['images'];
+
+    public function getImagesAttribute()
+    {
+        $val = $this->attributes['image_path'] ?? null;
+        if (empty($val)) return [];
+        $decoded = json_decode($val, true);
+        return is_array($decoded) ? $decoded : [$val];
+    }
+
+    public function setImagesAttribute($value)
+    {
+        $this->attributes['image_path'] = is_array($value) ? json_encode(array_values($value)) : null;
+    }
+
+    public function getImagePathAttribute($value)
+    {
+        if (empty($value)) return null;
+        $decoded = json_decode($value, true);
+        return is_array($decoded) ? ($decoded[0] ?? null) : $value;
+    }
 }
