@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Pages\PembuatanSuratPage;
 use App\Filament\Resources\JenisSurat\JenisSuratResource;
-use App\Filament\Resources\MasterPlaceholders\MasterPlaceholderResource;
 use App\Filament\Resources\Surat\SuratResource;
 use App\Filament\Resources\TemplateSurat\TemplateSuratResource;
 use Filament\Widgets\Widget;
@@ -44,12 +43,6 @@ class DashboardLinksWidget extends Widget
                     'icon' => 'heroicon-o-document-text',
                     'url' => JenisSuratResource::getUrl(),
                     'description' => 'Kelola klasifikasi dan jenis surat.',
-                ],
-                [
-                    'name' => 'Master Placeholder',
-                    'icon' => 'heroicon-o-code-bracket',
-                    'url' => MasterPlaceholderResource::getUrl(),
-                    'description' => 'Kelola placeholder variabel template.',
                 ],
             ],
         ];
