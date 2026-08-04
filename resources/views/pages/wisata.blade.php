@@ -155,10 +155,12 @@
                             <div
                                 class="p-6 md:p-8 flex-grow flex flex-col bg-surface-container-lowest relative z-20 -mt-6 mx-4 rounded-2xl border border-outline-variant/20 shadow-md">
                                 <h3 class="font-headline-md text-xl font-bold text-on-surface mb-2">{{ $site->name }}</h3>
-                                <div class="text-secondary font-label-sm mb-4 flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">location_on</span> Koordinat:
-                                    {{ $site->latitude ?? '-' }}, {{ $site->longitude ?? '-' }}
-                                </div>
+                                @if(!empty($site->latitude) && !empty($site->longitude))
+                                    <a href="https://www.google.com/maps/dir/?api=1&destination={{ $site->latitude }},{{ $site->longitude }}" target="_blank" 
+                                       class="inline-flex items-center gap-1 text-secondary hover:text-secondary-fixed-dim font-label-sm mb-4 hover:underline w-fit transition-colors">
+                                        <span class="material-symbols-outlined text-[16px]">directions</span> Rute Lokasi
+                                    </a>
+                                @endif
                                 <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-4">
                                     {!! strip_tags($site->description) !!}</p>
                                 <a href="{{ route('wisata.show', $site->slug) }}"
@@ -288,10 +290,10 @@
                                     class="p-6 md:p-8 flex-grow flex flex-col bg-surface-container-lowest relative z-20 -mt-6 mx-4 rounded-2xl border border-outline-variant/20 shadow-md">
                                     <h3 class="font-headline-md text-xl font-bold text-on-surface mb-2">{{ $site->name }}</h3>
                                     @if(!empty($site->latitude) && !empty($site->longitude))
-                                        <div class="text-secondary font-label-sm mb-4 flex items-center gap-1">
-                                            <span class="material-symbols-outlined text-[16px]">location_on</span> Koordinat:
-                                            {{ $site->latitude }}, {{ $site->longitude }}
-                                        </div>
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination={{ $site->latitude }},{{ $site->longitude }}" target="_blank" 
+                                           class="inline-flex items-center gap-1 text-secondary hover:text-secondary-fixed-dim font-label-sm mb-4 hover:underline w-fit transition-colors">
+                                            <span class="material-symbols-outlined text-[16px]">directions</span> Rute Lokasi
+                                        </a>
                                     @endif
                                     <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-4">
                                         {!! strip_tags($site->description) !!}</p>
