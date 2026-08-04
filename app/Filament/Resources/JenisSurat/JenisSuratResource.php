@@ -25,7 +25,7 @@ class JenisSuratResource extends Resource
 
     protected static ?string $slug = 'jenis-surat';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Master Data';
+    protected static string|\UnitEnum|null $navigationGroup = 'Administrasi';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 

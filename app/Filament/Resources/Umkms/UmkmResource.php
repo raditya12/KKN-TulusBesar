@@ -11,7 +11,6 @@ use App\Models\Umkm;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class UmkmResource extends Resource
@@ -19,9 +18,13 @@ class UmkmResource extends Resource
     protected static ?string $model = Umkm::class;
 
     protected static ?string $modelLabel = 'Data UMKM';
+
     protected static ?string $pluralModelLabel = 'Data UMKM';
+
     protected static ?string $navigationLabel = 'Data UMKM';
-    protected static \UnitEnum|string|null $navigationGroup = 'Potensi Desa';
+
+    protected static \UnitEnum|string|null $navigationGroup = 'CMS';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-storefront';
 
     public static function form(Schema $schema): Schema

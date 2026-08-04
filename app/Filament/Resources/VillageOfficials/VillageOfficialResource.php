@@ -19,8 +19,8 @@ class VillageOfficialResource extends Resource
     protected static ?string $model = VillageOfficial::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
-    
-    protected static \UnitEnum|string|null $navigationGroup = 'Profil Desa';
+
+    protected static \UnitEnum|string|null $navigationGroup = 'CMS';
 
     public static function form(Schema $schema): Schema
     {

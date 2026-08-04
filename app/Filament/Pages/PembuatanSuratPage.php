@@ -4,7 +4,6 @@ namespace App\Filament\Pages;
 
 use App\Filament\Resources\Surat\SuratResource;
 use App\Models\JenisSurat;
-use App\Models\MasterPlaceholder;
 use App\Models\Pengaturan;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
@@ -14,26 +13,37 @@ use BackedEnum;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Support\Enums\Width;
 
 class PembuatanSuratPage extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-pencil-square';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Surat Menyurat';
+    protected static \UnitEnum|string|null $navigationGroup = 'Administrasi';
 
     protected static ?string $navigationLabel = 'Pembuatan Surat';
 
-    protected static ?string $title = 'Pembuatan Surat Desa';
+    protected static ?string $title = 'Layanan Surat Menyurat (Pelayanan Publik)';
 
     protected static ?string $slug = 'pembuatan-surat';
 
     protected static ?int $navigationSort = 9;
 
+    public function getSubheading(): ?string
+    {
+        return 'Buat dan cetak surat keterangan resmi untuk warga desa dengan cepat.';
+    }
+
     protected string $view = 'filament.pages.pembuatan-surat-page';
+
+    public function getMaxContentWidth(): Width|string|null
+    {
+        return Width::Full;
+    }
 
     public ?string $searchNik = '';
 
-    public int $jenis_surat_id = 0;
+    public string|int $jenis_surat_id = 0;
 
     public ?int $template_surat_id = null;
 
@@ -46,13 +56,6 @@ class PembuatanSuratPage extends Page
 
     /** @var array<array{key: string, label: string, placeholder_raw: string}> */
     public array $dynamicFields = [];
-
-    /** @var array<array{key: string, label: string, placeholder_raw: string}> */
-    public array $extraPlaceholders = [];
-
-    public bool $showModalPlaceholder = false;
-
-    public string $modalSearch = '';
 
     public string $previewHtml = '';
 
@@ -188,69 +191,6 @@ class PembuatanSuratPage extends Page
         $this->refreshPreview();
     }
 
-    public function openPlaceholderModal(): void
-    {
-        $this->modalSearch = '';
-        $this->showModalPlaceholder = true;
-    }
-
-    public function closePlaceholderModal(): void
-    {
-        $this->showModalPlaceholder = false;
-    }
-
-    public function addExtraPlaceholder(int $masterPlaceholderId): void
-    {
-        $mp = MasterPlaceholder::find($masterPlaceholderId);
-        if (! $mp) {
-            return;
-        }
-
-        $key = $mp->key;
-
-        // Check if already in dynamicFields or extraPlaceholders
-        $existingKeys = array_merge(
-            array_column($this->dynamicFields, 'key'),
-            array_column($this->extraPlaceholders, 'key')
-        );
-
-        if (in_array($key, $existingKeys)) {
-            Notification::make()
-                ->title('Placeholder sudah ada')
-                ->body("Placeholder {$mp->placeholder} sudah ada di form.")
-                ->warning()
-                ->send();
-
-            return;
-        }
-
-        $this->extraPlaceholders[] = [
-            'key' => $key,
-            'label' => $mp->nama_field,
-            'placeholder_raw' => $mp->placeholder,
-        ];
-
-        if (! isset($this->fieldValues[$key])) {
-            $this->fieldValues[$key] = '';
-        }
-
-        $this->showModalPlaceholder = false;
-        $this->refreshPreview();
-
-        Notification::make()
-            ->title('Placeholder Ditambahkan')
-            ->body("Field {$mp->nama_field} ({$mp->placeholder}) berhasil ditambahkan ke form.")
-            ->success()
-            ->send();
-    }
-
-    public function removeExtraPlaceholder(string $key): void
-    {
-        $this->extraPlaceholders = array_values(array_filter($this->extraPlaceholders, fn ($item) => $item['key'] !== $key));
-        unset($this->fieldValues[$key]);
-        $this->refreshPreview();
-    }
-
     public function generateSurat(): void
     {
         $this->validate([
@@ -322,16 +262,6 @@ class PembuatanSuratPage extends Page
 
     protected function getViewData(): array
     {
-        $masterPlaceholders = MasterPlaceholder::query()
-            ->when(! empty($this->modalSearch), function ($q) {
-                $q->where('nama_field', 'like', '%'.$this->modalSearch.'%')
-                    ->orWhere('placeholder', 'like', '%'.$this->modalSearch.'%')
-                    ->orWhere('kategori', 'like', '%'.$this->modalSearch.'%');
-            })
-            ->orderBy('kategori')
-            ->orderBy('nama_field')
-            ->get();
-
         return [
             'jenisSuratOptions' => JenisSurat::where('is_active', true)
                 ->orderBy('nama')
@@ -341,7 +271,6 @@ class PembuatanSuratPage extends Page
                 ->latest()
                 ->take(5)
                 ->get(),
-            'masterPlaceholdersList' => $masterPlaceholders,
         ];
     }
 }

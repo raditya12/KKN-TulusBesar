@@ -10,19 +10,14 @@ class SuratStatsWidget extends StatsOverviewWidget
 {
     protected static ?int $sort = 1;
 
+    protected array|int|null $columns = 2;
+
     protected function getStats(): array
     {
         $today = now()->toDateString();
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
 
         $suratHariIni = Surat::whereDate('created_at', $today)->count();
-        $suratBulanIni = Surat::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->count();
-        $sudahUploadScan = Surat::where('status', 'scan_uploaded')->count();
-        $customSurat = Surat::where('is_custom', true)->count();
-        $totalSurat = Surat::count();
+        $belumUploadScan = Surat::where('status', '!=', 'scan_uploaded')->count();
 
         $stats = [
             Stat::make('Surat Hari Ini', $suratHariIni)
@@ -30,25 +25,10 @@ class SuratStatsWidget extends StatsOverviewWidget
                 ->descriptionIcon('heroicon-m-document-text')
                 ->color('primary'),
 
-            Stat::make('Surat Bulan Ini', $suratBulanIni)
-                ->description(now()->translatedFormat('F Y'))
-                ->descriptionIcon('heroicon-m-calendar')
-                ->color('info'),
-
-            Stat::make('Total Arsip', $totalSurat)
-                ->description('Semua surat')
-                ->descriptionIcon('heroicon-m-archive-box')
-                ->color('gray'),
-
-            Stat::make('Sudah Scan', $sudahUploadScan)
-                ->description('Surat dengan scan resmi')
-                ->descriptionIcon('heroicon-m-check-circle')
-                ->color('success'),
-
-            Stat::make('Custom Surat', $customSurat)
-                ->description('Surat dibuat manual')
-                ->descriptionIcon('heroicon-m-pencil-square')
-                ->color('warning'),
+            Stat::make('Belum Upload Scan', $belumUploadScan)
+                ->description($belumUploadScan > 0 ? 'Perlu upload berkas' : 'Semua berkas terunggah')
+                ->descriptionIcon($belumUploadScan > 0 ? 'heroicon-m-exclamation-triangle' : 'heroicon-m-check-circle')
+                ->color($belumUploadScan > 0 ? 'danger' : 'success'),
         ];
 
         return $stats;

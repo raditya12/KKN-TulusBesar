@@ -3,85 +3,109 @@
 namespace App\Filament\Pages;
 
 use App\Models\Pengaturan as PengaturanModel;
-use BackedEnum;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Grid;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Actions\Action;
 
-class Pengaturan extends Page
+class Pengaturan extends Page implements HasForms
 {
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
+    use InteractsWithForms;
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
 
     protected string $view = 'filament.pages.pengaturan';
 
     protected static ?string $navigationLabel = 'Pengaturan';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Pengaturan';
+    protected static \UnitEnum|string|null $navigationGroup = 'Administrasi';
 
     protected static ?int $navigationSort = 99;
 
-    public ?string $nama_desa = null;
-
-    public ?string $nama_kecamatan = null;
-
-    public ?string $nama_kabupaten = null;
-
-    public ?string $nama_provinsi = null;
-
-    public ?string $kode_pos = null;
-
-    public ?string $nomor_telepon = null;
-
-    public ?string $alamat_kantor = null;
-
-    public ?string $email_desa = null;
-
-    public ?string $nama_kepala_desa = null;
-
-    public ?string $nip_kepala_desa = null;
-
-    public ?string $logo_path = null;
-
-    public ?string $kop_surat_html = null;
+    public ?array $data = [];
 
     public function mount(): void
     {
         $settings = PengaturanModel::pluck('value', 'key')->toArray();
+        $this->form->fill($settings);
+    }
 
-        foreach (array_keys($this->getAllSettings()) as $key) {
-            $this->{$key} = $settings[$key] ?? null;
-        }
+    public function form(\Filament\Schemas\Schema $form): \Filament\Schemas\Schema
+    {
+        return $form
+            ->schema([
+                Grid::make(2)
+                    ->schema([
+                        Section::make('Identitas Desa')
+                            ->description('Informasi dasar mengenai wilayah dan administrasi desa.')
+                            ->icon('heroicon-o-building-office')
+                            ->schema([
+                                TextInput::make('nama_desa')->label('Nama Desa')->placeholder('Desa Tulusbesar'),
+                                TextInput::make('nama_kecamatan')->label('Kecamatan')->placeholder('Nama Kecamatan'),
+                                TextInput::make('nama_kabupaten')->label('Kabupaten')->placeholder('Nama Kabupaten'),
+                                TextInput::make('nama_provinsi')->label('Provinsi')->placeholder('Nama Provinsi'),
+                                TextInput::make('kode_pos')->label('Kode Pos')->placeholder('65000'),
+                            ])->columnSpan(1),
+
+                        Section::make('Kontak & Pejabat')
+                            ->description('Data kontak resmi dan informasi Kepala Desa yang menjabat.')
+                            ->icon('heroicon-o-identification')
+                            ->schema([
+                                TextInput::make('nomor_telepon')->label('Nomor Telepon')->placeholder('0341-xxxxxx'),
+                                TextInput::make('alamat_kantor')->label('Alamat Kantor Desa')->placeholder('Jl. ...'),
+                                TextInput::make('email_desa')->label('Email Desa')->placeholder('desa@example.com')->email(),
+                                TextInput::make('nama_kepala_desa')->label('Nama Kepala Desa')->placeholder('Bpk./Ibu ...'),
+                                TextInput::make('nip_kepala_desa')->label('NIP Kepala Desa')->placeholder('Kosong jika tidak ada NIP'),
+                            ])->columnSpan(1),
+                    ]),
+
+                Section::make('Logo & Kop Surat Custom')
+                    ->description('Pengaturan khusus untuk template kustom yang membutuhkan logo dan format kop surat HTML sendiri.')
+                    ->icon('heroicon-o-document-text')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            TextInput::make('logo_path')
+                                ->label('Path Logo Desa')
+                                ->placeholder('Contoh: logos/logo-desa.png')
+                                ->helperText('Digunakan pada template Custom Surat. Upload logo terlebih dahulu melalui file manager.'),
+                            Textarea::make('kop_surat_html')
+                                ->label('Kop Surat (HTML)')
+                                ->placeholder('Paste kop surat HTML di sini...')
+                                ->helperText('Format kop surat mentah (HTML) untuk kustomisasi tingkat lanjut.')
+                                ->rows(4),
+                        ])
+                    ]),
+            ])
+            ->statePath('data');
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            Action::make('save')
+                ->label('Simpan Pengaturan')
+                ->submit('save')
+                ->color('primary')
+        ];
     }
 
     public function save(): void
     {
-        foreach ($this->getAllSettings() as $key => $label) {
-            PengaturanModel::set($key, $this->{$key});
+        $state = $this->form->getState();
+
+        foreach ($state as $key => $value) {
+            PengaturanModel::set($key, $value);
         }
 
         Notification::make()
             ->title('Pengaturan berhasil disimpan')
             ->success()
             ->send();
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function getAllSettings(): array
-    {
-        return [
-            'nama_desa' => 'Nama Desa',
-            'nama_kecamatan' => 'Nama Kecamatan',
-            'nama_kabupaten' => 'Nama Kabupaten',
-            'nama_provinsi' => 'Nama Provinsi',
-            'kode_pos' => 'Kode Pos',
-            'nomor_telepon' => 'Nomor Telepon',
-            'alamat_kantor' => 'Alamat Kantor Desa',
-            'email_desa' => 'Email Desa',
-            'nama_kepala_desa' => 'Nama Kepala Desa',
-            'nip_kepala_desa' => 'NIP Kepala Desa',
-            'logo_path' => 'Logo Desa (path)',
-            'kop_surat_html' => 'Kop Surat (HTML)',
-        ];
     }
 }

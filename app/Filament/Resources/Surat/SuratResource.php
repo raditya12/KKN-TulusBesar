@@ -21,7 +21,7 @@ class SuratResource extends Resource
 
     protected static ?string $slug = 'arsip-surat';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Surat Menyurat';
+    protected static string|\UnitEnum|null $navigationGroup = 'Administrasi';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
 
