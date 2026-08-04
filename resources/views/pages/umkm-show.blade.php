@@ -26,8 +26,51 @@
                 <!-- Main Article -->
                 <div class="lg:w-2/3">
                     <!-- Featured Image -->
-                    <div class="w-full h-[300px] md:h-[500px] rounded-3xl overflow-hidden shadow-md mb-12">
-                        <img src="{{ empty($umkm->image_path) ? asset('images/dummy/umkm1.jpg') : (Str::startsWith($umkm->image_path, 'images/dummy/') ? asset($umkm->image_path) : asset('storage/' . $umkm->image_path)) }}" alt="{{ $umkm->name }}" class="w-full h-full object-cover">
+                    @php
+                        $images = is_array($umkm->images) && count($umkm->images) > 0 ? $umkm->images : [$umkm->image_path];
+                        $hasMultiple = count($images) > 1;
+                    @endphp
+                    <div class="w-full h-[300px] md:h-[500px] rounded-3xl overflow-hidden shadow-md mb-12 relative group"
+                         @if($hasMultiple)
+                         x-data="{ activeSlide: 0, slides: {{ count($images) }} }"
+                         x-init="setInterval(() => { activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1 }, 3500)"
+                         @endif
+                    >
+                        @if($hasMultiple)
+                            @foreach($images as $index => $img)
+                            <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                                 x-show="activeSlide === {{ $index }}"
+                                 x-transition:enter="transition-opacity duration-1000"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 x-transition:leave="transition-opacity duration-1000"
+                                 x-transition:leave-start="opacity-100"
+                                 x-transition:leave-end="opacity-0">
+                                <img src="{{ Str::startsWith($img, 'images/dummy/') ? asset($img) : asset('storage/' . $img) }}" alt="{{ $umkm->name }} - Slide {{ $index + 1 }}" class="w-full h-full object-cover">
+                            </div>
+                            @endforeach
+                            
+                            <!-- Indicators -->
+                            <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
+                                @foreach($images as $index => $img)
+                                <button class="w-2.5 h-2.5 rounded-full transition-colors duration-300 shadow-sm border border-black/10"
+                                        :class="activeSlide === {{ $index }} ? 'bg-white' : 'bg-white/40 hover:bg-white/80'"
+                                        @click="activeSlide = {{ $index }}"></button>
+                                @endforeach
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1"
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 backdrop-blur-sm">
+                                <span class="material-symbols-outlined">chevron_left</span>
+                            </button>
+                            <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 backdrop-blur-sm">
+                                <span class="material-symbols-outlined">chevron_right</span>
+                            </button>
+                        @else
+                            <img src="{{ empty($umkm->image_path) ? asset('images/dummy/umkm1.jpg') : (Str::startsWith($umkm->image_path, 'images/dummy/') ? asset($umkm->image_path) : asset('storage/' . $umkm->image_path)) }}" alt="{{ $umkm->name }}" class="w-full h-full object-cover">
+                        @endif
                     </div>
 
                     <!-- Article Body -->

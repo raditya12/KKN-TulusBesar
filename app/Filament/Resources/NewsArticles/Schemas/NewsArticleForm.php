@@ -44,7 +44,9 @@ class NewsArticleForm
                     Section::make('Media & Publikasi')
                         ->description('Kelola gambar dan tanggal rilis.')
                         ->schema([
-                            FileUpload::make('image_path')
+                            FileUpload::make('images')
+                                ->multiple()
+                                ->reorderable()
                                 ->label('Gambar Utama')
                                 ->helperText('Unggah gambar pendukung untuk berita ini (opsional).')
                                 ->disk('public')

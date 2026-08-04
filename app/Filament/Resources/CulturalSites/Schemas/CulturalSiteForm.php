@@ -115,7 +115,9 @@ class CulturalSiteForm
                                 ->live(onBlur: true),
                             Hidden::make('latitude'),
                             Hidden::make('longitude'),
-                            FileUpload::make('image_path')
+                            FileUpload::make('images')
+                                ->multiple()
+                                ->reorderable()
                                 ->label('Foto Situs')
                                 ->helperText('Unggah foto lokasi.')
                                 ->image()
