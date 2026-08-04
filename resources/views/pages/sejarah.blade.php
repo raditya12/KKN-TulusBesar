@@ -457,7 +457,7 @@
                                 <tr class="bg-primary/5 hover:bg-primary/10 transition-colors">
                                     <td class="px-8 py-6 font-label-xl text-primary whitespace-nowrap">Des 2022 – Sekarang</td>
                                     <td class="px-8 py-6 font-display-sm text-primary font-black flex items-center gap-3">
-                                        <img src="{{ asset('images/ImageKades/BpSiratYudin.png') }}" class="w-12 h-12 rounded-full object-cover border-2 border-primary shadow-sm" alt="">
+                                        <img src="{{ asset('images/ImageKades/SiratYudin.png') }}" class="w-12 h-12 rounded-full object-cover border-2 border-primary shadow-sm" alt="">
                                         Sirat Yudin
                                     </td>
                                     <td class="px-8 py-6 font-body-md text-on-surface-variant"><span class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-md">Kades PAW (Pemilihan)</span></td>
@@ -491,7 +491,7 @@
                         <div class="relative group">
                             <div class="absolute -inset-4 bg-gradient-to-r from-tertiary to-secondary rounded-full blur-lg opacity-50 group-hover:opacity-80 transition-opacity duration-500"></div>
                             <div class="w-64 h-64 md:w-72 md:h-72 rounded-full border-8 border-surface-container-lowest shadow-2xl overflow-hidden shrink-0 relative z-10 transform transition-transform duration-500 group-hover:scale-105">
-                                <img src="{{ asset('images/ImageKades/BpSiratYudin.png') }}" alt="Bapak Sirat Yudin" class="w-full h-full object-cover">
+                                <img src="{{ asset('images/ImageKades/SiratYudin.png') }}" alt="Bapak Sirat Yudin" class="w-full h-full object-cover">
                             </div>
                         </div>
                     </div>
