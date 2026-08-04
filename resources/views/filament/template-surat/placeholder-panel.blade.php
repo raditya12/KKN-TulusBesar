@@ -1,42 +1,51 @@
 {{-- Panel placeholder untuk digunakan di dalam editor template --}}
 <div x-data="placeholderPanel()" class="space-y-3">
-    {{-- Search --}}
-    <div>
+    {{-- Search Input --}}
+    <div class="relative">
         <input
             type="text"
             x-model="search"
-            placeholder="🔍 Cari placeholder..."
-            class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm focus:ring-primary-500 focus:border-primary-500"
+            placeholder="Cari placeholder..."
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
         />
     </div>
 
-    {{-- Grouped Placeholders --}}
-    @foreach($placeholders as $kategori => $items)
-        <div x-show="isKategoriVisible('{{ $kategori }}')" class="space-y-1">
-            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1 pt-2">
-                {{ $kategori }}
-            </p>
+    {{-- Grouped Placeholders Container --}}
+    <div class="max-h-[550px] overflow-y-auto pr-1 space-y-3">
+        @foreach($placeholders as $kategori => $items)
+            <div x-show="isKategoriVisible('{{ $kategori }}')" class="space-y-1.5">
+                <div class="flex items-center justify-between px-1 pt-1 border-b border-slate-200 dark:border-slate-700 pb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                        {{ $kategori }}
+                    </span>
+                    <span class="text-[10px] rounded bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 text-slate-600 dark:text-slate-300 font-mono">
+                        {{ count($items) }}
+                    </span>
+                </div>
 
-            @foreach($items as $placeholder)
-                <button
-                    type="button"
-                    x-show="isVisible('{{ $placeholder->nama_field }}', '{{ $placeholder->placeholder }}')"
-                    @click="insertPlaceholder('{{ $placeholder->placeholder }}')"
-                    title="{{ $placeholder->deskripsi }}"
-                    class="w-full text-left px-3 py-2 rounded-lg text-sm bg-gray-50 dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-900 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-150 group"
-                >
-                    <div class="flex items-center justify-between">
-                        <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                            {{ $placeholder->nama_field }}
-                        </span>
-                        <span class="text-xs font-mono text-gray-400 dark:text-gray-500 group-hover:text-primary-500">
-                            {{ $placeholder->placeholder }}
-                        </span>
-                    </div>
-                </button>
-            @endforeach
-        </div>
-    @endforeach
+                <div class="grid grid-cols-1 gap-1">
+                    @foreach($items as $placeholder)
+                        <button
+                            type="button"
+                            x-show="isVisible('{{ $placeholder->nama_field }}', '{{ $placeholder->placeholder }}')"
+                            @click="insertPlaceholder('{{ $placeholder->placeholder }}')"
+                            title="Klik untuk menyisipkan {{ $placeholder->placeholder }}"
+                            class="group w-full rounded-md border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1.5 text-left transition hover:border-amber-500 hover:bg-amber-50 dark:hover:border-amber-500 dark:hover:bg-amber-950/40"
+                        >
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="text-xs font-medium text-slate-700 dark:text-slate-200 group-hover:text-amber-800 dark:group-hover:text-amber-300">
+                                    {{ $placeholder->nama_field }}
+                                </span>
+                                <span class="rounded bg-slate-200/80 dark:bg-slate-900 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-slate-600 dark:text-slate-400 group-hover:bg-amber-200 dark:group-hover:bg-amber-900 group-hover:text-amber-900 dark:group-hover:text-amber-200">
+                                    {{ $placeholder->placeholder }}
+                                </span>
+                            </div>
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
+    </div>
 </div>
 
 <script>
@@ -52,40 +61,42 @@ function placeholderPanel() {
 
         isKategoriVisible(kategori) {
             if (!this.search) return true;
-            // Check if any item in this kategori is visible
-            return true; // Simplified — all categories stay visible
+            return true;
         },
 
         insertPlaceholder(placeholder) {
-            // Find the Quill editor instance used by Filament's RichEditor
-            const editorEl = document.querySelector('.ql-editor');
+            // Find Tiptap / Trix / Quill editor instance or active element
+            const editorEl = document.querySelector('.fi-fo-rich-editor, .ql-editor, [contenteditable="true"]');
 
             if (editorEl) {
-                // Insert at cursor position using Quill API
-                const quill = Quill.find(editorEl.parentElement);
-                if (quill) {
-                    const range = quill.getSelection(true);
-                    quill.insertText(range ? range.index : quill.getLength(), placeholder);
+                // Focus editor
+                editorEl.focus();
+                
+                // Exec command insertText if possible
+                if (document.queryCommandSupported && document.queryCommandSupported('insertText')) {
+                    document.execCommand('insertText', false, placeholder);
                     return;
                 }
             }
 
-            // Fallback: try textarea
-            const textarea = document.querySelector('[data-field-wrapper] textarea, #template-editor-input');
-            if (textarea) {
-                const start = textarea.selectionStart;
-                const end = textarea.selectionEnd;
-                const value = textarea.value;
-                textarea.value = value.substring(0, start) + placeholder + value.substring(end);
-                textarea.selectionStart = textarea.selectionEnd = start + placeholder.length;
-                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+            // Fallback: try textarea or input
+            const activeEl = document.activeElement;
+            if (activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT')) {
+                const start = activeEl.selectionStart || 0;
+                const end = activeEl.selectionEnd || 0;
+                const val = activeEl.value || '';
+                activeEl.value = val.substring(0, start) + placeholder + val.substring(end);
+                activeEl.selectionStart = activeEl.selectionEnd = start + placeholder.length;
+                activeEl.dispatchEvent(new Event('input', { bubbles: true }));
                 return;
             }
 
-            // Last resort: copy to clipboard
-            navigator.clipboard.writeText(placeholder).then(() => {
-                alert('Placeholder "' + placeholder + '" disalin ke clipboard. Tempel di posisi kursor editor.');
-            });
+            // Copy to clipboard
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(placeholder).then(() => {
+                    alert('Variabel ' + placeholder + ' berhasil disalin ke clipboard! Silakan paste pada editor.');
+                });
+            }
         },
     };
 }

@@ -18,21 +18,30 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\Storage;
 
 class EditTemplateSurat extends EditRecord
 {
     protected static string $resource = TemplateSuratResource::class;
 
+    public function getMaxContentWidth(): Width|string|null
+    {
+        return Width::Full;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([
             Grid::make(['default' => 1, 'lg' => 3])->schema([
 
-                // === Left: Editor Panel (2/3 width) ===
-                Section::make('Editor Template')
-                    ->description('Edit konten surat. Klik placeholder di panel kanan untuk menyisipkan.')
+                // === Left: Editor & Preview Panel (2/3 width) ===
+                Section::make('Pratinjau & Editor Template')
+                    ->description('Sunting isi surat dan tinjau tampilan cetak fisik A4 secara langsung.')
                     ->schema([
+                        View::make('filament.template-surat.live-preview')
+                            ->columnSpanFull(),
+
                         TextInput::make('judul')
                             ->label('Judul Template')
                             ->required()
@@ -56,13 +65,20 @@ class EditTemplateSurat extends EditRecord
                             ->label('Konten Template')
                             ->id('template-rich-editor')
                             ->toolbarButtons([
-                                'bold', 'italic', 'underline', 'strike',
-                                'h2', 'h3',
-                                'alignLeft', 'alignCenter', 'alignRight', 'alignJustify',
-                                'bulletList', 'orderedList',
                                 'blockquote',
-                                'undo', 'redo',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'undo',
                             ])
+                            ->live()
                             ->extraInputAttributes(['id' => 'template-editor-input'])
                             ->columnSpanFull()
                             ->required(),

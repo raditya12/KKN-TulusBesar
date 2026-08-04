@@ -126,8 +126,8 @@
         transform: translateY(-2px) !important;
     }
 
-    /* File Upload Reorder Counters based on visual order */
-    .filepond--item[data-visual-order]::after {
+    /* File Upload Reorder Counters based on visual order - ONLY for multi-file uploads */
+    .filepond--list:has(.filepond--item + .filepond--item) .filepond--item[data-visual-order]::after {
         content: attr(data-visual-order);
         position: absolute;
         top: 8px;
@@ -147,8 +147,8 @@
         border: 2px solid white;
         pointer-events: none;
     }
-    /* Badge for the main photo */
-    .filepond--item[data-visual-order="1"]::after {
+    /* Badge for the main photo in multi-uploads */
+    .filepond--list:has(.filepond--item + .filepond--item) .filepond--item[data-visual-order="1"]::after {
         content: "1 (Foto Utama)";
         width: auto;
         padding: 0 16px;
