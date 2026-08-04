@@ -312,20 +312,29 @@
                     <div class="flex flex-wrap gap-4">
                         @if(isset($officials) && $officials->count() > 0)
                             @foreach($officials as $official)
-                            <div class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/30 shadow-sm w-max">
-                                <img src="{{ $official->image_path ? asset('storage/' . $official->image_path) : asset('images/dummy/profil.jpg') }}" alt="{{ $official->name }}" class="w-16 h-16 rounded-full object-cover">
-                                <div>
-                                    <div class="font-label-md font-bold text-on-surface">{{ $official->name }}</div>
-                                    <div class="font-body-sm text-on-surface-variant">{{ $official->position }}</div>
+                            <div class="group relative flex items-center gap-4 bg-white/80 dark:bg-surface-container-lowest/80 backdrop-blur-md p-4 rounded-2xl border border-outline-variant/30 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 w-full sm:w-max overflow-hidden cursor-default">
+                                <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                @if($official->image_path)
+                                    <img src="{{ asset('storage/' . $official->image_path) }}" alt="{{ $official->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary/20 shadow-sm relative z-10">
+                                @else
+                                    <!-- Smart Avatar using initials -->
+                                    <div class="w-16 h-16 rounded-full bg-primary-container text-primary font-bold flex items-center justify-center text-xl border-2 border-primary/20 shadow-sm relative z-10">
+                                        {{ collect(explode(' ', $official->name))->take(2)->map(fn($n) => substr($n, 0, 1))->join('') }}
+                                    </div>
+                                @endif
+                                <div class="relative z-10">
+                                    <div class="font-label-md font-bold text-[#3e2723] uppercase tracking-tight">{{ $official->name }}</div>
+                                    <div class="font-body-sm text-primary font-semibold mt-0.5">{{ $official->position }}</div>
                                 </div>
                             </div>
                             @endforeach
                         @else
-                            <div class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/30 shadow-sm w-max">
-                                <img src="{{ asset('images/dummy/kades.jpg') }}" alt="Kepala Desa" class="w-16 h-16 rounded-full object-cover">
-                                <div>
-                                    <div class="font-label-md font-bold text-on-surface">Hudi Mariono</div>
-                                    <div class="font-body-sm text-on-surface-variant">Kepala Desa Tulusbesar</div>
+                            <div class="group relative flex items-center gap-4 bg-white/80 dark:bg-surface-container-lowest/80 backdrop-blur-md p-4 rounded-2xl border border-outline-variant/30 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 w-max overflow-hidden cursor-default">
+                                <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <img src="{{ asset('images/dummy/kades.jpg') }}" alt="Kepala Desa" class="w-16 h-16 rounded-full object-cover border-2 border-primary/20 shadow-sm relative z-10">
+                                <div class="relative z-10">
+                                    <div class="font-label-md font-bold text-[#3e2723] uppercase tracking-tight">Hudi Mariono</div>
+                                    <div class="font-body-sm text-primary font-semibold mt-0.5">Kepala Desa Tulusbesar</div>
                                 </div>
                             </div>
                         @endif
@@ -333,37 +342,37 @@
                 </div>
                 
                 <div class="lg:w-1/2 w-full">
-                    <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/30 shadow-lg overflow-hidden">
-                        <div class="bg-primary-container text-on-primary-container p-lg flex items-center justify-between">
-                            <h3 class="font-headline-md text-xl font-bold">Wilayah Dusun</h3>
-                            <span class="bg-on-primary-container text-primary-container px-3 py-1 rounded-full font-label-sm font-bold">4 Wilayah, 7 RW</span>
+                    <div class="bg-white/90 dark:bg-surface-container-lowest/90 backdrop-blur-xl rounded-3xl border border-outline-variant/50 shadow-2xl overflow-hidden transform hover:scale-[1.01] transition-transform duration-500">
+                        <div class="bg-gradient-to-br from-[#8c5a35] to-[#593922] text-white p-6 flex items-center justify-between shadow-inner">
+                            <h3 class="font-headline-md text-xl font-bold tracking-wide">Wilayah Dusun</h3>
+                            <span class="bg-white/20 text-white backdrop-blur-sm px-4 py-1.5 rounded-full font-label-sm font-bold border border-white/30 shadow-sm">4 Wilayah, 7 RW</span>
                         </div>
-                        <ul class="divide-y divide-outline-variant/20">
-                            <li class="p-md hover:bg-surface-container/50 transition-colors flex items-center gap-md">
-                                <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">holiday_village</span></div>
+                        <ul class="divide-y divide-outline-variant/20 p-2">
+                            <li class="p-4 rounded-2xl hover:bg-surface-container/50 hover:shadow-sm transition-all duration-300 flex items-center gap-4 cursor-default">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-inner"><span class="material-symbols-outlined text-[24px]">pin_drop</span></div>
                                 <div>
-                                    <h4 class="font-label-md font-bold text-on-surface">Dusun Krajan</h4>
+                                    <h4 class="font-label-md font-bold text-[#3e2723] text-lg">Dusun Krajan</h4>
                                     <p class="font-body-sm text-on-surface-variant">Pusat Administratif Desa</p>
                                 </div>
                             </li>
-                            <li class="p-md hover:bg-surface-container/50 transition-colors flex items-center gap-md">
-                                <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">holiday_village</span></div>
+                            <li class="p-4 rounded-2xl hover:bg-surface-container/50 hover:shadow-sm transition-all duration-300 flex items-center gap-4 cursor-default">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-inner"><span class="material-symbols-outlined text-[24px]">account_balance</span></div>
                                 <div>
-                                    <h4 class="font-label-md font-bold text-on-surface">Dusun Kemulan</h4>
+                                    <h4 class="font-label-md font-bold text-[#3e2723] text-lg">Dusun Kemulan</h4>
                                     <p class="font-body-sm text-on-surface-variant">Situs Makam Bersejarah</p>
                                 </div>
                             </li>
-                            <li class="p-md hover:bg-surface-container/50 transition-colors flex items-center gap-md">
-                                <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">holiday_village</span></div>
+                            <li class="p-4 rounded-2xl hover:bg-surface-container/50 hover:shadow-sm transition-all duration-300 flex items-center gap-4 cursor-default">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-inner"><span class="material-symbols-outlined text-[24px]">maps_home_work</span></div>
                                 <div>
-                                    <h4 class="font-label-md font-bold text-on-surface">Dusun Prapatan Tulusayu</h4>
+                                    <h4 class="font-label-md font-bold text-[#3e2723] text-lg">Dusun Prapatan Tulusayu</h4>
                                     <p class="font-body-sm text-on-surface-variant">Pemukiman Padat Penduduk</p>
                                 </div>
                             </li>
-                            <li class="p-md hover:bg-surface-container/50 transition-colors flex items-center gap-md">
-                                <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">holiday_village</span></div>
+                            <li class="p-4 rounded-2xl hover:bg-surface-container/50 hover:shadow-sm transition-all duration-300 flex items-center gap-4 cursor-default">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-inner"><span class="material-symbols-outlined text-[24px]">agriculture</span></div>
                                 <div>
-                                    <h4 class="font-label-md font-bold text-on-surface">Dusun Sumbersari</h4>
+                                    <h4 class="font-label-md font-bold text-[#3e2723] text-lg">Dusun Sumbersari</h4>
                                     <p class="font-body-sm text-on-surface-variant">Area Pertanian & Sumber Air</p>
                                 </div>
                             </li>
