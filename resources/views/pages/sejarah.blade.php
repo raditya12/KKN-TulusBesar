@@ -95,7 +95,7 @@
                     <div class="lg:w-1/2 relative group">
                         <div class="absolute -inset-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-[3rem] transform -rotate-3 group-hover:rotate-0 transition-transform duration-500"></div>
                         <div class="rounded-[2.5rem] overflow-hidden shadow-2xl relative aspect-[4/3] z-10">
-                            <img src="{{ asset('images/dummy/wisata_hero.jpg') }}" alt="Pemandangan Tulusbesar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <img src="{{ asset('images/GapuraBaru.png') }}" alt="Gapura Desa Tulusbesar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         </div>
                     </div>
                     <div class="lg:w-1/2">
@@ -130,7 +130,7 @@
                     <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between group">
                         <div class="md:w-5/12 md:text-right md:pr-16 pl-24 md:pl-0 order-2 md:order-1 mt-4 md:mt-0">
                             <div class="rounded-3xl overflow-hidden shadow-lg mb-6 aspect-video">
-                                <img src="{{ asset('images/kadipaten_malang.jpg') }}" alt="Era Kadipaten Malang" class="w-full h-full object-cover">
+                                <img src="{{ asset('images/kadipaten.jpg') }}" alt="Era Kadipaten Malang" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-headline-md text-3xl font-bold text-primary mb-3">Era Kadipaten Malang</h3>
                             <p class="font-body-md text-on-surface-variant text-lg">Dipimpin oleh Adipati Ronggo Tohjiwo, berpusat di Kuta Bedah, Buring. Wilayah ini dikenal sebagai Malang Kuso (Malang Eng-Kuso) berkat kemakmuran hasil taninya.</p>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="md:w-5/12 md:pl-16 pl-24 mt-4 md:mt-0 order-2 md:order-3">
                             <div class="rounded-3xl overflow-hidden shadow-lg mb-6 aspect-video">
-                                <img src="{{ asset('images/dummy/wisata_hero.jpg') }}" alt="Serangan Mataram" class="w-full h-full object-cover">
+                                <img src="{{ asset('images/mataram.jpg') }}" alt="Serangan Mataram" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-headline-md text-3xl font-bold text-primary mb-3">Serangan Mataram</h3>
                             <p class="font-body-md text-on-surface-variant text-lg">Sultan Agung (Mataram) mengutus Patih Surontanu untuk menyerang Kadipaten Malang. Terjadilah peperangan sengit yang memporak-porandakan wilayah tersebut. Tumenggung Alap-alap membangun pertahanan.</p>
@@ -159,9 +159,10 @@
                     <!-- Timeline Item 3 -->
                     <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between group">
                         <div class="md:w-5/12 md:text-right md:pr-16 pl-24 md:pl-0 order-2 md:order-1 mt-4 md:mt-0">
-                            <div class="rounded-3xl overflow-hidden shadow-lg mb-6 aspect-video">
-                                <img src="{{ asset('images/dummy/wisata_hero.jpg') }}" alt="Pelarian & Wafatnya Pahlawan" class="w-full h-full object-cover">
+                            <div class="rounded-3xl overflow-hidden shadow-lg mb-3 aspect-video">
+                                <img src="{{ asset('images/MangunDharma.jpg') }}" alt="Pelarian & Wafatnya Pahlawan" class="w-full h-full object-cover">
                             </div>
+                            <p class="text-sm text-on-surface-variant italic mb-6 md:text-right">Mangun Yudho atau biasa dikenal Mangun Dharma</p>
                             <h3 class="font-headline-md text-3xl font-bold text-primary mb-3">Pelarian & Wafatnya Pahlawan</h3>
                             <p class="font-body-md text-on-surface-variant text-lg">Senopati Mangun Yudho terdesak dan melarikan diri, lalu dirawat oleh Mbok Rondo Kuning (asal nama Desa <strong>Tulusayu</strong>). Hingga akhirnya beliau moksa di Binangun, dan selimutnya dimakamkan di <strong>Kemulan</strong>.</p>
                         </div>
@@ -179,7 +180,7 @@
                         </div>
                         <div class="md:w-5/12 md:pl-16 pl-24 mt-4 md:mt-0 order-2 md:order-3">
                             <div class="rounded-3xl overflow-hidden shadow-lg mb-6 aspect-video">
-                                <img src="{{ asset('images/dummy/wisata_hero.jpg') }}" alt="Penguasaan VOC" class="w-full h-full object-cover">
+                                <img src="{{ asset('images/voc.jpg') }}" alt="Penguasaan VOC" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-headline-md text-3xl font-bold text-primary mb-3">Penguasaan VOC</h3>
                             <p class="font-body-md text-on-surface-variant text-lg">Berdasarkan Perjanjian Mataram & VOC, wilayah Malang Timur diawasi VOC. Pembukaan lahan perkebunan tebu dan kopi dilakukan secara masif.</p>
@@ -190,7 +191,7 @@
                     <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between group">
                         <div class="md:w-5/12 md:text-right md:pr-16 pl-24 md:pl-0 order-2 md:order-1 mt-4 md:mt-0">
                             <div class="rounded-3xl overflow-hidden shadow-lg mb-6 aspect-video">
-                                <img src="{{ asset('images/dummy/wisata_hero.jpg') }}" alt="Berdirinya Desa Tulusbesar" class="w-full h-full object-cover">
+                                <img src="{{ asset('images/balaidesa.png') }}" alt="Berdirinya Desa Tulusbesar" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-headline-md text-3xl font-bold text-secondary mb-3">Berdirinya Desa Tulusbesar</h3>
                             <p class="font-body-md text-on-surface-variant text-lg">Setelah Perang Jawa, Senopati Mangun Yudho diyakini oleh masyarakat sebagai tokoh yang melakukan <em>babat alas</em> dan menamakan daerah pemukiman baru ini dengan nama <strong>"Tulusbesar"</strong>.</p>
@@ -343,7 +344,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Era Belanda</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/default.svg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Bapak Noni, Temah, Mini
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant"><span class="px-3 py-1 bg-surface-variant rounded-lg text-sm">Petinggi Desa</span></td>
@@ -352,7 +353,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">1951 – 1963</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/default.svg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Abdul Razak Rekso Dihardjo
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant">Kepala Desa (Pemilihan)</td>
@@ -360,7 +361,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">1964 – 1965</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/default.svg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Tawi
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant">Kepala Desa (Pemilihan)</td>
@@ -368,7 +369,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">1966 – 1969</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/default.svg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Karto Prawiro Kirun
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant"><span class="px-3 py-1 bg-tertiary/10 text-tertiary rounded-lg text-sm font-bold">Karteker (Ditunjuk)</span></td>
@@ -376,7 +377,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">1970 – 1971</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/wasis.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Wasis
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant"><span class="px-3 py-1 bg-tertiary/10 text-tertiary rounded-lg text-sm font-bold">Karteker (Ditunjuk)</span></td>
@@ -384,7 +385,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">1972 – 1973</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/default.svg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Mochamad Winardi
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant"><span class="px-3 py-1 bg-tertiary/10 text-tertiary rounded-lg text-sm font-bold">Karteker (Ditunjuk)</span></td>
@@ -392,7 +393,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Okt 1973 – Mar 1975</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/Supeno.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Supeno Niti Mangun Kusumo
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant">Kepala Desa (Pemilihan)</td>
@@ -400,7 +401,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Apr 1975 – Sep 1975</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/asan.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Asan Rachmad
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant"><span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm font-bold">Pjs (Ditunjuk)</span></td>
@@ -408,7 +409,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Okt 1975 – Apr 1989</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/kasnawi.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Kasnawi Noto Karyo Wibowo
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant">Kepala Desa (Pemilihan)</td>
@@ -416,7 +417,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Mei 1989 – Sep 1998</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/Sarkam.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Sarkam Rekso Mangku Wibowo
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant">Kepala Desa (Pemilihan)</td>
@@ -424,7 +425,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Okt 1998 – Mar 2013</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/setyo.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Setyo Adi, S.Pd.
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant">Kepala Desa (Pemilihan)</td>
@@ -432,7 +433,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Apr 2013 – Jul 2019</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/Sri.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Sri Widarti, S.Pd
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant">Kepala Desa (Pemilihan)</td>
@@ -440,7 +441,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Agt 2019 – Nov 2021</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/Hudi.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Hudi Mariono
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant">Kepala Desa (Pemilihan)</td>
@@ -448,7 +449,7 @@
                                 <tr class="hover:bg-surface-variant/30 transition-colors">
                                     <td class="px-8 py-5 font-label-lg text-on-surface whitespace-nowrap">Des 2021 – Nov 2022</td>
                                     <td class="px-8 py-5 font-body-lg text-on-surface-variant font-bold flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
+                                        <img src="{{ asset('images/ImageKades/Lailia.png') }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant" alt="">
                                         Lailia Kurniawati, ST., MM
                                     </td>
                                     <td class="px-8 py-5 font-body-md text-on-surface-variant"><span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm font-bold">Pj Kepala Desa (Ditunjuk)</span></td>
@@ -456,7 +457,7 @@
                                 <tr class="bg-primary/5 hover:bg-primary/10 transition-colors">
                                     <td class="px-8 py-6 font-label-xl text-primary whitespace-nowrap">Des 2022 – Sekarang</td>
                                     <td class="px-8 py-6 font-display-sm text-primary font-black flex items-center gap-3">
-                                        <img src="{{ asset('images/dummy/kades.jpg') }}" class="w-12 h-12 rounded-full object-cover border-2 border-primary shadow-sm" alt="">
+                                        <img src="{{ asset('images/ImageKades/BpSiratYudin.png') }}" class="w-12 h-12 rounded-full object-cover border-2 border-primary shadow-sm" alt="">
                                         Sirat Yudin
                                     </td>
                                     <td class="px-8 py-6 font-body-md text-on-surface-variant"><span class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-md">Kades PAW (Pemilihan)</span></td>
@@ -490,7 +491,7 @@
                         <div class="relative group">
                             <div class="absolute -inset-4 bg-gradient-to-r from-tertiary to-secondary rounded-full blur-lg opacity-50 group-hover:opacity-80 transition-opacity duration-500"></div>
                             <div class="w-64 h-64 md:w-72 md:h-72 rounded-full border-8 border-surface-container-lowest shadow-2xl overflow-hidden shrink-0 relative z-10 transform transition-transform duration-500 group-hover:scale-105">
-                                <img src="{{ asset('images/dummy/kades.jpg') }}" alt="Bapak Sirat Yudin" class="w-full h-full object-cover">
+                                <img src="{{ asset('images/ImageKades/BpSiratYudin.png') }}" alt="Bapak Sirat Yudin" class="w-full h-full object-cover">
                             </div>
                         </div>
                     </div>
