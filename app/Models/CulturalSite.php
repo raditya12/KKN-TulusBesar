@@ -11,7 +11,7 @@ class CulturalSite extends Model
     /** @use HasFactory<CulturalSiteFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+
 
     protected $fillable = [
         'name',

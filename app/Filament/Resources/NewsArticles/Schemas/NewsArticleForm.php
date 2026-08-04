@@ -53,6 +53,7 @@ class NewsArticleForm
                                 ->image()
                                 ->directory('news-images')
                                 ->imagePreviewHeight('200')
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120),
                             TextInput::make('video_link')
                                 ->label('Tautan Video (YouTube)')

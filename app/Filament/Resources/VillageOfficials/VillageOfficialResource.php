@@ -20,6 +20,12 @@ class VillageOfficialResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
+    protected static ?string $modelLabel = 'Perangkat Desa';
+
+    protected static ?string $pluralModelLabel = 'Perangkat Desa';
+
+    protected static ?string $navigationLabel = 'Perangkat Desa';
+
     protected static \UnitEnum|string|null $navigationGroup = 'CMS';
 
     public static function form(Schema $schema): Schema

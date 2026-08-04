@@ -55,6 +55,7 @@ class UmkmForm
                                 ->image()
                                 ->directory('umkm-images')
                                 ->imagePreviewHeight('200')
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120),
                         ])->columnSpan(1),
                 ]),
