@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\CulturalSites\Schemas;
 
 use App\Models\CulturalSite;
-use Dotswan\MapPicker\Fields\Map;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
@@ -90,30 +89,22 @@ class CulturalSiteForm
                         ->description('Titik koordinat dan foto situs.')
                         ->columns(['default' => 1, 'md' => 2])
                         ->schema([
-                            Map::make('location')
-                                ->label('Pilih Lokasi di Peta')
-                                ->helperText('Geser penanda merah pada peta untuk menentukan lokasi yang tepat.')
-                                ->columnSpanFull()
-                                ->defaultLocation(latitude: -8.0093, longitude: 112.7666) // Pusat Desa Tulusbesar
-                                ->afterStateUpdated(function (Set $set, ?array $state): void {
-                                    $set('latitude', $state['lat'] ?? null);
-                                    $set('longitude', $state['lng'] ?? null);
-                                })
-                                ->afterStateHydrated(function ($state, $record, Set $set): void {
-                                    if ($record && $record->latitude && $record->longitude) {
-                                        $set('location', ['lat' => $record->latitude, 'lng' => $record->longitude]);
-                                    }
-                                })
-                                ->extraStyles([
-                                    'min-height: 60vh',
-                                    'border-radius: 12px',
-                                ])
-                                ->showMarker()
-                                ->draggable()
-                                ->zoom(14)
-                                ->live(onBlur: true),
-                            Hidden::make('latitude'),
-                            Hidden::make('longitude'),
+                            \Filament\Forms\Components\Placeholder::make('map_preview')
+                                ->hiddenLabel()
+                                ->content(view('filament.forms.components.map-preview'))
+                                ->columnSpanFull(),
+                            Grid::make(2)->schema([
+                                TextInput::make('latitude')
+                                    ->label('Garis Lintang (Latitude)')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->helperText('Terisi otomatis dari peta.'),
+                                TextInput::make('longitude')
+                                    ->label('Garis Bujur (Longitude)')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->helperText('Terisi otomatis dari peta.'),
+                            ])->columnSpanFull(),
                             FileUpload::make('images')
                                 ->multiple()
                                 ->reorderable()

@@ -88,7 +88,7 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach($news as $berita)
+                @forelse($news as $berita)
                 <!-- News Card -->
                 <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/30 group hover:shadow-lg transition-all flex flex-col">
                     <div class="h-48 overflow-hidden relative">
@@ -106,7 +106,13 @@
                         </a>
                     </div>
                 </div>
-                @endforeach
+                @empty
+                <div class="col-span-full flex flex-col items-center justify-center py-16 text-center bg-surface-container-lowest rounded-3xl border-2 border-outline-variant/30 border-dashed">
+                    <span class="material-symbols-outlined text-[48px] text-outline mb-4">newspaper</span>
+                    <h3 class="font-headline-md text-xl font-bold text-on-surface mb-2">Belum Ada Berita Terbaru</h3>
+                    <p class="font-body-md text-on-surface-variant max-w-md mx-auto">Saat ini belum ada publikasi berita atau informasi kegiatan terbaru dari desa. Silakan kunjungi kembali halaman ini nanti.</p>
+                </div>
+                @endforelse
             </div>
             
             <div class="mt-8 text-center md:hidden">
