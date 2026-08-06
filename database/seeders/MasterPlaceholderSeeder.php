@@ -74,6 +74,12 @@ class MasterPlaceholderSeeder extends Seeder
                 'kategori' => 'Data Warga',
                 'deskripsi' => 'Kewarganegaraan warga, default: WNI.',
             ],
+            [
+                'nama_field' => 'Tempat & Tanggal Lahir',
+                'placeholder' => '{{tempat_tanggal_lahir}}',
+                'kategori' => 'Data Warga',
+                'deskripsi' => 'Tempat dan tanggal lahir warga gabungan (misal: Malang, 04 April 1969).',
+            ],
 
             // Kategori: Data Surat
             [
@@ -191,6 +197,32 @@ class MasterPlaceholderSeeder extends Seeder
                 'placeholder' => '{{jenis_dokumen}}',
                 'kategori' => 'Beda Nama',
                 'deskripsi' => 'Jenis dokumen yang memiliki perbedaan nama (misal: Ijazah, Akta Kelahiran).',
+            ],
+
+            // Kategori: Data Anak / Siswa (untuk SKTM Sekolah)
+            [
+                'nama_field' => 'Nama Anak',
+                'placeholder' => '{{nama_anak}}',
+                'kategori' => 'Data Anak',
+                'deskripsi' => 'Nama lengkap anak / siswa.',
+            ],
+            [
+                'nama_field' => 'NIK Anak',
+                'placeholder' => '{{nik_anak}}',
+                'kategori' => 'Data Anak',
+                'deskripsi' => 'Nomor Induk Kependudukan anak.',
+            ],
+            [
+                'nama_field' => 'Nama Sekolah',
+                'placeholder' => '{{nama_sekolah}}',
+                'kategori' => 'Data Anak',
+                'deskripsi' => 'Nama sekolah tempat anak bersekolah.',
+            ],
+            [
+                'nama_field' => 'Kelas',
+                'placeholder' => '{{kelas_anak}}',
+                'kategori' => 'Data Anak',
+                'deskripsi' => 'Kelas / tingkat yang sedang ditempuh anak.',
             ],
 
             // Kategori: Tanda Tangan

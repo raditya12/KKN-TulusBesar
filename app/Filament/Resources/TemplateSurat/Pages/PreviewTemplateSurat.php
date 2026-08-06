@@ -3,27 +3,31 @@
 namespace App\Filament\Resources\TemplateSurat\Pages;
 
 use App\Filament\Resources\TemplateSurat\TemplateSuratResource;
-use App\Models\TemplateSurat as TemplateSuratModel;
+use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 
 class PreviewTemplateSurat extends Page
 {
+    use InteractsWithRecord;
+
     protected static string $resource = TemplateSuratResource::class;
 
     protected string $view = 'filament.template-surat.preview';
 
-    public TemplateSuratModel $record;
-
-    public function mount(int|string $record): void
+    public function mount(int | string $record): void
     {
-        $this->record = TemplateSuratModel::findOrFail($record);
+        $this->record = $this->resolveRecord($record);
     }
 
     protected function getViewData(): array
     {
+        /** @var \App\Models\TemplateSurat $template */
+        $template = $this->getRecord();
+
         return [
-            'template' => $this->record,
-            'konten' => $this->record->konten_html,
+            'template' => $template,
+            'konten' => $template->konten_html,
         ];
     }
 }
+

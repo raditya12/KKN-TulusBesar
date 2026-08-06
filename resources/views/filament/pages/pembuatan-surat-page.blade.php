@@ -16,17 +16,19 @@
             /* Modern MS Word A4 Paper Canvas */
             .a4-paper-canvas {
                 background: #ffffff;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-                border-radius: 2px;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+                border-radius: 4px;
                 width: 100%;
                 max-width: 794px;
-                margin: 0 auto;
-                padding: 40px 48px;
+                min-height: 1123px;
+                margin: 0 auto 2rem;
+                padding: 48px 56px;
                 font-family: 'Times New Roman', Times, serif;
                 font-size: 11.5pt;
                 line-height: 1.6;
                 color: #111827;
                 transition: transform 0.2s ease, max-width 0.2s ease;
+                box-sizing: border-box;
             }
             .a4-paper-canvas table {
                 width: 100%;
@@ -38,17 +40,17 @@
             }
             .custom-form-input {
                 width: 100%;
-                padding: 7px 10px;
-                font-size: 0.8125rem;
+                padding: 8px 12px;
+                font-size: 0.875rem;
                 border-radius: 0.5rem;
-                border: 1px solid rgba(140, 90, 53, 0.25);
+                border: 1px solid rgba(140, 90, 53, 0.3);
                 background-color: #ffffff;
                 color: #111827;
                 transition: border-color 0.15s ease, box-shadow 0.15s ease;
             }
             .dark .custom-form-input {
                 background-color: #1e140f;
-                border-color: rgba(140, 90, 53, 0.4);
+                border-color: rgba(140, 90, 53, 0.5);
                 color: #f9fafb;
             }
             .custom-form-input:focus {
@@ -93,23 +95,26 @@
             }
         </style>
 
-        {{-- WORKSPACE 2-COLUMN SPLIT LAYOUT --}}
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.25rem; min-height: calc(100vh - 12rem);">
+        {{-- WORKSPACE 2-COLUMN LAYOUT --}}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-            {{-- KOLOM KIRI: Form scrollable --}}
-            <div style="position: sticky; top: 1rem; align-self: start; max-height: calc(100vh - 7rem);">
+            {{-- KOLOM KIRI: Form Input --}}
+            <div class="lg:col-span-5 space-y-4">
                 <x-filament::section>
                     <x-slot name="heading">
-                        <span>Data Permohonan Surat</span>
+                        <div class="flex items-center gap-2">
+                            <x-filament::icon icon="heroicon-o-pencil-square" class="w-5 h-5 text-primary-600" />
+                            <span class="font-bold">Data Permohonan Surat</span>
+                        </div>
                     </x-slot>
 
-                    <div class="space-y-4 overflow-y-auto pr-1" style="max-height: calc(100vh - 14rem);">
+                    <div class="space-y-4">
                         {{-- Step 1: Pilih Jenis Surat --}}
                         <div>
                             <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Pilih Jenis Surat</label>
                             <select
                                 wire:model.live="jenis_surat_id"
-                                class="custom-form-input font-medium"
+                                class="custom-form-input font-semibold text-sm"
                             >
                                 <option value="0">— Pilih Jenis Surat —</option>
                                 @foreach($jenisSuratOptions as $id => $nama)
@@ -121,12 +126,16 @@
 
                         {{-- Step 2: Dynamic Input Fields / Isian Field Surat --}}
                         @if(count($dynamicFields) > 0)
-                            <div class="space-y-3 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200 dark:border-gray-700/60">
-                                <span class="block text-[10px] font-bold text-gray-500 tracking-wider uppercase">ISIAN FIELD SURAT</span>
+                            <div class="space-y-3 bg-amber-50/40 dark:bg-gray-800/60 p-4 rounded-xl border border-amber-200/60 dark:border-gray-700/60 max-h-[480px] overflow-y-auto pr-2">
+                                <div class="flex items-center justify-between pb-2 border-b border-amber-200/40 dark:border-gray-700/60">
+                                    <span class="text-xs font-bold text-amber-900 dark:text-amber-300 tracking-wider uppercase">
+                                        📋 Isian Kolom Surat ({{ count($dynamicFields) }} Kolom)
+                                    </span>
+                                </div>
 
                                 @foreach($dynamicFields as $field)
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-0.5">
+                                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                             {{ $field['label'] }}
                                         </label>
 
@@ -150,33 +159,33 @@
                             </div>
                         @else
                             @if(! $isCustom)
-                                <div class="p-3 text-center bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700/60 rounded-xl text-xs italic text-gray-400 dark:text-gray-500">
+                                <div class="p-4 text-center bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700/60 rounded-xl text-xs italic text-gray-400 dark:text-gray-500">
                                     Pilih jenis surat di atas untuk memuat kolom isian otomatis.
                                 </div>
                             @endif
                         @endif
 
-                        {{-- Keperluan --}}
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Nomor Surat</label>
-                            <input
-                                type="text"
-                                wire:model.live.debounce.300ms="nomor_surat"
-                                placeholder="451.1 / 023 / DS / X / 2026"
-                                class="custom-form-input font-mono"
-                            />
+                        {{-- Nomor & Tanggal Surat --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Nomor Surat</label>
+                                <input
+                                    type="text"
+                                    wire:model.live.debounce.300ms="nomor_surat"
+                                    placeholder="451.1 / 023 / DS / 08 / 2026"
+                                    class="custom-form-input font-mono text-xs"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Tanggal Surat</label>
+                                <input
+                                    type="date"
+                                    wire:model.live="tanggal_surat"
+                                    class="custom-form-input text-xs"
+                                />
+                            </div>
                         </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Tanggal Surat</label>
-                            <input
-                                type="date"
-                                wire:model.live="tanggal_surat"
-                                class="custom-form-input"
-                            />
-                        </div>
-
-
 
                         {{-- Konten Custom --}}
                         @if($isCustom)
@@ -186,7 +195,7 @@
                                     <input
                                         type="text"
                                         wire:model.live.debounce.300ms="namaSuratCustom"
-                                        placeholder="Surat Keterangan Domisili Usaha..."
+                                        placeholder="Surat Keterangan..."
                                         class="custom-form-input font-medium"
                                     />
                                 </div>
@@ -208,9 +217,9 @@
                                 wire:click="generateSurat"
                                 wire:loading.attr="disabled"
                                 icon="heroicon-o-arrow-down-tray"
-                                class="w-full justify-center font-semibold"
+                                class="w-full justify-center font-bold py-2.5 shadow-sm"
                             >
-                                Generate & Simpan
+                                Generate & Simpan Surat
                             </x-filament::button>
 
                             <x-filament::button
@@ -221,35 +230,35 @@
                                 icon="heroicon-o-printer"
                                 class="w-full justify-center font-semibold"
                             >
-                                Unduh PDF/Word
+                                Unduh PDF / Cetak
                             </x-filament::button>
                         </div>
                     </div>
                 </x-filament::section>
             </div>
 
-            {{-- KOLOM KANAN: Preview sticky, always visible --}}
+            {{-- KOLOM KANAN: Preview A4 Canvas --}}
             <div
-                style="position: sticky; top: 1rem; align-self: start; max-height: calc(100vh - 7rem);"
+                class="lg:col-span-7"
                 :class="{ 'fixed inset-0 z-50 p-6 bg-gray-900 overflow-y-auto': isFullscreen }"
             >
-                <x-filament::section class="h-full">
+                <x-filament::section>
                     <x-slot name="heading">
                         <div class="flex items-center gap-2">
-                            <x-filament::icon icon="heroicon-o-eye" class="w-4 h-4 text-primary-600" />
-                            <span>Pratinjau Surat</span>
+                            <x-filament::icon icon="heroicon-o-eye" class="w-5 h-5 text-primary-600" />
+                            <span class="font-bold">Pratinjau Lembar Surat (A4)</span>
                         </div>
                     </x-slot>
 
                     <x-slot name="headerEnd">
                         <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 text-xs">
-                            <button type="button" @click="zoomOut()" class="p-1 rounded hover:bg-white dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300" title="Zoom Out">
+                            <button type="button" @click="zoomOut()" class="p-1.5 rounded hover:bg-white dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300" title="Zoom Out">
                                 <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/></svg>
                             </button>
-                            <button type="button" @click="resetZoom()" class="px-2 py-0.5 text-[11px] font-mono font-medium text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-700 rounded" title="Reset Zoom">
+                            <button type="button" @click="resetZoom()" class="px-2 py-0.5 text-[11px] font-mono font-bold text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-700 rounded" title="Reset Zoom">
                                 <span x-text="zoom + '%'">100%</span>
                             </button>
-                            <button type="button" @click="zoomIn()" class="p-1 rounded hover:bg-white dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300" title="Zoom In">
+                            <button type="button" @click="zoomIn()" class="p-1.5 rounded hover:bg-white dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300" title="Zoom In">
                                 <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/></svg>
                             </button>
                             <div class="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
@@ -257,14 +266,14 @@
                                 Fit
                             </button>
                             <div class="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
-                            <button type="button" @click="toggleFullscreen()" :class="{ 'bg-primary-600 text-white': isFullscreen, 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700': !isFullscreen }" class="p-1 rounded transition" title="Fullscreen">
+                            <button type="button" @click="toggleFullscreen()" :class="{ 'bg-primary-600 text-white': isFullscreen, 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700': !isFullscreen }" class="p-1.5 rounded transition" title="Fullscreen">
                                 <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
                             </button>
                         </div>
                     </x-slot>
 
-                    {{-- Scrollable Preview Container --}}
-                    <div class="bg-gray-200 dark:bg-gray-950 rounded-xl overflow-auto border border-gray-200 dark:border-gray-800" style="padding: 1rem; height: calc(100vh - 14rem);">
+                    {{-- Scrollable Preview Canvas --}}
+                    <div class="bg-gray-200/80 dark:bg-gray-950 rounded-xl overflow-auto border border-gray-300/60 dark:border-gray-800 p-6 min-h-[600px] max-h-[calc(100vh-12rem)] flex justify-center">
                         <div
                             class="a4-paper-canvas"
                             :style="{
@@ -277,21 +286,25 @@
                                 {!! $previewHtml !!}
                             @else
                                 {{-- Kop Surat Default --}}
-                                <div style="text-align: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 3px double #000;">
-                                    <p style="font-weight: bold; font-size: 13pt; text-transform: uppercase; margin: 0; line-height: 1.2;">
-                                        PEMERINTAH KABUPATEN {{ strtoupper($namaKabupaten) }}
-                                    </p>
-                                    <p style="font-weight: bold; font-size: 12pt; text-transform: uppercase; margin: 2px 0; line-height: 1.2;">
-                                        KECAMATAN {{ strtoupper($namaKecamatan) }}
-                                    </p>
-                                    <p style="font-weight: bold; font-size: 15pt; text-transform: uppercase; margin: 0; line-height: 1.2;">
-                                        DESA {{ strtoupper($namaDesa) }}
-                                    </p>
-                                </div>
+                                <table style="width: 100%; border-bottom: 3px double #000; margin-bottom: 16px; padding-bottom: 8px; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="width: 90px; vertical-align: middle; text-align: center; padding-right: 10px;">
+                                            <img src="/images/logo-malang.png" alt="Logo Kabupaten Malang" style="width: 80px; height: 80px; object-fit: contain;" />
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; line-height: 1.3;">
+                                            <p style="font-size: 12pt; font-weight: normal; margin: 0; text-transform: uppercase;">PEMERINTAH KABUPATEN {{ strtoupper($namaKabupaten) }}</p>
+                                            <p style="font-size: 12pt; font-weight: normal; margin: 0; text-transform: uppercase;">KECAMATAN {{ strtoupper($namaKecamatan) }}</p>
+                                            <p style="font-size: 16pt; font-weight: bold; margin: 2px 0; text-transform: uppercase;">DESA {{ strtoupper($namaDesa) }}</p>
+                                            <p style="font-size: 9pt; margin: 0;">Jalan Raya Tulusbesar No. 012 RT.04 RW.01, Kabupaten Malang, Jawa Timur</p>
+                                            <p style="font-size: 9pt; margin: 0;">Telpon 0813-3311-4564 Laman : malangtulusbesar.desa.kemendesa.go.id</p>
+                                            <p style="font-size: 9pt; margin: 0; text-decoration: underline;">Pos-el: email:pemdes.tulusbesar2018@gmail.com, Kode Pos : 65156</p>
+                                        </td>
+                                    </tr>
+                                </table>
 
-                                <div style="text-align: center; margin: 40px 0;">
-                                    <p style="font-weight: bold; font-size: 13pt; text-transform: uppercase; color: #6b7280;">
-                                        PILIH JENIS SURAT DI ATAS UNTUK MEMUAT TEMPLATE & PRATINJAU LIVE
+                                <div style="text-align: center; margin: 80px 0;">
+                                    <p style="font-weight: bold; font-size: 13pt; text-transform: uppercase; color: #9ca3af;">
+                                        PILIH JENIS SURAT DI SAMPING UNTUK MEMUAT TEMPLATE & PRATINJAU LANGSUNG
                                     </p>
                                 </div>
                             @endif
@@ -367,8 +380,6 @@
                 </table>
             </div>
         </x-filament::section>
-
-
 
     </div>
 </x-filament-panels::page>

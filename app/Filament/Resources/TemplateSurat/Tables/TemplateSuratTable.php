@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TemplateSurat\Tables;
 
+use App\Filament\Resources\TemplateSurat\TemplateSuratResource;
 use App\Models\TemplateSurat as TemplateSuratModel;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -57,10 +58,7 @@ class TemplateSuratTable
                     ->label('Preview')
                     ->icon('heroicon-o-eye')
                     ->color('info')
-                    ->url(fn (TemplateSuratModel $record) => TemplateSuratModel::find($record->id)
-                        ? route('filament.admin.resources.template-surat.preview', $record)
-                        : '#'
-                    )
+                    ->url(fn (TemplateSuratModel $record) => TemplateSuratResource::getUrl('preview', ['record' => $record]))
                     ->openUrlInNewTab(),
 
                 EditAction::make(),
