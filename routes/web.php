@@ -56,8 +56,12 @@ Route::get('/peta', function () {
         ->whereNotNull('longitude')
         ->where('status', 'active')
         ->get();
+        
+    $umkms = Umkm::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->get();
 
-    return view('pages.peta', compact('features', 'culturalSites'));
+    return view('pages.peta', compact('features', 'culturalSites', 'umkms'));
 })->name('peta');
 
 Route::get('/publikasi', function () {

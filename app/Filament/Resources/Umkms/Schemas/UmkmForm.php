@@ -17,10 +17,10 @@ class UmkmForm
     {
         return $schema
             ->components([
-                Grid::make(['default' => 1, 'md' => 3])->schema([
+                Grid::make(['default' => 1])->schema([
                     Section::make('Informasi Usaha')
                         ->description('Data profil dan kategori UMKM.')
-                        ->columns(2)
+                        ->columns(['default' => 1, 'md' => 2])
                         ->schema([
                             TextInput::make('name')
                                 ->label('Nama Usaha')
@@ -32,20 +32,38 @@ class UmkmForm
                                 ->label('Slug')
                                 ->helperText('Otomatis terisi dari nama usaha.')
                                 ->required(),
-                            TextInput::make('category')
-                                ->label('Kategori Usaha')
-                                ->helperText('Contoh: Kuliner, Kriya, Pertanian.')
-                                ->columnSpanFull(),
                             RichEditor::make('description')
                                 ->label('Deskripsi')
                                 ->helperText('Ceritakan lengkap tentang usaha ini beserta keunggulannya.')
                                 ->fileAttachmentsDirectory('umkm-images')
+                                ->extraInputAttributes(['style' => 'min-height: 250px;'])
                                 ->columnSpanFull(),
-                        ])->columnSpan(2),
+                            TextInput::make('category')
+                                ->label('Kategori Usaha')
+                                ->helperText('Contoh: Kuliner, Kriya, Pertanian.')
+                                ->columnSpanFull(),
+                        ])->columnSpanFull(),
 
-                    Section::make('Galeri')
-                        ->description('Unggah dokumentasi usaha.')
+                    Section::make('Lokasi & Media')
+                        ->description('Titik koordinat dan foto usaha.')
+                        ->columns(['default' => 1, 'md' => 2])
                         ->schema([
+                            \Filament\Forms\Components\Placeholder::make('map_preview')
+                                ->hiddenLabel()
+                                ->content(view('filament.forms.components.map-preview'))
+                                ->columnSpanFull(),
+                            Grid::make(2)->schema([
+                                TextInput::make('latitude')
+                                    ->label('Garis Lintang (Latitude)')
+                                    ->numeric()
+                                    ->live(debounce: 500)
+                                    ->helperText('Bisa diisi manual atau klik dari peta.'),
+                                TextInput::make('longitude')
+                                    ->label('Garis Bujur (Longitude)')
+                                    ->numeric()
+                                    ->live(debounce: 500)
+                                    ->helperText('Bisa diisi manual atau klik dari peta.'),
+                            ])->columnSpanFull(),
                             FileUpload::make('images')
                                 ->multiple()
                                 ->reorderable()
@@ -54,10 +72,11 @@ class UmkmForm
                                 ->disk('public')
                                 ->image()
                                 ->directory('umkm-images')
-                                ->imagePreviewHeight('200')
+                                ->imagePreviewHeight('250')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(5120),
-                        ])->columnSpan(1),
+                                ->maxSize(5120)
+                                ->columnSpanFull(),
+                        ])->columnSpanFull(),
                 ]),
             ]);
     }
