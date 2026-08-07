@@ -12,6 +12,8 @@ class ListTemplateSurat extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Upload Template')];
+        return [
+            CreateAction::make(),
+        ];
     }
 }

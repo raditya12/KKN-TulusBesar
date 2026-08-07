@@ -62,24 +62,7 @@ class Pengaturan extends Page implements HasForms
                                 TextInput::make('email_desa')->label('Email Desa')->placeholder('desa@example.com')->email(),
                                 TextInput::make('nama_kepala_desa')->label('Nama Kepala Desa')->placeholder('Bpk./Ibu ...'),
                                 TextInput::make('nip_kepala_desa')->label('NIP Kepala Desa')->placeholder('Kosong jika tidak ada NIP'),
-                            ])->columnSpan(1),
-                    ]),
-
-                Section::make('Logo & Kop Surat Custom')
-                    ->description('Pengaturan khusus untuk template kustom yang membutuhkan logo dan format kop surat HTML sendiri.')
-                    ->icon('heroicon-o-document-text')
-                    ->schema([
-                        Grid::make(2)->schema([
-                            TextInput::make('logo_path')
-                                ->label('Path Logo Desa')
-                                ->placeholder('Contoh: logos/logo-desa.png')
-                                ->helperText('Digunakan pada template Custom Surat. Upload logo terlebih dahulu melalui file manager.'),
-                            Textarea::make('kop_surat_html')
-                                ->label('Kop Surat (HTML)')
-                                ->placeholder('Paste kop surat HTML di sini...')
-                                ->helperText('Format kop surat mentah (HTML) untuk kustomisasi tingkat lanjut.')
-                                ->rows(4),
-                        ])
+                            ]),
                     ]),
             ])
             ->statePath('data');
