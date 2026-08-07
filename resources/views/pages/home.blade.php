@@ -23,16 +23,6 @@
                 Harmoni kearifan lokal Javanese dan inovasi tata kelola cerdas dalam satu genggaman. Jelajahi keindahan budaya dan infrastruktur desa kami.
             </p>
             
-            <div class="flex flex-wrap items-center justify-center gap-md mt-md">
-                <a href="#" class="bg-tertiary-fixed hover:bg-tertiary-fixed-dim text-on-tertiary-fixed font-label-md px-xl py-md rounded-xl transition-all duration-300 shadow-xl shadow-tertiary-fixed/20 flex items-center gap-sm transform hover:-translate-y-1">
-                    <span class="material-symbols-outlined">explore</span>
-                    Jelajahi WebGIS
-                </a>
-                <a href="{{ '#profil' }}" class="bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 backdrop-blur-md border border-surface-container-lowest/30 text-on-primary font-label-md px-xl py-md rounded-xl transition-all duration-300 flex items-center gap-sm transform hover:-translate-y-1">
-                    <span class="material-symbols-outlined">info</span>
-                    Profil Desa
-                </a>
-            </div>
         </div>
     </section>
 

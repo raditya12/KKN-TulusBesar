@@ -81,10 +81,6 @@
         <div class="max-w-screen-xl mx-auto px-4 md:px-container-margin">
             <div class="flex items-end justify-between mb-12">
                 <h2 class="font-display-md text-3xl font-bold text-on-background">Berita <span class="text-secondary">Terbaru</span></h2>
-                <div class="hidden md:flex items-center gap-2">
-                    <button class="w-10 h-10 rounded-full bg-surface-container-low border border-outline-variant/50 flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
-                    <button class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
-                </div>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -115,8 +111,8 @@
                 @endforelse
             </div>
             
-            <div class="mt-8 text-center md:hidden">
-                <button class="font-label-md text-primary border border-primary px-6 py-2 rounded-full w-full">Lihat Berita Lainnya</button>
+            <div class="mt-12">
+                {{ $news->links('components.pagination') }}
             </div>
         </div>
     </section>

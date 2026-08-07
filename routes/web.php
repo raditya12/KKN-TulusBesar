@@ -65,7 +65,7 @@ Route::get('/peta', function () {
 })->name('peta');
 
 Route::get('/publikasi', function () {
-    $news = NewsArticle::latest('published_at')->get();
+    $news = NewsArticle::latest('published_at')->paginate(8);
 
     return view('pages.publikasi', compact('news'));
 })->name('publikasi');
