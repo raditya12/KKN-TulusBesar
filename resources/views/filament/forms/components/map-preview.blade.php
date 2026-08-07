@@ -22,38 +22,35 @@
             const initialLng = this.lng || this.defaultLng;
 
             this.map = L.map($refs.map).setView([initialLat, initialLng], 16);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap contributors'
+            L.tileLayer('http://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '© Google Maps'
             }).addTo(this.map);
             
             if (this.lat && this.lng) {
                 this.marker = L.marker([this.lat, this.lng]).addTo(this.map);
             }
 
-            // Menambahkan batas wilayah Desa (garis merah)
-            // Sistem akan mencoba mengambil file tulusbesar.geojson di folder public/geojson
-            fetch('/geojson/tulusbesar.geojson')
-                .then(response => {
-                    if (response.ok) return response.json();
-                    throw new Error('File GeoJSON batas desa belum tersedia.');
-                })
-                .then(data => {
-                    // Jika file GeoJSON ada, gambar polygon presisi sesuai garis wilayah desa
-                    L.geoJSON(data, {
-                        style: {
-                            color: '#e20613', // Merah
-                            weight: 3,
-                            dashArray: '5, 5', // Efek putus-putus
-                            opacity: 0.8,
-                            fillColor: '#e20613',
-                            fillOpacity: 0.1
-                        }
-                    }).addTo(this.map);
-                })
-                .catch(error => {
-                    // File GeoJSON belum ada, jadi kita tidak menampilkan batas desa apapun.
-                });
+            this.$watch('lat', value => {
+                if (value && this.lng && this.map) {
+                    let pos = [parseFloat(value), parseFloat(this.lng)];
+                    if (this.marker) this.marker.setLatLng(pos);
+                    else this.marker = L.marker(pos).addTo(this.map);
+                    this.map.panTo(pos);
+                }
+            });
+
+            this.$watch('lng', value => {
+                if (value && this.lat && this.map) {
+                    let pos = [parseFloat(this.lat), parseFloat(value)];
+                    if (this.marker) this.marker.setLatLng(pos);
+                    else this.marker = L.marker(pos).addTo(this.map);
+                    this.map.panTo(pos);
+                }
+            });
+
+
 
             this.map.on('click', (e) => {
                 // Update properties in Alpine, which automatically syncs to Livewire
@@ -102,20 +99,63 @@
     }
     });
     this.map.addControl(new ResetControl());
+    
+    // Add Geocoder Search Box
+    if (typeof L.Control.Geocoder !== 'undefined') {
+        const arcgisProvider = L.Control.Geocoder.arcgis();
+        const geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false,
+            position: 'topright',
+            placeholder: 'Cari lokasi...',
+            geocoder: arcgisProvider
+        }).addTo(this.map);
+        
+        geocoder.on('markgeocode', (e) => {
+            const latlng = e.geocode.center;
+            
+            // Update properties in Alpine, which automatically syncs to Livewire
+            this.lat = parseFloat(latlng.lat).toFixed(7);
+            this.lng = parseFloat(latlng.lng).toFixed(7);
+            
+            if (this.marker) {
+                this.marker.setLatLng(latlng);
+            } else {
+                this.marker = L.marker(latlng).addTo(this.map);
+            }
+            
+            this.map.fitBounds(e.geocode.bbox);
+        });
+    }
     }
     }" x-init="
-    if (typeof L === 'undefined') {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    document.head.appendChild(link);
+    const loadMapAndGeocoder = () => {
+        if (typeof L.Control === 'undefined' || typeof L.Control.Geocoder === 'undefined') {
+            const geoLink = document.createElement('link');
+            geoLink.rel = 'stylesheet';
+            geoLink.href = 'https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css';
+            document.head.appendChild(geoLink);
 
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    script.onload = () => initMap();
-    document.head.appendChild(script);
+            const geoScript = document.createElement('script');
+            geoScript.src = 'https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js';
+            geoScript.onload = () => initMap();
+            document.head.appendChild(geoScript);
+        } else {
+            initMap();
+        }
+    };
+
+    if (typeof L === 'undefined') {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(link);
+
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.onload = () => loadMapAndGeocoder();
+        document.head.appendChild(script);
     } else {
-    initMap();
+        loadMapAndGeocoder();
     }
     " wire:ignore>
     <div class="mb-2 text-sm text-gray-500 dark:text-gray-400 flex justify-between items-center">
