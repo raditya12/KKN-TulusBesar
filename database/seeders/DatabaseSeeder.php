@@ -23,8 +23,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(CmsSeeder::class);
-        $this->call(JenisSuratSeeder::class);
-        $this->call(MasterPlaceholderSeeder::class);
         $this->call(PengaturanSeeder::class);
     }
 }

@@ -45,6 +45,18 @@
                             class="filter-checkbox w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary cursor-pointer">
                     </label>
 
+                    <!-- Filter Item UMKM -->
+                    <label
+                        class="flex items-center gap-3 p-3.5 rounded-xl bg-white hover:bg-gray-50 cursor-pointer transition-colors border border-gray-200 shadow-sm">
+                        <div
+                            class="w-9 h-9 rounded-full bg-[#4f46e5]/10 text-[#4f46e5] flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[18px]">storefront</span>
+                        </div>
+                        <span class="font-body-md text-gray-700 font-medium flex-grow">UMKM</span>
+                        <input type="checkbox" checked value="UMKM"
+                            class="filter-checkbox w-5 h-5 rounded border-gray-300 text-[#4f46e5] focus:ring-[#4f46e5] accent-[#4f46e5] cursor-pointer">
+                    </label>
+
                     <!-- Filter Item 2 -->
                     <label
                         class="flex items-center gap-3 p-3.5 rounded-xl bg-white hover:bg-gray-50 cursor-pointer transition-colors border border-gray-200 shadow-sm">
@@ -158,7 +170,8 @@
                         'Peternakan': L.markerClusterGroup(clusterOptions),
                         'Fasilitas Umum': L.markerClusterGroup(clusterOptions),
                         'PJU': L.markerClusterGroup(clusterOptions),
-                        'Sampah': L.markerClusterGroup(clusterOptions)
+                        'Sampah': L.markerClusterGroup(clusterOptions),
+                        'UMKM': L.markerClusterGroup(clusterOptions)
                     };
 
                     // Helper function to get marker style based on category
@@ -169,6 +182,7 @@
                             case 'Fasilitas Umum': return { bg: 'bg-tertiary', border: 'border-t-tertiary', icon: 'account_balance' };
                             case 'PJU': return { bg: 'bg-[#d97706]', border: 'border-t-[#d97706]', icon: 'lightbulb' };
                             case 'Sampah': return { bg: 'bg-[#059669]', border: 'border-t-[#059669]', icon: 'recycling' };
+                            case 'UMKM': return { bg: 'bg-[#4f46e5]', border: 'border-t-[#4f46e5]', icon: 'storefront' };
                             default: return { bg: 'bg-primary', border: 'border-t-primary', icon: 'location_on' };
                         }
                     }
@@ -274,6 +288,58 @@
 
                             if (layerGroups['Wisata']) {
                                 layerGroups['Wisata'].addLayer(marker);
+                            }
+                        @endforeach
+                    @endif
+
+                    // Loop through UMKMs
+                    @if(isset($umkms) && count($umkms) > 0)
+                        @foreach($umkms as $umkm)
+                            var lat = parseFloat("{{ str_replace(',', '.', $umkm->latitude) }}");
+                            var lng = parseFloat("{{ str_replace(',', '.', $umkm->longitude) }}");
+                            var name = {!! json_encode($umkm->name) !!};
+                            var category = {!! json_encode($umkm->category ?? 'UMKM') !!};
+                            var url = "{{ route('umkm.show', $umkm->slug) }}";
+                            var rawDesc = {!! json_encode(strip_tags($umkm->description)) !!};
+                            var desc = rawDesc.length > 100
+                                ? rawDesc.substring(0, 100) + '... <a href="' + url + '" class="!text-primary font-bold hover:underline">Baca selengkapnya</a>'
+                                : rawDesc;
+
+                            var style = getMarkerStyle('UMKM');
+                            var iconHtml = `
+                                                    <div class="relative flex flex-col items-center">
+                                                        <div class="${style.bg} text-white p-2 rounded-full shadow-lg relative z-10 border-2 border-white flex items-center justify-center">
+                                                            <span class="material-symbols-outlined text-[16px]">${style.icon}</span>
+                                                        </div>
+                                                        <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] ${style.border} -mt-1 relative z-0"></div>
+                                                    </div>
+                                                `;
+
+                            var customIcon = L.divIcon({
+                                html: iconHtml,
+                                className: 'bg-transparent',
+                                iconSize: [36, 46],
+                                iconAnchor: [18, 46],
+                                popupAnchor: [0, -46]
+                            });
+
+                            var marker = L.marker([lat, lng], { icon: customIcon });
+                            marker.bindPopup(`
+                                                    <div class="font-body-sm min-w-[220px] max-w-[280px]">
+                                                        <h4 class="font-bold text-base mb-1 text-on-surface">${name}</h4>
+                                                        <span class="inline-block px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] uppercase tracking-wider font-bold rounded-md mb-2">${category}</span>
+                                                        <p class="text-sm mt-1 mb-4 text-on-surface-variant leading-relaxed">${desc}</p>
+                                                        <div class="flex flex-col gap-2">
+                                                            <a href="${url}" class="inline-flex items-center justify-center bg-[#4f46e5] !text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-[#4f46e5]/90 transition-colors w-full text-center shadow-sm">Lihat Detail</a>
+                                                            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="inline-flex items-center justify-center gap-1 bg-surface-variant !text-[#4f46e5] border border-[#4f46e5]/20 px-3 py-2 rounded-lg text-xs font-bold hover:bg-surface-variant/80 transition-colors w-full text-center">
+                                                                <span class="material-symbols-outlined text-[16px]">directions</span> Rute via Google Maps
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                `);
+
+                            if (layerGroups['UMKM']) {
+                                layerGroups['UMKM'].addLayer(marker);
                             }
                         @endforeach
                     @endif

@@ -5,7 +5,7 @@ namespace App\Filament\Resources\TemplateSurat;
 use App\Filament\Resources\TemplateSurat\Pages\CreateTemplateSurat;
 use App\Filament\Resources\TemplateSurat\Pages\EditTemplateSurat;
 use App\Filament\Resources\TemplateSurat\Pages\ListTemplateSurat;
-use App\Filament\Resources\TemplateSurat\Pages\PreviewTemplateSurat;
+use App\Filament\Resources\TemplateSurat\Schemas\TemplateSuratForm;
 use App\Filament\Resources\TemplateSurat\Tables\TemplateSuratTable;
 use App\Models\TemplateSurat as TemplateSuratModel;
 use BackedEnum;
@@ -23,18 +23,15 @@ class TemplateSuratResource extends Resource
 
     protected static ?string $navigationLabel = 'Template Surat';
 
-    protected static ?string $slug = 'template-surat';
-
-    protected static string|\UnitEnum|null $navigationGroup = 'Administrasi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Administrasi Surat';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-duplicate';
 
-    protected static ?int $navigationSort = 32;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {
-        // Form is overridden by individual pages (Create/Edit) for more control
-        return $schema;
+        return TemplateSuratForm::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -50,10 +47,9 @@ class TemplateSuratResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListTemplateSurat::route('/'),
+            'index'  => ListTemplateSurat::route('/'),
             'create' => CreateTemplateSurat::route('/create'),
-            'edit' => EditTemplateSurat::route('/{record}/edit'),
-            'preview' => PreviewTemplateSurat::route('/{record}/preview'),
+            'edit'   => EditTemplateSurat::route('/{record}/edit'),
         ];
     }
 }

@@ -3,34 +3,35 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Surat;
-use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class SuratStatsWidget extends StatsOverviewWidget
+class SuratStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
-    protected array|int|null $columns = 2;
-
     protected function getStats(): array
     {
-        $today = now()->toDateString();
+        return [
+            Stat::make('Surat Hari Ini', Surat::whereDate('created_at', today())->count())
+                ->description('Surat yang dibuat hari ini')
+                ->icon('heroicon-o-document-text')
+                ->color('info'),
 
-        $suratHariIni = Surat::whereDate('created_at', $today)->count();
-        $belumUploadScan = Surat::where('status', '!=', 'scan_uploaded')->count();
-
-        $stats = [
-            Stat::make('Surat Hari Ini', $suratHariIni)
-                ->description('Dibuat hari ini')
-                ->descriptionIcon('heroicon-m-document-text')
+            Stat::make('Surat Bulan Ini', Surat::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count())
+                ->description('Surat yang dibuat bulan ini')
+                ->icon('heroicon-o-calendar')
                 ->color('primary'),
 
-            Stat::make('Belum Upload Scan', $belumUploadScan)
-                ->description($belumUploadScan > 0 ? 'Perlu upload berkas' : 'Semua berkas terunggah')
-                ->descriptionIcon($belumUploadScan > 0 ? 'heroicon-m-exclamation-triangle' : 'heroicon-m-check-circle')
-                ->color($belumUploadScan > 0 ? 'danger' : 'success'),
-        ];
+            Stat::make('Total Arsip', Surat::count())
+                ->description('Total keseluruhan arsip surat')
+                ->icon('heroicon-o-archive-box')
+                ->color('success'),
 
-        return $stats;
+            Stat::make('Surat Belum Ada Scan', Surat::where('status_scan', 'belum_upload')->count())
+                ->description('Perlu diunggah berkas fisiknya')
+                ->icon('heroicon-o-exclamation-triangle')
+                ->color('warning'),
+        ];
     }
 }

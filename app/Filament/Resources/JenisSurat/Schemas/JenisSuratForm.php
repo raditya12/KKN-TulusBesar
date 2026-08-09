@@ -12,27 +12,30 @@ class JenisSuratForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('nama')
-                ->label('Nama Jenis Surat')
+            TextInput::make('nama_surat')
+                ->label('Nama Surat')
+                ->placeholder('Contoh: Surat Keterangan Domisili')
                 ->required()
                 ->maxLength(255),
 
-            TextInput::make('kode')
-                ->label('Kode')
-                ->helperText('Kode unik tanpa spasi, misal: skd, sktm_sekolah')
+            TextInput::make('kode_surat')
+                ->label('Kode Surat')
+                ->placeholder('Contoh: SKD')
                 ->required()
-                ->unique(ignoreRecord: true)
                 ->maxLength(50)
-                ->rules(['regex:/^[a-z0-9_]+$/']),
+                ->unique(ignoreRecord: true),
 
             Textarea::make('deskripsi')
                 ->label('Deskripsi')
+                ->placeholder('Deskripsi singkat mengenai jenis surat ini...')
                 ->rows(3)
-                ->maxLength(500),
+                ->maxLength(1000)
+                ->nullable(),
 
             Toggle::make('is_active')
-                ->label('Aktif')
-                ->default(true),
+                ->label('Status Aktif')
+                ->default(true)
+                ->helperText('Nonaktifkan jika jenis surat ini tidak lagi digunakan.'),
         ]);
     }
 }
