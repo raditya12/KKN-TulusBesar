@@ -1,88 +1,94 @@
 <?php
 
-use App\Models\Berita;
 use App\Models\CulturalSite;
-use App\Models\FotoKegiatan;
-use App\Models\PerangkatDesa;
-use App\Models\ProfilDesa;
-use App\Models\Surat;
+use App\Models\GisFeature;
+use App\Models\NewsArticle;
 use App\Models\Umkm;
+use App\Models\VillageOfficial;
+use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-// Homepage
 Route::get('/', function () {
-    $beritaTerbaru = Berita::where('status', 'published')->latest('tanggal_publish')->take(3)->get();
-    $fotoKegiatan = FotoKegiatan::where('status', 'active')->latest()->take(6)->get();
-    $profilDesa = ProfilDesa::first();
-    $perangkatDesa = PerangkatDesa::where('status', 'active')->orderBy('urutan')->get();
+    $news = NewsArticle::latest('published_at')->take(3)->get();
+    $umkms = Umkm::latest()->take(3)->get();
+    $profile = VillageProfile::first();
 
-    return view('welcome', compact('beritaTerbaru', 'fotoKegiatan', 'profilDesa', 'perangkatDesa'));
+    // Kumpulkan semua gambar dari semua konten untuk slideshow
+    $allImages = collect()
+        ->merge(
+            NewsArticle::whereNotNull('image_path')->latest('published_at')->get()
+                ->map(fn ($n) => asset('storage/'.$n->image_path))
+        )
+        ->merge(
+            Umkm::whereNotNull('image_path')->latest()->get()
+                ->map(fn ($u) => asset('storage/'.$u->image_path))
+        )
+        ->merge(
+            CulturalSite::whereNotNull('image_path')->where('status', 'active')->latest()->get()
+                ->map(fn ($s) => asset('storage/'.$s->image_path))
+        )
+        ->values()
+        ->toArray();
+
+    if (empty($allImages)) {
+        $allImages = [asset('images/dummy/profil.jpg')];
+    }
+
+    $officials = VillageOfficial::orderBy('order')->get();
+
+    return view('pages.home', compact('news', 'umkms', 'profile', 'allImages', 'officials'));
 })->name('home');
 
-// Profil Desa
-Route::get('/profil-desa', function () {
-    $profil = ProfilDesa::first();
+Route::get('/wisata', function () {
+    $sites = CulturalSite::where('status', 'active')->latest()->get();
 
-    return view('pages.profil', compact('profil'));
-})->name('profil');
+    return view('pages.wisata', compact('sites'));
+})->name('wisata');
 
-// Berita
-Route::get('/berita', function () {
-    $beritas = Berita::where('status', 'published')->latest('tanggal_publish')->paginate(9);
+Route::get('/sejarah', function () {
+    $activities = \App\Models\ActivityPhoto::latest()->get();
+    return view('pages.sejarah', compact('activities'));
+})->name('sejarah');
 
-    return view('pages.berita-index', compact('beritas'));
-})->name('berita.index');
-
-Route::get('/berita/{slug}', function ($slug) {
-    $berita = Berita::where('slug', $slug)->where('status', 'published')->firstOrFail();
-    $beritaLainnya = Berita::where('id', '!=', $berita->id)->where('status', 'published')->latest('tanggal_publish')->take(3)->get();
-
-    return view('pages.berita-show', compact('berita', 'beritaLainnya'));
-})->name('berita.show');
-
-// UMKM
-Route::get('/umkm', function () {
-    $umkms = Umkm::where('status', 'active')->latest()->paginate(9);
-
-    return view('pages.umkm-index', compact('umkms'));
-})->name('umkm.index');
-
-Route::get('/umkm/{slug}', function ($slug) {
-    $umkm = Umkm::where('slug', $slug)->where('status', 'active')->firstOrFail();
-    $umkmLainnya = Umkm::where('id', '!=', $umkm->id)->where('status', 'active')->latest()->take(3)->get();
-
-    return view('pages.umkm-show', compact('umkm', 'umkmLainnya'));
-})->name('umkm.show');
-
-// WebGIS / Peta Desa
 Route::get('/peta', function () {
-    return view('pages.peta');
+    $features = GisFeature::all();
+    $culturalSites = CulturalSite::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->where('status', 'active')
+        ->get();
+        
+    $umkms = Umkm::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->get();
+
+    return view('pages.peta', compact('features', 'culturalSites', 'umkms'));
 })->name('peta');
 
-// Perangkat Desa
-Route::get('/perangkat-desa', function () {
-    $perangkats = PerangkatDesa::where('status', 'active')->orderBy('urutan')->get();
+Route::get('/publikasi', function () {
+    $news = NewsArticle::latest('published_at')->get();
 
-    return view('pages.perangkat-desa', compact('perangkats'));
-})->name('perangkat');
+    return view('pages.publikasi', compact('news'));
+})->name('publikasi');
 
-// Wisata & Budaya
-Route::get('/wisata', function () {
-    $wisatas = CulturalSite::where('status', 'active')->latest()->paginate(9);
+Route::get('/umkm', function () {
+    $umkms = Umkm::latest()->get();
 
-    return view('pages.wisata-index', compact('wisatas'));
-})->name('wisata.index');
+    return view('pages.umkm', compact('umkms'));
+})->name('umkm');
+
+Route::get('/berita/{slug}', function ($slug) {
+    $berita = NewsArticle::where('slug', $slug)->firstOrFail();
+    $recommendations = NewsArticle::where('id', '!=', $berita->id)->latest('published_at')->take(4)->get();
+
+    return view('pages.berita-show', compact('berita', 'recommendations'));
+})->name('berita.show');
+
+Route::get('/umkm/{slug}', function ($slug) {
+    $umkm = Umkm::where('slug', $slug)->firstOrFail();
+    $recommendations = Umkm::where('id', '!=', $umkm->id)->latest()->take(4)->get();
+
+    return view('pages.umkm-show', compact('umkm', 'recommendations'));
+})->name('umkm.show');
 
 Route::get('/wisata/{slug}', function ($slug) {
     $wisata = CulturalSite::where('slug', $slug)->firstOrFail();
@@ -90,24 +96,3 @@ Route::get('/wisata/{slug}', function ($slug) {
 
     return view('pages.wisata-show', compact('wisata', 'recommendations'));
 })->name('wisata.show');
-
-/**
- * Route untuk serve Preview PDF secara langsung dengan Content-Type: application/pdf
- */
-Route::get('/surat/preview-pdf/{sessionId?}', function (?string $sessionId = null) {
-    if (! $sessionId) {
-        abort(404, 'Preview PDF belum tersedia.');
-    }
-
-    $cleanSessionId = preg_replace('/[^a-zA-Z0-9]/', '_', $sessionId);
-    $path = storage_path('app/public/temp-preview/preview_' . $cleanSessionId . '.pdf');
-
-    if (! file_exists($path)) {
-        abort(404, 'Preview PDF belum tersedia.');
-    }
-
-    return response()->file($path, [
-        'Content-Type'        => 'application/pdf',
-        'Content-Disposition' => 'inline; filename="preview.pdf"',
-    ]);
-})->name('surat.preview-pdf');
