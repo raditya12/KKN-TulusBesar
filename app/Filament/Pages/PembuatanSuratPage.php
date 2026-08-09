@@ -6,6 +6,7 @@ use App\Models\JenisSurat;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
 use App\Services\DocxService;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Storage;
@@ -27,57 +28,59 @@ class PembuatanSuratPage extends Page
 
     // ── Form State ───────────────────────────────────────────────────────────────
     public ?int $jenis_surat_id = null;
-
     public ?string $nomor_surat = null;
-
     public ?string $tanggal_surat = null;
-
     public array $formData = [];
 
     // ── Template Metadata ────────────────────────────────────────────────────────
     public array $placeholders = [];
-
     public bool $hasTemplate = false;
-
     public ?string $templateFileName = null;
-
     public ?string $jenisSuratNama = null;
 
-    // ── Preview State ────────────────────────────────────────────────────────────
-    public ?string $previewToken = null;
+    // ── Edit State ───────────────────────────────────────────────────────────────
+    public ?int $surat_id = null;
 
-    public bool $previewReady = false;
-
-    public ?string $lastGeneratedHash = null;
+    protected $queryString = [
+        'surat_id' => ['except' => null],
+    ];
 
     public function mount(): void
     {
-        $sessionId = session()->getId() ?: md5(uniqid('', true));
-        $this->previewToken = 'sess_' . preg_replace('/[^a-zA-Z0-9]/', '_', $sessionId);
-
-        $this->tanggal_surat = date('Y-m-d');
-        $this->nomor_surat = '470 / ' . rand(100, 999) . ' / 35.07.19.2005 / ' . date('Y');
-
-        // Initial state on page open: No Jenis Surat selected, preview NOT ready
-        $this->previewReady = false;
-        $this->jenis_surat_id = null;
+        if ($this->surat_id) {
+            $surat = Surat::find($this->surat_id);
+            if ($surat) {
+                $this->jenis_surat_id = $surat->jenis_surat_id;
+                $this->nomor_surat = $surat->nomor_surat;
+                
+                // Parse date from data_json or fallback to today
+                $this->tanggal_surat = date('Y-m-d');
+                $this->formData = $surat->data_json ?? [];
+                
+                $this->loadTemplateAndPlaceholders($this->jenis_surat_id, false);
+            }
+        } else {
+            $this->tanggal_surat = date('Y-m-d');
+            $this->nomor_surat = '470 / ' . rand(100, 999) . ' / 35.07.19.2005 / ' . date('Y');
+            $this->jenis_surat_id = null;
+        }
     }
 
     public function updated($property): void
     {
         if ($property === 'jenis_surat_id') {
-            $this->loadTemplateAndPlaceholders($this->jenis_surat_id ? (int) $this->jenis_surat_id : null);
+            $this->loadTemplateAndPlaceholders($this->jenis_surat_id ? (int) $this->jenis_surat_id : null, true);
         }
     }
 
-    public function loadTemplateAndPlaceholders(?int $jenisSuratId): void
+    public function loadTemplateAndPlaceholders(?int $jenisSuratId, bool $resetForm = true): void
     {
-        $this->formData = [];
+        if ($resetForm) {
+            $this->formData = [];
+        }
         $this->placeholders = [];
         $this->hasTemplate = false;
         $this->templateFileName = null;
-        $this->previewReady = false;
-        $this->lastGeneratedHash = null;
 
         if (! $jenisSuratId) {
             return;
@@ -100,7 +103,6 @@ class PembuatanSuratPage extends Page
                 ->body('Jenis surat "' . $jenisSurat->nama_surat . '" belum memiliki template Word (.docx) yang aktif.')
                 ->warning()
                 ->send();
-
             return;
         }
 
@@ -112,7 +114,6 @@ class PembuatanSuratPage extends Page
                 ->body('File template "' . basename($template->file_docx) . '" tidak ditemukan di storage.')
                 ->danger()
                 ->send();
-
             return;
         }
 
@@ -122,93 +123,55 @@ class PembuatanSuratPage extends Page
         $this->hasTemplate = true;
         $this->templateFileName = basename($template->file_docx);
 
-        foreach ($this->placeholders as $ph) {
-            $this->formData[$ph] = '';
-        }
-
-        $this->reloadPreview(useNativeWord: false);
-    }
-
-    public function reloadPreview(bool $useNativeWord = false): void
-    {
-        if (! $this->jenis_surat_id || ! $this->hasTemplate) {
-            $this->previewReady = false;
-
-            return;
-        }
-
-        $currentHash = $this->computeFormHash() . ($useNativeWord ? '_word' : '_fast');
-        if ($this->lastGeneratedHash === $currentHash && $this->previewReady) {
-            $this->dispatch('preview-stable');
-
-            return;
-        }
-
-        $template = TemplateSurat::where('jenis_surat_id', $this->jenis_surat_id)
-            ->where('is_active', true)
-            ->first();
-
-        if (! $template || ! $template->file_docx) {
-            return;
-        }
-
-        $templatePath = Storage::disk('public')->path($template->file_docx);
-
-        Storage::disk('public')->makeDirectory('temp-preview');
-
-        $fullDocxPath = $this->getTempDocxPath();
-        $fullPdfPath  = $this->getTempPdfPath();
-
-        /** @var DocxService $docxService */
-        $docxService = app(DocxService::class);
-
-        // 1. Generate DOCX with current form values
-        $docxService->generateDocx($templatePath, $this->getMergedValues(), $fullDocxPath);
-
-        // 2. Convert to PDF (Fast 0.1s for live preview, Native Word when requested)
-        $docxService->generatePdfFromDocx($fullDocxPath, $fullPdfPath, useNativeWord: $useNativeWord);
-
-        if (file_exists($fullPdfPath) && filesize($fullPdfPath) > 0) {
-            $this->previewReady = true;
-            $this->lastGeneratedHash = $currentHash;
-
-            $this->dispatch('reload-iframe');
+        if ($resetForm) {
+            foreach ($this->placeholders as $ph) {
+                $this->formData[$ph] = '';
+            }
         }
     }
 
-    public function reloadMsWordPreview(): void
+    public function previewTemplateAction(): Action
     {
-        $this->reloadPreview(useNativeWord: true);
-    }
+        return Action::make('previewTemplate')
+            ->label('Preview Template')
+            ->icon('heroicon-o-eye')
+            ->color('info')
+            ->modalHeading(fn () => 'Preview Template: ' . ($this->jenisSuratNama ?? 'Surat'))
+            ->modalWidth('4xl')
+            ->modalSubmitAction(false)
+            ->modalCancelAction(fn ($action) => $action->label('Tutup'))
+            ->modalContent(function () {
+                $template = TemplateSurat::where('jenis_surat_id', $this->jenis_surat_id)
+                    ->where('is_active', true)
+                    ->first();
 
-    private function getTempDocxPath(): string
-    {
-        return Storage::disk('public')->path('temp-preview/preview_' . $this->previewToken . '.docx');
-    }
+                if (! $template || ! $template->file_docx) {
+                    return view('filament.pages.partials.empty-template-error');
+                }
 
-    private function getTempPdfPath(): string
-    {
-        return Storage::disk('public')->path('temp-preview/preview_' . $this->previewToken . '.pdf');
-    }
+                $docxPath = Storage::disk('public')->path($template->file_docx);
+                
+                if (!file_exists($docxPath)) {
+                    return view('filament.pages.partials.empty-template-error');
+                }
 
-    public function getPreviewUrl(): string
-    {
-        if (empty($this->previewToken)) {
-            $sessionId = session()->getId() ?: md5(uniqid('', true));
-            $this->previewToken = 'sess_' . preg_replace('/[^a-zA-Z0-9]/', '_', $sessionId);
-        }
+                /** @var DocxService $docxService */
+                $docxService = app(DocxService::class);
+                
+                Storage::disk('public')->makeDirectory('temp-template-preview');
+                $pdfName = md5($docxPath . filemtime($docxPath)) . '.pdf';
+                $pdfPath = 'temp-template-preview/' . $pdfName;
+                $fullPdfPath = Storage::disk('public')->path($pdfPath);
 
-        return route('surat.preview-pdf', ['sessionId' => $this->previewToken]);
-    }
+                if (!file_exists($fullPdfPath)) {
+                    $docxService->generatePdfFromDocx($docxPath, $fullPdfPath, useNativeWord: true);
+                }
 
-    private function computeFormHash(): string
-    {
-        return md5(json_encode([
-            'jenis_surat_id' => $this->jenis_surat_id,
-            'nomor_surat'    => $this->nomor_surat,
-            'tanggal_surat'  => $this->tanggal_surat,
-            'formData'       => $this->formData,
-        ]));
+                return view('filament.pages.partials.template-preview-modal', [
+                    'pdfUrl' => Storage::url($pdfPath)
+                ]);
+            })
+            ->visible(fn () => $this->hasTemplate);
     }
 
     public function getLabel(string $key): string
@@ -268,87 +231,6 @@ class PembuatanSuratPage extends Page
         return 'Warga / Pemohon';
     }
 
-    protected function saveToArchive(): Surat
-    {
-        $jenisSurat = JenisSurat::find($this->jenis_surat_id);
-        $safeName   = preg_replace('/[^A-Za-z0-9_\-]/', '_', $jenisSurat ? $jenisSurat->nama_surat : 'Surat');
-        $timestamp  = date('Ymd_His');
-
-        Storage::disk('public')->makeDirectory('arsip-surat/docx');
-        Storage::disk('public')->makeDirectory('arsip-surat/pdf');
-
-        $relativeDocxPath = 'arsip-surat/docx/' . $safeName . '_' . $timestamp . '.docx';
-        $relativePdfPath  = 'arsip-surat/pdf/' . $safeName . '_' . $timestamp . '.pdf';
-
-        $fullDocxPath = Storage::disk('public')->path($relativeDocxPath);
-        $fullPdfPath  = Storage::disk('public')->path($relativePdfPath);
-
-        $template = TemplateSurat::where('jenis_surat_id', $this->jenis_surat_id)
-            ->where('is_active', true)
-            ->first();
-
-        /** @var DocxService $docxService */
-        $docxService = app(DocxService::class);
-
-        if ($template) {
-            $docxService->generateDocx(
-                Storage::disk('public')->path($template->file_docx),
-                $this->getMergedValues(),
-                $fullDocxPath
-            );
-        }
-
-        $docxService->generatePdfFromDocx($fullDocxPath, $fullPdfPath, useNativeWord: true);
-
-        return Surat::create([
-            'nomor_surat'    => $this->nomor_surat,
-            'jenis_surat_id' => $this->jenis_surat_id,
-            'nama_pemohon'   => $this->extractNamaPemohon(),
-            'data_json'      => $this->formData,
-            'file_docx'      => $relativeDocxPath,
-            'file_pdf'       => file_exists($fullPdfPath) ? $relativePdfPath : null,
-            'status_scan'    => 'belum_upload',
-        ]);
-    }
-
-    public function generateDocx()
-    {
-        $this->validateForm();
-        $surat = $this->saveToArchive();
-
-        Notification::make()
-            ->title('Surat Berhasil Dibuat & Diarsipkan')
-            ->body('Mengunduh dokumen Word (DOCX) resmi...')
-            ->success()
-            ->send();
-
-        return response()->download(Storage::disk('public')->path($surat->file_docx));
-    }
-
-    public function generatePdf()
-    {
-        $this->validateForm();
-        $surat = $this->saveToArchive();
-
-        if (! $surat->file_pdf || ! Storage::disk('public')->exists($surat->file_pdf)) {
-            Notification::make()
-                ->title('Gagal Generate PDF')
-                ->body('Terjadi kesalahan saat membuat file PDF.')
-                ->danger()
-                ->send();
-
-            return;
-        }
-
-        Notification::make()
-            ->title('Surat Berhasil Dibuat & Diarsipkan')
-            ->body('Mengunduh dokumen PDF resmi...')
-            ->success()
-            ->send();
-
-        return response()->download(Storage::disk('public')->path($surat->file_pdf));
-    }
-
     protected function validateForm(): void
     {
         $rules = [
@@ -369,6 +251,86 @@ class PembuatanSuratPage extends Page
         }
 
         $this->validate($rules, [], $attributes);
+    }
+
+    public function generateSurat()
+    {
+        $this->validateForm();
+
+        $jenisSurat = JenisSurat::find($this->jenis_surat_id);
+        $safeName   = preg_replace('/[^A-Za-z0-9_\-]/', '_', $jenisSurat ? $jenisSurat->nama_surat : 'Surat');
+        $timestamp  = date('Ymd_His');
+
+        Storage::disk('public')->makeDirectory('arsip-surat/docx');
+        Storage::disk('public')->makeDirectory('arsip-surat/pdf');
+
+        $relativeDocxPath = 'arsip-surat/docx/' . $safeName . '_' . $timestamp . '.docx';
+        $relativePdfPath  = 'arsip-surat/pdf/' . $safeName . '_' . $timestamp . '.pdf';
+
+        $fullDocxPath = Storage::disk('public')->path($relativeDocxPath);
+        $fullPdfPath  = Storage::disk('public')->path($relativePdfPath);
+
+        $template = TemplateSurat::where('jenis_surat_id', $this->jenis_surat_id)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$template || !$template->file_docx) {
+            Notification::make()
+                ->title('Template Tidak Ditemukan')
+                ->danger()
+                ->send();
+            return;
+        }
+
+        /** @var DocxService $docxService */
+        $docxService = app(DocxService::class);
+
+        // 1. Generate DOCX Final
+        $docxService->generateDocx(
+            Storage::disk('public')->path($template->file_docx),
+            $this->getMergedValues(),
+            $fullDocxPath
+        );
+
+        // 2. Generate PDF Final
+        $docxService->generatePdfFromDocx($fullDocxPath, $fullPdfPath, useNativeWord: true);
+
+        // 3. Simpan / Update Database (Arsip)
+        $data = [
+            'nomor_surat'    => $this->nomor_surat,
+            'jenis_surat_id' => $this->jenis_surat_id,
+            'nama_pemohon'   => $this->extractNamaPemohon(),
+            'data_json'      => $this->formData,
+            'file_docx'      => $relativeDocxPath,
+            'file_pdf'       => file_exists($fullPdfPath) ? $relativePdfPath : null,
+        ];
+
+        if ($this->surat_id) {
+            $surat = Surat::find($this->surat_id);
+            if ($surat) {
+                // Delete old files if they exist and are different
+                if ($surat->file_docx && Storage::disk('public')->exists($surat->file_docx)) {
+                    Storage::disk('public')->delete($surat->file_docx);
+                }
+                if ($surat->file_pdf && Storage::disk('public')->exists($surat->file_pdf)) {
+                    Storage::disk('public')->delete($surat->file_pdf);
+                }
+                
+                $surat->update($data);
+            } else {
+                $surat = Surat::create($data);
+            }
+        } else {
+            $surat = Surat::create($data);
+        }
+
+        Notification::make()
+            ->title('Surat Berhasil Di-generate & Diarsipkan')
+            ->success()
+            ->send();
+
+        // 4. Redirect ke Halaman Preview
+        return redirect()->route('filament.admin.pages.preview-surat-page', ['record' => $surat->id]);
     }
 
     public function getViewData(): array

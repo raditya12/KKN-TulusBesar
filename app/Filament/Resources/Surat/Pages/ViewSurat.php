@@ -12,6 +12,11 @@ class ViewSurat extends ViewRecord
 {
     protected static string $resource = SuratResource::class;
 
+    public function getView(): string
+    {
+        return 'filament.resources.surat.pages.view-surat';
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -36,5 +41,10 @@ class ViewSurat extends ViewRecord
                 ->visible(fn (Surat $record) => ! empty($record->file_scan))
                 ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_scan), shouldOpenInNewTab: true),
         ];
+    }
+
+    public function getMaxContentWidth(): \Filament\Support\Enums\Width|string|null
+    {
+        return \Filament\Support\Enums\Width::Full;
     }
 }

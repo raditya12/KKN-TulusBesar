@@ -5,6 +5,7 @@ namespace App\Filament\Resources\TemplateSurat\Pages;
 use App\Filament\Resources\TemplateSurat\TemplateSuratResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\Width;
 
 class EditTemplateSurat extends EditRecord
 {
