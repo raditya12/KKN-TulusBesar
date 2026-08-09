@@ -23,13 +23,11 @@ class JenisSuratResource extends Resource
 
     protected static ?string $navigationLabel = 'Jenis Surat';
 
-    protected static ?string $slug = 'jenis-surat';
-
-    protected static string|\UnitEnum|null $navigationGroup = 'Administrasi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Administrasi Surat';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?int $navigationSort = 30;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {
@@ -49,9 +47,9 @@ class JenisSuratResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListJenisSurat::route('/'),
+            'index'  => ListJenisSurat::route('/'),
             'create' => CreateJenisSurat::route('/create'),
-            'edit' => EditJenisSurat::route('/{record}/edit'),
+            'edit'   => EditJenisSurat::route('/{record}/edit'),
         ];
     }
 }

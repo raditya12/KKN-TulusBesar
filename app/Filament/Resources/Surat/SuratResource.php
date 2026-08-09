@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Surat;
 
-use App\Filament\Resources\Surat\Pages\ArsipSurat;
+use App\Filament\Resources\Surat\Pages\ListSurat;
+use App\Filament\Resources\Surat\Pages\ViewSurat;
+use App\Filament\Resources\Surat\Tables\SuratTable;
 use App\Models\Surat as SuratModel;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -13,38 +15,21 @@ class SuratResource extends Resource
 {
     protected static ?string $model = SuratModel::class;
 
-    protected static ?string $modelLabel = 'Surat';
+    protected static ?string $modelLabel = 'Arsip Surat';
 
-    protected static ?string $pluralModelLabel = 'Surat';
+    protected static ?string $pluralModelLabel = 'Arsip Surat';
 
     protected static ?string $navigationLabel = 'Arsip Surat';
 
-    protected static ?string $slug = 'arsip-surat';
-
-    protected static string|\UnitEnum|null $navigationGroup = 'Administrasi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Administrasi Surat';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
 
-    protected static ?int $navigationSort = 10;
-
-    /**
-     * Global search fields.
-     */
-    protected static ?string $recordTitleAttribute = 'nomor_surat';
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return ['nomor_surat', 'nama_warga', 'nik'];
-    }
-
-    public static function form(Schema $schema): Schema
-    {
-        return $schema;
-    }
+    protected static ?int $navigationSort = 4;
 
     public static function table(Table $table): Table
     {
-        return $table;
+        return SuratTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -55,7 +40,8 @@ class SuratResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ArsipSurat::route('/'),
+            'index' => ListSurat::route('/'),
+            'view'  => ViewSurat::route('/{record}'),
         ];
     }
 }

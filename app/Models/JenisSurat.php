@@ -2,48 +2,43 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JenisSurat extends Model
 {
-    use HasFactory, SoftDeletes;
-
     protected $table = 'jenis_surat';
 
     protected $fillable = [
-        'nama',
-        'kode',
+        'nama_surat',
+        'kode_surat',
         'deskripsi',
-        'is_system',
         'is_active',
+    ];
+
+    protected $attributes = [
+        'is_active' => true,
     ];
 
     protected function casts(): array
     {
         return [
-            'is_system' => 'boolean',
             'is_active' => 'boolean',
         ];
     }
 
-    public function templateSurat(): HasMany
+    public function scopeActive(Builder $query): Builder
     {
-        return $this->hasMany(TemplateSurat::class);
+        return $query->where('is_active', true);
     }
 
-    public function surat(): HasMany
+    public function templateSurat(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasMany(Surat::class);
+        return $this->hasOne(TemplateSurat::class, 'jenis_surat_id')->where('is_active', true);
     }
 
-    /**
-     * Get the currently active template for this jenis surat.
-     */
-    public function templateAktif(): ?TemplateSurat
+    public function templates(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->templateSurat()->where('is_active', true)->latest()->first();
+        return $this->hasMany(TemplateSurat::class, 'jenis_surat_id');
     }
 }

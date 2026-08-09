@@ -13,13 +13,7 @@ class EditJenisSurat extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make()
-                ->hidden(fn () => $this->record->is_system),
+            DeleteAction::make(),
         ];
-    }
-
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
     }
 }

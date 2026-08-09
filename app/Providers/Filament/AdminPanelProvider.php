@@ -3,7 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\DashboardLinksWidget;
-use App\Filament\Widgets\RecentActivitiesWidget;
 use App\Filament\Widgets\SuratStatsWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -35,10 +34,11 @@ class AdminPanelProvider extends PanelProvider
             ->font('Outfit')
             ->colors([
                 'primary' => Color::hex('#8C5A35'),
-                'gray' => Color::Stone,
+                'gray'    => Color::Stone,
             ])
             ->maxContentWidth('full')
             ->navigationGroups([
+                'Administrasi Surat',
                 'Administrasi',
                 'CMS',
             ])
@@ -55,7 +55,6 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 SuratStatsWidget::class,
                 DashboardLinksWidget::class,
-                RecentActivitiesWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

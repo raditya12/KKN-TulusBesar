@@ -21,28 +21,24 @@ class DashboardLinksWidget extends Widget
         return [
             'links' => [
                 [
-                    'name' => 'Buat Surat',
-                    'icon' => 'heroicon-o-plus',
-                    'url' => PembuatanSuratPage::getUrl(),
-                    'description' => 'Mulai membuat surat baru secara dinamis.',
-                ],
-                [
-                    'name' => 'Arsip Surat',
-                    'icon' => 'heroicon-o-archive-box',
-                    'url' => SuratResource::getUrl(),
-                    'description' => 'Lihat dan kelola berkas arsip surat desa.',
+                    'name' => 'Jenis Surat',
+                    'icon' => 'heroicon-o-document-text',
+                    'url'  => JenisSuratResource::getUrl(),
                 ],
                 [
                     'name' => 'Template Surat',
                     'icon' => 'heroicon-o-document-duplicate',
-                    'url' => TemplateSuratResource::getUrl(),
-                    'description' => 'Kelola template format surat resmi.',
+                    'url'  => TemplateSuratResource::getUrl(),
                 ],
                 [
-                    'name' => 'Jenis Surat',
-                    'icon' => 'heroicon-o-document-text',
-                    'url' => JenisSuratResource::getUrl(),
-                    'description' => 'Kelola klasifikasi dan jenis surat.',
+                    'name' => 'Pembuatan Surat',
+                    'icon' => 'heroicon-o-pencil-square',
+                    'url'  => PembuatanSuratPage::getUrl(),
+                ],
+                [
+                    'name' => 'Arsip Surat',
+                    'icon' => 'heroicon-o-archive-box',
+                    'url'  => SuratResource::getUrl(),
                 ],
             ],
         ];

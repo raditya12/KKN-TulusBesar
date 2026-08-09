@@ -2,15 +2,15 @@
 
 namespace App\Filament\Resources\TemplateSurat\Tables;
 
-use App\Filament\Resources\TemplateSurat\TemplateSuratResource;
-use App\Models\TemplateSurat as TemplateSuratModel;
-use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateSuratTable
 {
@@ -18,53 +18,50 @@ class TemplateSuratTable
     {
         return $table
             ->columns([
-                TextColumn::make('judul')
-                    ->label('Judul Template')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('jenisSurat.nama')
+                TextColumn::make('jenisSurat.nama_surat')
                     ->label('Jenis Surat')
                     ->badge()
                     ->color('primary')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('file_docx')
+                    ->label('File DOCX')
+                    ->formatStateUsing(fn (string $state): string => basename($state))
+                    ->icon('heroicon-o-document')
+                    ->url(fn ($record) => $record->file_docx ? Storage::disk('public')->url($record->file_docx) : null, shouldOpenInNewTab: true)
+                    ->color('info')
                     ->searchable(),
 
                 IconColumn::make('is_active')
-                    ->label('Aktif')
-                    ->boolean(),
+                    ->label('Status')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->sortable(),
 
-                TextColumn::make('file_docx_path')
-                    ->label('File DOCX')
-                    ->formatStateUsing(fn ($state) => $state ? 'Ada' : 'Tidak ada')
-                    ->badge()
-                    ->color(fn ($state) => $state ? 'success' : 'gray'),
-
-                TextColumn::make('creator.name')
-                    ->label('Dibuat Oleh')
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('updated_at')
-                    ->label('Terakhir Diperbarui')
-                    ->dateTime('d M Y H:i')
+                TextColumn::make('created_at')
+                    ->label('Diupload Pada')
+                    ->dateTime('d M Y, H:i')
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('jenis_surat_id')
-                    ->label('Jenis Surat')
-                    ->relationship('jenisSurat', 'nama'),
+                TernaryFilter::make('is_active')
+                    ->label('Status Aktif')
+                    ->trueLabel('Aktif')
+                    ->falseLabel('Nonaktif'),
             ])
-            ->actions([
-                Action::make('preview')
-                    ->label('Preview')
-                    ->icon('heroicon-o-eye')
-                    ->color('info')
-                    ->url(fn (TemplateSuratModel $record) => TemplateSuratResource::getUrl('preview', ['record' => $record]))
-                    ->openUrlInNewTab(),
-
+            ->recordActions([
                 EditAction::make(),
-
-                DeleteAction::make()->requiresConfirmation(),
+                DeleteAction::make(),
             ])
-            ->defaultSort('updated_at', 'desc');
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 }
