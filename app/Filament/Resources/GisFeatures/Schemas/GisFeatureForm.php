@@ -50,13 +50,13 @@ class GisFeatureForm
                                 TextInput::make('latitude')
                                     ->label('Garis Lintang (Latitude)')
                                     ->numeric()
-                                    ->readOnly()
-                                    ->helperText('Terisi otomatis dari peta.'),
+                                    ->live(debounce: 500)
+                                    ->helperText('Bisa diisi manual atau klik dari peta.'),
                                 TextInput::make('longitude')
                                     ->label('Garis Bujur (Longitude)')
                                     ->numeric()
-                                    ->readOnly()
-                                    ->helperText('Terisi otomatis dari peta.'),
+                                    ->live(debounce: 500)
+                                    ->helperText('Bisa diisi manual atau klik dari peta.'),
                             ]),
                         ]),
                 ]),

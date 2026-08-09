@@ -100,27 +100,32 @@
         (object)[
             'year' => '1614',
             'title' => 'Era Kadipaten Malang',
-            'description' => 'Dipimpin oleh Adipati Ronggo Tohjiwo, berpusat di Kuta Bedah, Buring.'
+            'description' => 'Dipimpin oleh Adipati Ronggo Tohjiwo, berpusat di Kuta Bedah, Buring. Wilayah ini dikenal sebagai Malang Kuso (Malang Eng-Kuso) berkat kemakmuran hasil taninya.',
+            'image' => 'images/kadipaten.jpg'
         ],
         (object)[
             'year' => '1614-1628',
-            'title' => 'Pertahanan Tumenggung Alap-alap',
-            'description' => 'Membangun pertahanan tangguh hingga memaksa Sultan Agung (Mataram) turun tangan langsung.'
+            'title' => 'Serangan Mataram',
+            'description' => 'Sultan Agung (Mataram) mengutus Patih Surontanu untuk menyerang Kadipaten Malang. Terjadilah peperangan sengit yang memporak-porandakan wilayah tersebut. Tumenggung Alap-alap membangun pertahanan.',
+            'image' => 'images/mataram.jpg'
         ],
         (object)[
             'year' => '1638-1643',
-            'title' => 'Eksodus ke Tengger',
-            'description' => 'Pasca gugurnya Senopati Jolosutro, para pengikut setianya mengamankan pusaka ke wilayah Tengger.'
+            'title' => 'Pelarian & Wafatnya Pahlawan',
+            'description' => 'Senopati Mangun Yudho terdesak dan melarikan diri, lalu dirawat oleh Mbok Rondo Kuning (asal nama Desa <strong>Tulusayu</strong>). Hingga akhirnya beliau moksa di Binangun, dan selimutnya dimakamkan di <strong>Kemulan</strong>.',
+            'image' => 'images/MangunDharma.jpg'
         ],
         (object)[
             'year' => '1743',
             'title' => 'Penguasaan VOC',
-            'description' => 'Berdasarkan Perjanjian Mataram & VOC, wilayah Malang Timur (termasuk Tumpang) mulai diawasi VOC.'
+            'description' => 'Berdasarkan Perjanjian Mataram & VOC, wilayah Malang Timur diawasi VOC. Pembukaan lahan perkebunan tebu dan kopi dilakukan secara masif.',
+            'image' => 'images/voc.jpg'
         ],
         (object)[
             'year' => '1830',
             'title' => 'Berdirinya Desa Tulusbesar',
-            'description' => 'Senopati Mangun Yudho secara resmi menetapkan area ini sebagai Desa Tulusbesar.'
+            'description' => 'Setelah Perang Jawa, Senopati Mangun Yudho diyakini oleh masyarakat sebagai tokoh yang melakukan <em>babat alas</em> dan menamakan daerah pemukiman baru ini dengan nama <strong>"Tulusbesar"</strong>.',
+            'image' => 'images/balaidesa.png'
         ]
     ];
     @endphp
@@ -161,10 +166,15 @@
                         @foreach($histories as $index => $history)
                         <!-- Content {{ $index + 1 }} -->
                         <div x-show="activeStep === {{ $index + 1 }}" x-transition.opacity.duration.500ms class="space-y-md" {!! $index > 0 ? 'style="display: none;"' : '' !!}>
+                            @if(isset($history->image))
+                            <div class="rounded-3xl overflow-hidden shadow-lg mb-4 aspect-video">
+                                <img src="{{ asset($history->image) }}" alt="{{ $history->title }}" class="w-full h-full object-cover">
+                            </div>
+                            @endif
                             <div class="inline-block px-sm py-1 bg-primary text-on-primary font-label-sm rounded mb-sm">Tahun {{ $history->year }}</div>
                             <h3 class="font-display-md text-3xl font-bold text-on-surface">{{ $history->title }}</h3>
                             <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-justify">
-                                {{ $history->description }}
+                                {!! $history->description !!}
                             </p>
                         </div>
                         @endforeach
