@@ -46,7 +46,7 @@ class DocxService
 
         $zip->close();
 
-        preg_match_all('/\$\{([^}]+)\}/', $combinedText, $matches);
+        preg_match_all('/\[([^\]]+)\]/', $combinedText, $matches);
 
         if (empty($matches[1])) {
             return [];
@@ -68,6 +68,7 @@ class DocxService
         }
 
         $templateProcessor = new TemplateProcessor($templatePath);
+        $templateProcessor->setMacroChars('[', ']');
 
         foreach ($values as $key => $val) {
             $templateProcessor->setValue($key, (string) ($val ?? ''));
