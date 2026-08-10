@@ -23,6 +23,7 @@
             /* Override CSS custom property grid columns untuk 38% / 62% */
             --cols-lg: minmax(0, 0.62fr) minmax(0, 1fr) !important;
             column-gap: 1.5rem !important;
+            row-gap: 0.5rem !important;
             align-items: start !important;
         }
     }

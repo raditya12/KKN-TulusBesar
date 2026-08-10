@@ -11,21 +11,42 @@ use ZipArchive;
 class DocxService
 {
     /**
-     * Extract all unique placeholder names in ${PlaceholderName} format from a DOCX file.
+     * Extract all unique placeholder names in [PlaceholderName] format from a DOCX file.
      */
     public function extractPlaceholders(string $filePath): array
     {
+        return $this->analyzePlaceholders($filePath)['valid'];
+    }
+
+    /**
+     * Analyze placeholders in a DOCX file and return a structured result:
+     *
+     * [
+     *   'valid'     => ['Nama', 'NIK', 'Alamat'],         // unique, well-formed
+     *   'duplicates'=> ['Nama' => 2, 'Tanggal' => 3],    // key => count (count >= 2)
+     *   'malformed' => ['[nama[', ']NIK]'],               // suspicious bracket patterns
+     *   'has_issues'=> bool,
+     * ]
+     */
+    public function analyzePlaceholders(string $filePath): array
+    {
+        $result = [
+            'valid'      => [],
+            'duplicates' => [],
+            'malformed'  => [],
+            'has_issues' => false,
+        ];
+
         if (! file_exists($filePath)) {
-            return [];
+            return $result;
         }
 
         $zip = new ZipArchive();
         if ($zip->open($filePath) !== true) {
-            return [];
+            return $result;
         }
 
         $xmlFiles = ['word/document.xml'];
-
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $filename = $zip->getNameIndex($i);
             if (preg_match('/^word\/(header|footer)\d+\.xml$/', $filename)) {
@@ -34,7 +55,6 @@ class DocxService
         }
 
         $combinedText = '';
-
         foreach ($xmlFiles as $xmlFile) {
             $content = $zip->getFromName($xmlFile);
             if ($content) {
@@ -43,23 +63,49 @@ class DocxService
                 $combinedText .= ' ' . $dom->textContent;
             }
         }
-
         $zip->close();
 
-        preg_match_all('/\[([^\]]+)\]/', $combinedText, $matches);
+        // 1. Detect well-formed placeholders [Key] and count occurrences
+        preg_match_all('/\[([^\[\]]+)\]/', $combinedText, $matches);
+        $allFound = array_map('trim', $matches[1] ?? []);
+        $allFound = array_filter($allFound); // remove empty
 
-        if (empty($matches[1])) {
-            return [];
+        $counts = array_count_values($allFound); // ['Nama' => 2, 'NIK' => 1]
+
+        foreach ($counts as $key => $count) {
+            if ($count >= 2) {
+                $result['duplicates'][$key] = $count;
+            } else {
+                $result['valid'][] = $key;
+            }
         }
 
-        $placeholders = array_map('trim', $matches[1]);
-        $placeholders = array_unique(array_filter($placeholders));
+        // 2. Detect malformed placeholders: patterns that look like attempted placeholders
+        //    but have wrong bracket order/nesting: e.g. [nama[, ]nama], [[nama]]
+        preg_match_all('/(?:\[[^\[\]]*\[|\][^\[\]]*\]|\[\[[^\]]+\]\]|\[[^\[\]]+$|^[^\[]*\][^\[]*\])/', $combinedText, $malformed);
+        // Also catch: starts with ] or ends with [
+        preg_match_all('/\][A-Za-z][A-Za-z0-9 _-]*\]/', $combinedText, $malformed2);
+        preg_match_all('/\[[A-Za-z][A-Za-z0-9 _-]*\[/', $combinedText, $malformed3);
 
-        return array_values($placeholders);
+        $malformedItems = array_merge(
+            $malformed[0] ?? [],
+            $malformed2[0] ?? [],
+            $malformed3[0] ?? [],
+        );
+        $result['malformed'] = array_values(array_unique(array_filter($malformedItems)));
+
+        $result['has_issues'] = ! empty($result['duplicates']) || ! empty($result['malformed']);
+
+        return $result;
     }
 
     /**
-     * Fill DOCX template placeholders dynamically using PhpWord TemplateProcessor.
+     * Fill DOCX template placeholders dynamically.
+     *
+     * PhpWord TemplateProcessor fails with placeholders that contain spaces
+     * (e.g. [Jenis Kelamin]) because MS Word splits them into multiple XML runs.
+     * This implementation normalises the XML runs first, then does a plain-text
+     * find-and-replace inside the ZIP, so all placeholders are replaced correctly.
      */
     public function generateDocx(string $templatePath, array $values, string $outputPath): bool
     {
@@ -67,21 +113,136 @@ class DocxService
             return false;
         }
 
-        $templateProcessor = new TemplateProcessor($templatePath);
-        $templateProcessor->setMacroChars('[', ']');
-
-        foreach ($values as $key => $val) {
-            $templateProcessor->setValue($key, (string) ($val ?? ''));
-        }
-
         $dir = dirname($outputPath);
         if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
-        $templateProcessor->saveAs($outputPath);
+        // Work on a temp copy in the system temp directory to avoid Windows file lock/rename permission issues.
+        $tempPath = tempnam(sys_get_temp_dir(), 'docx_') . '.docx';
+        copy($templatePath, $tempPath);
 
-        return file_exists($outputPath);
+        $zip = new ZipArchive();
+        if ($zip->open($tempPath) !== true) {
+            return false;
+        }
+
+        // The XML files inside a DOCX that may contain placeholders.
+        $xmlFiles = ['word/document.xml'];
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = $zip->getNameIndex($i);
+            if (preg_match('/^word\/(header|footer)\d+\.xml$/', $name)) {
+                $xmlFiles[] = $name;
+            }
+        }
+
+        foreach ($xmlFiles as $xmlFile) {
+            $xml = $zip->getFromName($xmlFile);
+            if ($xml === false) {
+                continue;
+            }
+
+            // ── Step 1: Merge split runs inside a paragraph so that a placeholder
+            //   like [Jenis Kelamin] — which Word may split across several <w:r> tags
+            //   — becomes a single contiguous string we can search for.
+            $xml = $this->mergeRunsInParagraphs($xml);
+
+            // ── Step 2: Simple string replacement of [Key] → value.
+            foreach ($values as $key => $val) {
+                $xml = str_replace('[' . $key . ']', htmlspecialchars((string) ($val ?? ''), ENT_XML1 | ENT_COMPAT, 'UTF-8'), $xml);
+            }
+
+            $zip->addFromString($xmlFile, $xml);
+        }
+
+        $zip->close();
+
+        // Move temp file to final output path using copy() + unlink() to avoid cross-drive rename issues.
+        if (file_exists($outputPath)) {
+            @unlink($outputPath);
+        }
+        
+        $success = copy($tempPath, $outputPath);
+        @unlink($tempPath);
+
+        return $success && file_exists($outputPath);
+    }
+
+    /**
+     * Merge adjacent <w:r> runs within each <w:p> paragraph so that placeholder
+     * text split across multiple runs becomes a single searchable string.
+     *
+     * Only runs that share identical run-properties (<w:rPr>) are merged;
+     * runs with different formatting are left untouched to preserve styling.
+     */
+    private function mergeRunsInParagraphs(string $xml): string
+    {
+        // We only need to normalise paragraphs that appear to contain a '[' …
+        // but it's safe (and simpler) to process all paragraphs.
+        return preg_replace_callback(
+            '/<w:p[ >].*?<\/w:p>/s',
+            function (array $m) {
+                return $this->mergeParagraphRuns($m[0]);
+            },
+            $xml
+        ) ?? $xml;
+    }
+
+    /**
+     * Within a single <w:p> block, concatenate consecutive <w:r> runs that
+     * share the same <w:rPr> (or both have none) into one run.
+     */
+    private function mergeParagraphRuns(string $para): string
+    {
+        // Extract all <w:r>…</w:r> segments with their positions.
+        if (! preg_match_all('/<w:r[ >].*?<\/w:r>/s', $para, $runs, PREG_OFFSET_CAPTURE)) {
+            return $para;
+        }
+
+        // Build merged run groups.
+        $groups   = [];   // each group: ['rPr' => string|null, 'texts' => [string]]
+        $offsets  = [];   // original offsets in $para for later replacement
+
+        foreach ($runs[0] as [$run, $offset]) {
+            // Extract rPr (run properties).
+            $rPr = null;
+            if (preg_match('/<w:rPr>.*?<\/w:rPr>/s', $run, $rPrMatch)) {
+                $rPr = $rPrMatch[0];
+            }
+
+            // Extract the text(s) in this run.
+            preg_match_all('/<w:t[^>]*>(.*?)<\/w:t>/s', $run, $texts, PREG_SET_ORDER);
+            $text = implode('', array_column($texts, 1));
+
+            // Can we append to the last group?
+            if (! empty($groups) && $groups[count($groups) - 1]['rPr'] === $rPr) {
+                $groups[count($groups) - 1]['texts'][] = $text;
+            } else {
+                $groups[] = ['rPr' => $rPr, 'texts' => [$text]];
+            }
+            $offsets[] = [$offset, strlen($run)];
+        }
+
+        // If nothing merged, return unchanged.
+        if (count($groups) === count($runs[0])) {
+            return $para;
+        }
+
+        // Rebuild merged runs.
+        $mergedRuns = [];
+        foreach ($groups as $group) {
+            $combinedText = implode('', $group['texts']);
+            $rPrTag       = $group['rPr'] ?? '';
+            // Use xml:space="preserve" so spaces inside values are kept.
+            $mergedRuns[] = '<w:r>' . $rPrTag . '<w:t xml:space="preserve">' . $combinedText . '</w:t></w:r>';
+        }
+
+        // Replace ALL original runs inside this paragraph with the merged ones,
+        // by removing every original run and inserting the merged block before </w:p>.
+        $result = preg_replace('/<w:r[ >].*?<\/w:r>/s', '', $para);
+        $result = str_replace('</w:p>', implode('', $mergedRuns) . '</w:p>', $result);
+
+        return $result;
     }
 
     /**

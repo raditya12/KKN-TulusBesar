@@ -7,6 +7,7 @@ use App\Models\Surat;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
@@ -160,6 +161,31 @@ class SuratTable
                         ->color('gray')
                         ->visible(fn (Surat $record) => ! empty($record->file_scan))
                         ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_scan), shouldOpenInNewTab: true),
+
+                    DeleteAction::make()
+                        ->label('Hapus')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('Hapus Arsip Surat')
+                        ->modalDescription('Tindakan ini akan menghapus arsip surat beserta semua file-nya secara permanen dan tidak dapat dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Hapus')
+                        ->action(function (Surat $record): void {
+                            // Hapus file-file terkait dari storage
+                            foreach (['file_docx', 'file_pdf', 'file_scan'] as $field) {
+                                if (! empty($record->$field)) {
+                                    Storage::disk('public')->delete($record->$field);
+                                }
+                            }
+
+                            $record->delete();
+
+                            Notification::make()
+                                ->title('Arsip Surat Dihapus')
+                                ->body('Surat berhasil dihapus beserta seluruh file-nya.')
+                                ->success()
+                                ->send();
+                        }),
                 ])
                 ->label('Akses')
                 ->button()

@@ -72,10 +72,10 @@
                 <div style="margin-bottom: 1.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
                         <h4 style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin: 0;">
-                            Field Dinamis Template
+                            Isi Data Warga di Bawah
                         </h4>
                         <span style="font-size: 0.75rem; font-family: monospace; padding: 0.125rem 0.5rem; border-radius: 0.25rem; background-color: #f3f4f6; color: #8C5A35; font-weight: 700;">
-                            {{ count($placeholders) }} Field
+                            {{ count($placeholders) }} Data
                         </span>
                     </div>
 
@@ -88,7 +88,6 @@
                             <div style="margin-bottom: 1.25rem;">
                                 <label for="ph_{{ $loop->index }}" style="display: block; font-size: 0.8125rem; font-weight: 600; color: #374151; margin-bottom: 0.375rem;">
                                     {{ $this->getLabel($ph) }} <span style="color: #ef4444;">*</span>
-                                    <span style="font-size: 0.75rem; font-family: monospace; color: #9ca3af; font-weight: 400;">(${{"{$ph}"}})</span>
                                 </label>
                                 <input
                                     type="text"
