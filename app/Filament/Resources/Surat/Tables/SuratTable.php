@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Surat\Tables;
 use App\Models\JenisSurat;
 use App\Models\Surat;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
@@ -23,13 +24,17 @@ class SuratTable
     public static function configure(Table $table): Table
     {
         return $table
+            // ── Columns ──────────────────────────────────────────────
             ->columns([
                 TextColumn::make('nomor_surat')
                     ->label('Nomor Surat')
                     ->searchable()
                     ->sortable()
                     ->copyable()
-                    ->weight('bold'),
+                    ->copyMessage('Nomor surat disalin')
+                    ->weight('semibold')
+                    ->fontFamily('mono')
+                    ->size('sm'),
 
                 TextColumn::make('jenisSurat.nama_surat')
                     ->label('Jenis Surat')
@@ -41,12 +46,14 @@ class SuratTable
                 TextColumn::make('nama_pemohon')
                     ->label('Nama Pemohon')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('semibold'),
 
                 TextColumn::make('created_at')
-                    ->label('Tanggal Buat')
+                    ->label('Tanggal')
                     ->dateTime('d M Y, H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->size('sm'),
 
                 TextColumn::make('status_scan')
                     ->label('Status Scan')
@@ -61,6 +68,11 @@ class SuratTable
                     })
                     ->sortable(),
             ])
+
+            // ── Search ───────────────────────────────────────────────
+            ->searchPlaceholder('Cari nama pemohon atau nomor surat...')
+
+            // ── Filters ──────────────────────────────────────────────
             ->filters([
                 SelectFilter::make('jenis_surat_id')
                     ->label('Jenis Surat')
@@ -91,64 +103,84 @@ class SuratTable
                             );
                     }),
             ])
+
+            // ── Record Actions ────────────────────────────────────────
             ->recordActions([
+                // Tombol utama: Detail (paling penting)
                 ViewAction::make()
                     ->label('Detail'),
 
-                Action::make('download_docx')
-                    ->label('DOCX')
-                    ->icon('heroicon-o-document-text')
-                    ->color('info')
-                    ->visible(fn (Surat $record) => ! empty($record->file_docx))
-                    ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_docx), shouldOpenInNewTab: true),
+                // Dropdown semua aksi sekunder
+                ActionGroup::make([
+                    Action::make('download_docx')
+                        ->label('Unduh DOCX')
+                        ->icon('heroicon-o-document-text')
+                        ->color('info')
+                        ->visible(fn (Surat $record) => ! empty($record->file_docx))
+                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_docx), shouldOpenInNewTab: true),
 
-                Action::make('download_pdf')
-                    ->label('PDF')
-                    ->icon('heroicon-o-document')
-                    ->color('danger')
-                    ->visible(fn (Surat $record) => ! empty($record->file_pdf))
-                    ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_pdf), shouldOpenInNewTab: true),
+                    Action::make('download_pdf')
+                        ->label('Unduh PDF')
+                        ->icon('heroicon-o-document')
+                        ->color('danger')
+                        ->visible(fn (Surat $record) => ! empty($record->file_pdf))
+                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_pdf), shouldOpenInNewTab: true),
 
-                Action::make('upload_scan')
-                    ->label('Upload Scan')
-                    ->icon('heroicon-o-arrow-up-tray')
-                    ->color('success')
-                    ->modalHeading('Upload Berkas Hasil Scan Surat')
-                    ->modalDescription('Upload file hasil scan fisik surat yang telah ditandatangani dan distempel (Format: PDF, JPG, PNG).')
-                    ->form([
-                        FileUpload::make('file_scan')
-                            ->label('File Scan (PDF / JPG / PNG)')
-                            ->directory('arsip-surat/scan')
-                            ->disk('public')
-                            ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
-                            ->maxSize(15360) // 15MB
-                            ->required(),
-                    ])
-                    ->action(function (Surat $record, array $data): void {
-                        $record->update([
-                            'file_scan'   => $data['file_scan'],
-                            'status_scan' => 'sudah_upload',
-                        ]);
+                    Action::make('upload_scan')
+                        ->label('Upload Scan')
+                        ->icon('heroicon-o-arrow-up-tray')
+                        ->color('success')
+                        ->modalHeading('Upload Berkas Hasil Scan Surat')
+                        ->modalDescription('Upload file hasil scan fisik surat yang telah ditandatangani dan distempel (Format: PDF, JPG, PNG).')
+                        ->form([
+                            FileUpload::make('file_scan')
+                                ->label('File Scan (PDF / JPG / PNG)')
+                                ->directory('arsip-surat/scan')
+                                ->disk('public')
+                                ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
+                                ->maxSize(15360) // 15MB
+                                ->required(),
+                        ])
+                        ->action(function (Surat $record, array $data): void {
+                            $record->update([
+                                'file_scan'   => $data['file_scan'],
+                                'status_scan' => 'sudah_upload',
+                            ]);
 
-                        Notification::make()
-                            ->title('Hasil Scan Berhasil Diupload')
-                            ->body('Status arsip surat berhasil diperbarui menjadi Sudah Upload.')
-                            ->success()
-                            ->send();
-                    }),
+                            Notification::make()
+                                ->title('Hasil Scan Berhasil Diupload')
+                                ->body('Status arsip surat berhasil diperbarui menjadi Sudah Upload.')
+                                ->success()
+                                ->send();
+                        }),
 
-                Action::make('download_scan')
-                    ->label('Lihat Scan')
-                    ->icon('heroicon-o-paper-clip')
-                    ->color('gray')
-                    ->visible(fn (Surat $record) => ! empty($record->file_scan))
-                    ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_scan), shouldOpenInNewTab: true),
+                    Action::make('download_scan')
+                        ->label('Lihat Scan')
+                        ->icon('heroicon-o-paper-clip')
+                        ->color('gray')
+                        ->visible(fn (Surat $record) => ! empty($record->file_scan))
+                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_scan), shouldOpenInNewTab: true),
+                ])
+                ->label('Akses')
+                ->button()
+                ->color('gray')
+                ->size('sm'),
             ])
+
+            // ── Toolbar ───────────────────────────────────────────────
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ])
+
+            // ── Empty State ───────────────────────────────────────────
+            ->emptyStateIcon('heroicon-o-archive-box')
+            ->emptyStateHeading('Belum ada arsip surat')
+            ->emptyStateDescription('Arsip surat yang dibuat melalui pembuatan surat akan muncul di sini.')
+
+            // ── Visual ────────────────────────────────────────────────
+            ->striped()
             ->defaultSort('created_at', 'desc');
     }
 }
