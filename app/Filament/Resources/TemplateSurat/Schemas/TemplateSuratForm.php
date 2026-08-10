@@ -17,10 +17,19 @@ class TemplateSuratForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Grid::make(['default' => 1, 'lg' => 5])
+            Grid::make(['default' => 1, 'lg' => 2])
+                ->columnSpan('full')
+                ->extraAttributes(['class' => 'ts-form-grid'])
                 ->schema([
+                    // Inject scoped CSS — spans full width, zero visual height
+                    View::make('filament.pages.partials.template-form-styles')
+                        ->columnSpan('full'),
+
                     Section::make('Detail Template')
-                        ->columnSpan(['default' => 1, 'lg' => fn ($get) => filled($get('file_docx')) ? 2 : 5])
+                        ->columnSpan([
+                            'default' => 'full',
+                            'lg'      => fn ($get) => filled($get('file_docx')) ? 1 : 'full',
+                        ])
                         ->schema([
                             Select::make('jenis_surat_id')
                                 ->label('Jenis Surat')
@@ -51,7 +60,8 @@ class TemplateSuratForm
                         ]),
 
                     Section::make('Preview Template')
-                        ->columnSpan(['default' => 1, 'lg' => 3])
+                        ->columnSpan(['default' => 'full', 'lg' => 1])
+                        ->extraAttributes(['class' => 'ts-preview-section'])
                         ->visible(fn ($get) => filled($get('file_docx')))
                         ->schema([
                             View::make('filament.pages.partials.template-preview-modal')
@@ -60,11 +70,11 @@ class TemplateSuratForm
                                     if (is_array($state)) {
                                         $state = array_key_first($state) ?: (array_values($state)[0] ?? null);
                                     }
-                                    
+
                                     if (!$state) {
                                         return ['pdfUrl' => null];
                                     }
-                                    
+
                                     $docxPath = null;
                                     if ($state instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
                                         $docxPath = $state->getRealPath();
@@ -84,7 +94,7 @@ class TemplateSuratForm
 
                                     /** @var DocxService $docxService */
                                     $docxService = app(DocxService::class);
-                                    
+
                                     Storage::disk('public')->makeDirectory('temp-template-preview');
                                     // Use a unique name for this file based on size/mtime or random string
                                     $pdfName = md5($docxPath . (file_exists($docxPath) ? filemtime($docxPath) : time())) . '.pdf';
