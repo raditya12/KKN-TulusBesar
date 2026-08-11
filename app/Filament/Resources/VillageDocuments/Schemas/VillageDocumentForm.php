@@ -6,6 +6,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Schema;
 
 class VillageDocumentForm
@@ -39,6 +40,15 @@ class VillageDocumentForm
                     ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                     ->maxSize(10240) // 10MB
                     ->required()
+                    ->columnSpanFull(),
+                FileUpload::make('requirement_image_path')
+                    ->label('Gambar Persyaratan / SOP')
+                    ->image()
+                    ->directory('village-documents/requirements')
+                    ->maxSize(5120) // 5MB
+                    ->columnSpanFull(),
+                RichEditor::make('requirements_text')
+                    ->label('Keterangan Persyaratan (Opsional)')
                     ->columnSpanFull(),
             ]);
     }

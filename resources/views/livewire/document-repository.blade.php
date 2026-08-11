@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ showModal: false, doc: null }">
     <div class="bg-white rounded-3xl border border-outline-variant/40 shadow-sm overflow-hidden">
         <!-- Search & Filter Bar -->
         <div class="p-4 md:p-6 bg-surface-container-low border-b border-outline-variant/40 flex flex-col md:flex-row gap-4 justify-between items-center">
@@ -59,10 +59,19 @@
                             </td>
                             <td class="px-6 py-4 font-body-sm text-on-surface-variant">{{ $doc->category?->name ?? '-' }}</td>
                             <td class="px-6 py-4 font-body-sm text-on-surface-variant">{{ $doc->updated_at->translatedFormat('d M Y') }}</td>
-                            <td class="px-6 py-4 text-right">
-                                <a href="{{ \Illuminate\Support\Facades\Storage::url($doc->file_path) }}" target="_blank" download class="text-primary hover:text-secondary-container transition-colors flex items-center gap-1 ml-auto font-label-sm w-fit float-right">
-                                    <span class="material-symbols-outlined text-[18px]">download</span> Unduh
-                                </a>
+                            <td class="px-6 py-4 text-right whitespace-nowrap">
+                                @php
+                                    $docData = [
+                                        'title' => $doc->title,
+                                        'description' => $doc->description,
+                                        'req_img' => $doc->requirement_image_path ? \Illuminate\Support\Facades\Storage::url($doc->requirement_image_path) : null,
+                                        'req_text' => $doc->requirements_text,
+                                        'file_url' => \Illuminate\Support\Facades\Storage::url($doc->file_path)
+                                    ];
+                                @endphp
+                                <button type="button" @click="doc = {{ json_encode($docData) }}; showModal = true" class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-label-md hover:bg-primary/90 transition-colors shadow-sm whitespace-nowrap">
+                                    <span class="material-symbols-outlined text-[20px]">task_alt</span> Lihat Syarat & Unduh
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -83,4 +92,79 @@
             </div>
         @endif
     </div>
+
+    <!-- Modal Detail Persyaratan (AlpineJS) -->
+    <template x-if="doc !== null">
+        <div x-show="showModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 w-screen h-screen">
+            <!-- Backdrop -->
+            <div x-show="showModal" 
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                @click="showModal = false"
+                class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+            <!-- Modal Content -->
+            <div x-show="showModal"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative bg-surface rounded-3xl w-full sm:w-[500px] md:w-[672px] max-h-[90vh] overflow-y-auto shadow-xl border border-outline-variant/30 flex flex-col z-10">
+                
+                <div class="p-6 border-b border-outline-variant/30 flex justify-between items-center sticky top-0 bg-surface/90 backdrop-blur z-10">
+                    <h3 class="font-title-lg text-on-surface line-clamp-1" x-text="'Persyaratan: ' + doc.title"></h3>
+                    <button type="button" @click="showModal = false" class="text-on-surface-variant hover:text-error transition-colors p-1 rounded-full hover:bg-surface-variant/50">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                
+                <div class="p-6 space-y-6">
+                    <template x-if="doc.description">
+                        <div>
+                            <h4 class="font-label-md text-on-surface-variant mb-2">Deskripsi Dokumen</h4>
+                            <p class="font-body-md text-on-surface" x-text="doc.description"></p>
+                        </div>
+                    </template>
+
+                    <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/30">
+                        <h4 class="font-title-md text-primary mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-secondary-container">checklist</span> Berkas yang Perlu Disiapkan
+                        </h4>
+                        
+                        <template x-if="doc.req_img">
+                            <div class="mb-4">
+                                <img :src="doc.req_img" alt="SOP / Persyaratan" class="w-full rounded-xl border border-outline-variant/20 shadow-sm">
+                            </div>
+                        </template>
+
+                        <template x-if="doc.req_text">
+                            <div class="prose prose-sm max-w-none text-on-surface font-body-md" x-html="doc.req_text">
+                            </div>
+                        </template>
+
+                        <template x-if="!doc.req_img && !doc.req_text">
+                            <div class="text-center py-4">
+                                <p class="font-body-md text-on-surface-variant">Langsung unduh formulir di bawah, tidak ada berkas khusus yang perlu disiapkan sebelumnya.</p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                
+                <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 sticky bottom-0 bg-surface/90 backdrop-blur z-10">
+                    <button type="button" @click="showModal = false" class="px-5 py-2.5 rounded-xl font-label-md text-on-surface bg-surface-variant hover:bg-surface-variant/80 transition-colors">
+                        Batal
+                    </button>
+                    <a :href="doc.file_url" target="_blank" download class="px-5 py-2.5 rounded-xl font-label-md text-on-primary bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-md">
+                        <span class="material-symbols-outlined text-[20px]">download</span> Unduh Formulir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </template>
 </div>

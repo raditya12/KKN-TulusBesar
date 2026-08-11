@@ -16,6 +16,8 @@ class VillageDocument extends Model
         'document_category_id',
         'description',
         'file_path',
+        'requirement_image_path',
+        'requirements_text',
     ];
 
     public function category()
