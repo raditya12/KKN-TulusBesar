@@ -27,6 +27,23 @@
         </div>
     </section>
 
+    <!-- Repositori Dokumen (Layanan Publik Utama) -->
+    <section id="dokumen" class="py-16 md:py-24 bg-background relative z-20">
+        <div class="max-w-screen-xl mx-auto px-container-margin">
+            <div class="text-center mb-12 space-y-3">
+                <span class="font-label-md text-secondary tracking-widest uppercase">Layanan Mandiri Publik</span>
+                <h2 class="font-display-md text-4xl md:text-5xl font-bold text-on-background">Pelayanan Administrasi <span class="text-primary">Desa Tulusbesar</span></h2>
+                <p class="font-body-md text-on-surface-variant max-w-[48rem] mx-auto text-lg">
+                    Cari, baca persyaratan, dan unduh formulir dokumen pelayanan administrasi kependudukan Anda langsung dari rumah.
+                </p>
+            </div>
+            
+            <div class="bg-surface-container-lowest rounded-3xl shadow-xl shadow-primary/5 border border-outline-variant/30 overflow-hidden">
+                @livewire('document-repository')
+            </div>
+        </div>
+    </section>
+
     <!-- 1. Hero & Kondisi Geografis -->
     <section id="profil" class="relative py-16 md:py-24 bg-surface-container-low overflow-hidden">
         <!-- Hero Background Image (Dummy) -->

@@ -14,75 +14,135 @@
             </select>
         </div>
 
-        <!-- Table -->
-        <div class="overflow-x-auto relative min-h-[200px]">
+        <!-- List / Table View -->
+        <div class="relative min-h-[200px]">
             <div wire:loading class="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-surface-variant/30 text-on-surface-variant font-label-sm border-b border-outline-variant/30 uppercase tracking-wider">
-                        <th class="px-6 py-4">Nama Dokumen</th>
-                        <th class="px-6 py-4">Kategori</th>
-                        <th class="px-6 py-4 whitespace-nowrap">Tanggal Diperbarui</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-outline-variant/20">
-                    @forelse($documents as $doc)
-                        <tr class="hover:bg-surface-container/30 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    @php
-                                        $ext = $doc->file_extension;
-                                        $iconColor = match($ext) {
-                                            'PDF' => 'bg-red-100 text-red-600',
-                                            'DOC', 'DOCX' => 'bg-blue-100 text-blue-600',
-                                            'XLS', 'XLSX' => 'bg-green-100 text-green-600',
-                                            default => 'bg-surface-variant text-on-surface-variant',
-                                        };
-                                        $iconName = match($ext) {
-                                            'PDF' => 'picture_as_pdf',
-                                            'DOC', 'DOCX' => 'description',
-                                            'XLS', 'XLSX' => 'table',
-                                            default => 'insert_drive_file',
-                                        };
-                                    @endphp
-                                    <div class="w-10 h-10 rounded {{ $iconColor }} flex items-center justify-center shrink-0">
-                                        <span class="material-symbols-outlined">{{ $iconName }}</span>
-                                    </div>
-                                    <div>
-                                        <div class="font-label-md font-bold text-on-surface">{{ $doc->title }}</div>
-                                        <div class="font-body-sm text-on-surface-variant text-xs mt-0.5">{{ $doc->file_size }} • {{ $ext }}</div>
-                                    </div>
+
+            <!-- Mobile Card View (Hidden on desktop) -->
+            <div class="md:hidden flex flex-col divide-y divide-outline-variant/20">
+                @forelse($documents as $doc)
+                    @php
+                        $ext = $doc->file_extension;
+                        $iconColor = match($ext) {
+                            'PDF' => 'bg-red-100 text-red-600',
+                            'DOC', 'DOCX' => 'bg-blue-100 text-blue-600',
+                            'XLS', 'XLSX' => 'bg-green-100 text-green-600',
+                            default => 'bg-surface-variant text-on-surface-variant',
+                        };
+                        $iconName = match($ext) {
+                            'PDF' => 'picture_as_pdf',
+                            'DOC', 'DOCX' => 'description',
+                            'XLS', 'XLSX' => 'table',
+                            default => 'insert_drive_file',
+                        };
+                        $docData = [
+                            'title' => $doc->title,
+                            'description' => $doc->description,
+                            'req_img' => $doc->requirement_image_path ? \Illuminate\Support\Facades\Storage::url($doc->requirement_image_path) : null,
+                            'req_text' => $doc->requirements_text,
+                            'file_url' => \Illuminate\Support\Facades\Storage::url($doc->file_path)
+                        ];
+                    @endphp
+                    <div class="p-4 flex flex-col gap-4 hover:bg-surface-container/30 transition-colors">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl {{ $iconColor }} flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/10">
+                                <span class="material-symbols-outlined text-[24px]">{{ $iconName }}</span>
+                            </div>
+                            <div class="flex-1 min-w-0 pt-0.5">
+                                <div class="font-label-md font-bold text-on-surface leading-tight mb-1">{{ $doc->title }}</div>
+                                <div class="flex items-center gap-2 font-body-sm text-on-surface-variant text-xs">
+                                    <span class="inline-flex items-center rounded-full bg-surface-variant/50 px-2 py-0.5 text-[10px] font-medium text-on-surface-variant ring-1 ring-inset ring-outline-variant/20">{{ $doc->category?->name ?? 'Tanpa Kategori' }}</span>
+                                    <span>{{ $doc->file_size }} • {{ $ext }}</span>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 font-body-sm text-on-surface-variant">{{ $doc->category?->name ?? '-' }}</td>
-                            <td class="px-6 py-4 font-body-sm text-on-surface-variant">{{ $doc->updated_at->translatedFormat('d M Y') }}</td>
-                            <td class="px-6 py-4 text-right whitespace-nowrap">
-                                @php
-                                    $docData = [
-                                        'title' => $doc->title,
-                                        'description' => $doc->description,
-                                        'req_img' => $doc->requirement_image_path ? \Illuminate\Support\Facades\Storage::url($doc->requirement_image_path) : null,
-                                        'req_text' => $doc->requirements_text,
-                                        'file_url' => \Illuminate\Support\Facades\Storage::url($doc->file_path)
-                                    ];
-                                @endphp
-                                <button type="button" @click="doc = {{ json_encode($docData) }}; showModal = true" class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-label-md hover:bg-primary/90 transition-colors shadow-sm whitespace-nowrap">
-                                    <span class="material-symbols-outlined text-[20px]">task_alt</span> Lihat Syarat & Unduh
-                                </button>
-                            </td>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between mt-1">
+                            <div class="font-body-sm text-on-surface-variant text-[11px] flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">calendar_today</span> {{ $doc->updated_at->translatedFormat('d M Y') }}
+                            </div>
+                        </div>
+
+                        <button type="button" @click="doc = {{ json_encode($docData) }}; showModal = true" class="w-full justify-center inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-xl font-label-md hover:bg-primary/90 transition-colors shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">task_alt</span> Lihat Syarat & Unduh
+                        </button>
+                    </div>
+                @empty
+                    <div class="p-8 text-center text-on-surface-variant font-body-sm">
+                        Tidak ada dokumen ditemukan.
+                    </div>
+                @endforelse
+            </div>
+
+            <!-- Desktop Table View (Hidden on mobile) -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-surface-variant/30 text-on-surface-variant font-label-sm border-b border-outline-variant/30 uppercase tracking-wider">
+                            <th class="px-6 py-4">Nama Dokumen</th>
+                            <th class="px-6 py-4">Kategori</th>
+                            <th class="px-6 py-4 whitespace-nowrap">Tanggal Diperbarui</th>
+                            <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-on-surface-variant font-body-sm">
-                                Tidak ada dokumen ditemukan.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/20">
+                        @forelse($documents as $doc)
+                            <tr class="hover:bg-surface-container/30 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        @php
+                                            $ext = $doc->file_extension;
+                                            $iconColor = match($ext) {
+                                                'PDF' => 'bg-red-100 text-red-600',
+                                                'DOC', 'DOCX' => 'bg-blue-100 text-blue-600',
+                                                'XLS', 'XLSX' => 'bg-green-100 text-green-600',
+                                                default => 'bg-surface-variant text-on-surface-variant',
+                                            };
+                                            $iconName = match($ext) {
+                                                'PDF' => 'picture_as_pdf',
+                                                'DOC', 'DOCX' => 'description',
+                                                'XLS', 'XLSX' => 'table',
+                                                default => 'insert_drive_file',
+                                            };
+                                        @endphp
+                                        <div class="w-10 h-10 rounded {{ $iconColor }} flex items-center justify-center shrink-0">
+                                            <span class="material-symbols-outlined">{{ $iconName }}</span>
+                                        </div>
+                                        <div>
+                                            <div class="font-label-md font-bold text-on-surface">{{ $doc->title }}</div>
+                                            <div class="font-body-sm text-on-surface-variant text-xs mt-0.5">{{ $doc->file_size }} • {{ $ext }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 font-body-sm text-on-surface-variant">{{ $doc->category?->name ?? '-' }}</td>
+                                <td class="px-6 py-4 font-body-sm text-on-surface-variant">{{ $doc->updated_at->translatedFormat('d M Y') }}</td>
+                                <td class="px-6 py-4 text-right whitespace-nowrap">
+                                    @php
+                                        $docData = [
+                                            'title' => $doc->title,
+                                            'description' => $doc->description,
+                                            'req_img' => $doc->requirement_image_path ? \Illuminate\Support\Facades\Storage::url($doc->requirement_image_path) : null,
+                                            'req_text' => $doc->requirements_text,
+                                            'file_url' => \Illuminate\Support\Facades\Storage::url($doc->file_path)
+                                        ];
+                                    @endphp
+                                    <button type="button" @click="doc = {{ json_encode($docData) }}; showModal = true" class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-label-md hover:bg-primary/90 transition-colors shadow-sm whitespace-nowrap">
+                                        <span class="material-symbols-outlined text-[20px]">task_alt</span> Lihat Syarat & Unduh
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-12 text-center text-on-surface-variant font-body-sm">
+                                    Tidak ada dokumen ditemukan.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
         
         <!-- Pagination -->
@@ -125,43 +185,52 @@
                 </div>
                 
                 <div class="p-6 space-y-6">
+                    <!-- Deskripsi Dokumen (Optional, less emphasized) -->
                     <template x-if="doc.description">
-                        <div>
-                            <h4 class="font-label-md text-on-surface-variant mb-2">Deskripsi Dokumen</h4>
+                        <div class="bg-surface-variant/30 p-4 rounded-2xl border border-outline-variant/20">
+                            <h4 class="font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Informasi</h4>
                             <p class="font-body-md text-on-surface" x-text="doc.description"></p>
                         </div>
                     </template>
 
-                    <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/30">
-                        <h4 class="font-title-md text-primary mb-4 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-secondary-container">checklist</span> Berkas yang Perlu Disiapkan
+                    <!-- Persyaratan Utama (Highly Emphasized) -->
+                    <div>
+                        <h4 class="font-title-lg text-primary mb-4 flex items-center gap-2 border-b border-outline-variant/30 pb-3">
+                            <span class="material-symbols-outlined text-secondary-container text-2xl">task</span> 
+                            Berkas yang Harus Disiapkan
                         </h4>
                         
-                        <template x-if="doc.req_img">
-                            <div class="mb-4">
-                                <img :src="doc.req_img" alt="SOP / Persyaratan" class="w-full rounded-xl border border-outline-variant/20 shadow-sm">
-                            </div>
-                        </template>
-
                         <template x-if="doc.req_text">
-                            <div class="prose prose-sm max-w-none text-on-surface font-body-md" x-html="doc.req_text">
+                            <div class="prose prose-lg prose-p:leading-relaxed prose-li:marker:text-primary max-w-none text-on-surface font-body-lg bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/30" x-html="doc.req_text">
                             </div>
                         </template>
 
-                        <template x-if="!doc.req_img && !doc.req_text">
-                            <div class="text-center py-4">
-                                <p class="font-body-md text-on-surface-variant">Langsung unduh formulir di bawah, tidak ada berkas khusus yang perlu disiapkan sebelumnya.</p>
+                        <template x-if="!doc.req_text">
+                            <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/30 text-center py-8">
+                                <span class="material-symbols-outlined text-5xl text-on-surface-variant/50 mb-3 block">description</span>
+                                <p class="font-body-lg text-on-surface font-medium">Tidak ada berkas tambahan yang perlu disiapkan.</p>
+                                <p class="font-body-md text-on-surface-variant mt-1">Anda bisa langsung mengunduh formulir di bawah.</p>
+                            </div>
+                        </template>
+
+                        <!-- Tautan Poster SOP jika ada -->
+                        <template x-if="doc.req_img">
+                            <div class="mt-4 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-on-surface-variant text-lg">image</span>
+                                <a :href="doc.req_img" target="_blank" class="font-label-md text-secondary hover:text-primary underline underline-offset-4 transition-colors">
+                                    Lihat Poster Panduan Visual (Opsional)
+                                </a>
                             </div>
                         </template>
                     </div>
                 </div>
                 
-                <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 sticky bottom-0 bg-surface/90 backdrop-blur z-10">
-                    <button type="button" @click="showModal = false" class="px-5 py-2.5 rounded-xl font-label-md text-on-surface bg-surface-variant hover:bg-surface-variant/80 transition-colors">
-                        Batal
+                <div class="p-6 border-t border-outline-variant/30 flex flex-col sm:flex-row justify-end gap-3 sticky bottom-0 bg-surface/95 backdrop-blur z-10">
+                    <button type="button" @click="showModal = false" class="order-2 sm:order-1 px-6 py-3 rounded-2xl font-label-lg text-on-surface bg-surface-variant hover:bg-surface-variant/80 transition-colors w-full sm:w-auto">
+                        Tutup
                     </button>
-                    <a :href="doc.file_url" target="_blank" download class="px-5 py-2.5 rounded-xl font-label-md text-on-primary bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-md">
-                        <span class="material-symbols-outlined text-[20px]">download</span> Unduh Formulir
+                    <a :href="doc.file_url" target="_blank" download class="order-1 sm:order-2 px-6 py-3 rounded-2xl font-label-lg text-on-primary bg-primary hover:bg-primary/90 transition-all flex justify-center items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 w-full sm:w-auto">
+                        <span class="material-symbols-outlined text-[24px]">download</span> UNDUH FORMULIR
                     </a>
                 </div>
             </div>
