@@ -5,21 +5,22 @@ namespace App\Filament\Pages;
 use App\Filament\Widgets\DashboardHeroWidget;
 use App\Filament\Widgets\DashboardMainWidget;
 use App\Filament\Widgets\DashboardStatsWidget;
+use App\Filament\Widgets\PanduanSistemWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
+use Illuminate\Contracts\Support\Htmlable;
 
 class DashboardPage extends BaseDashboard
 {
     protected static ?string $navigationLabel = 'Dashboard';
 
-    // Sembunyikan judul default — hero widget sudah berisi heading
-    public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable
+    public function getTitle(): string|Htmlable
     {
-        return '';
+        return 'Dashboard';
     }
 
     public function getSubheading(): ?string
     {
-        return null;
+        return 'Kelola dan pantau arsip surat Desa Tulusbesar.';
     }
 
     public function getWidgets(): array
@@ -28,6 +29,7 @@ class DashboardPage extends BaseDashboard
             DashboardHeroWidget::class,
             DashboardStatsWidget::class,
             DashboardMainWidget::class,
+            PanduanSistemWidget::class,
         ];
     }
 

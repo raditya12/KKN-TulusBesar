@@ -12,6 +12,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class JenisSuratResource extends Resource
 {
@@ -28,6 +29,11 @@ class JenisSuratResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?int $navigationSort = 1;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withCount('surats');
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -47,9 +53,9 @@ class JenisSuratResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => ListJenisSurat::route('/'),
+            'index' => ListJenisSurat::route('/'),
             'create' => CreateJenisSurat::route('/create'),
-            'edit'   => EditJenisSurat::route('/{record}/edit'),
+            'edit' => EditJenisSurat::route('/{record}/edit'),
         ];
     }
 }

@@ -3,12 +3,10 @@
 namespace App\Filament\Resources\JenisSurat\Tables;
 
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class JenisSuratTable
@@ -17,44 +15,26 @@ class JenisSuratTable
     {
         return $table
             ->columns([
-                TextColumn::make('kode_surat')
-                    ->label('Kode')
-                    ->badge()
-                    ->color('warning')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('nama_surat')
                     ->label('Nama Surat')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('semibold'),
 
                 TextColumn::make('deskripsi')
                     ->label('Deskripsi')
-                    ->limit(60)
+                    ->limit(80)
                     ->placeholder('—')
-                    ->toggleable(),
+                    ->wrap(),
 
-                IconColumn::make('is_active')
-                    ->label('Status')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
-                    ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->dateTime('d M Y')
+                TextColumn::make('surats_count')
+                    ->label('Total Surat')
+                    ->counts('surats')
+                    ->badge()
+                    ->color(fn (int $state): string => $state > 0 ? 'success' : 'gray')
+                    ->suffix(fn (int $state): string => $state === 1 ? ' surat' : ' surat')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                TernaryFilter::make('is_active')
-                    ->label('Status Aktif')
-                    ->trueLabel('Aktif')
-                    ->falseLabel('Nonaktif'),
+                    ->alignCenter(),
             ])
             ->recordActions([
                 EditAction::make(),
@@ -65,6 +45,9 @@ class JenisSuratTable
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->emptyStateIcon('heroicon-o-document-text')
+            ->emptyStateHeading('Belum ada jenis surat')
+            ->emptyStateDescription('Tambahkan jenis surat untuk mengelompokkan arsip.')
             ->defaultSort('nama_surat');
     }
 }

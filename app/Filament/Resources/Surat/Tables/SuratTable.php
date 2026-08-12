@@ -9,9 +9,9 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -37,54 +37,52 @@ class SuratTable
                     ->fontFamily('mono')
                     ->size('sm'),
 
-                TextColumn::make('jenisSurat.nama_surat')
-                    ->label('Jenis Surat')
-                    ->badge()
-                    ->color('primary')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('nama_pemohon')
                     ->label('Nama Pemohon')
                     ->searchable()
                     ->sortable()
                     ->weight('semibold'),
 
+                TextColumn::make('jenisSurat.nama_surat')
+                    ->label('Jenis Surat')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable()
+                    ->placeholder('-'),
+
                 TextColumn::make('created_at')
-                    ->label('Tanggal')
+                    ->label('Tanggal Arsip')
                     ->dateTime('d M Y, H:i')
                     ->sortable()
                     ->size('sm'),
 
-                TextColumn::make('status_scan')
-                    ->label('Status Scan')
+                TextColumn::make('file_dokumen')
+                    ->label('Dokumen')
+                    ->formatStateUsing(function ($state) {
+                        if (! $state) {
+                            return '-';
+                        }
+                        $ext = strtoupper(pathinfo($state, PATHINFO_EXTENSION));
+
+                        return $ext ?: 'FILE';
+                    })
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'sudah_upload' => 'success',
-                        default        => 'warning',
-                    })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'sudah_upload' => 'Sudah Upload',
-                        default        => 'Belum Upload',
-                    })
-                    ->sortable(),
+                    ->color(fn ($state) => match (strtolower(pathinfo($state ?? '', PATHINFO_EXTENSION))) {
+                        'pdf' => 'danger',
+                        'docx', 'doc' => 'info',
+                        default => 'gray',
+                    }),
             ])
 
             // ── Search ───────────────────────────────────────────────
-            ->searchPlaceholder('Cari nama pemohon atau nomor surat...')
+            ->searchPlaceholder('Cari nomor surat atau nama pemohon...')
 
             // ── Filters ──────────────────────────────────────────────
             ->filters([
                 SelectFilter::make('jenis_surat_id')
                     ->label('Jenis Surat')
-                    ->options(fn () => JenisSurat::pluck('nama_surat', 'id')->toArray()),
-
-                SelectFilter::make('status_scan')
-                    ->label('Status Scan')
-                    ->options([
-                        'belum_upload' => 'Belum Upload',
-                        'sudah_upload' => 'Sudah Upload',
-                    ]),
+                    ->options(fn () => JenisSurat::active()->pluck('nama_surat', 'id')->toArray())
+                    ->placeholder('Semua Jenis'),
 
                 Filter::make('created_at')
                     ->label('Rentang Tanggal')
@@ -107,90 +105,53 @@ class SuratTable
 
             // ── Record Actions ────────────────────────────────────────
             ->recordActions([
-                // Tombol utama: Detail (paling penting)
                 ViewAction::make()
                     ->label('Detail'),
 
-                // Dropdown semua aksi sekunder
                 ActionGroup::make([
-                    Action::make('download_docx')
-                        ->label('Unduh DOCX')
-                        ->icon('heroicon-o-document-text')
+                    Action::make('lihat_dokumen')
+                        ->label('Lihat Dokumen')
+                        ->icon('heroicon-o-eye')
                         ->color('info')
-                        ->visible(fn (Surat $record) => ! empty($record->file_docx))
-                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_docx), shouldOpenInNewTab: true),
+                        ->visible(fn (Surat $record) => ! empty($record->file_dokumen))
+                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_dokumen), shouldOpenInNewTab: true),
 
-                    Action::make('download_pdf')
-                        ->label('Unduh PDF')
-                        ->icon('heroicon-o-document')
-                        ->color('danger')
-                        ->visible(fn (Surat $record) => ! empty($record->file_pdf))
-                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_pdf), shouldOpenInNewTab: true),
+                    Action::make('download_dokumen')
+                        ->label('Download Dokumen')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->color('primary')
+                        ->visible(fn (Surat $record) => ! empty($record->file_dokumen))
+                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_dokumen), shouldOpenInNewTab: true),
 
-                    Action::make('upload_scan')
-                        ->label('Upload Scan')
-                        ->icon('heroicon-o-arrow-up-tray')
-                        ->color('success')
-                        ->modalHeading('Upload Berkas Hasil Scan Surat')
-                        ->modalDescription('Upload file hasil scan fisik surat yang telah ditandatangani dan distempel (Format: PDF, JPG, PNG).')
-                        ->form([
-                            FileUpload::make('file_scan')
-                                ->label('File Scan (PDF / JPG / PNG)')
-                                ->directory('arsip-surat/scan')
-                                ->disk('public')
-                                ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
-                                ->maxSize(15360) // 15MB
-                                ->required(),
-                        ])
-                        ->action(function (Surat $record, array $data): void {
-                            $record->update([
-                                'file_scan'   => $data['file_scan'],
-                                'status_scan' => 'sudah_upload',
-                            ]);
-
-                            Notification::make()
-                                ->title('Hasil Scan Berhasil Diupload')
-                                ->body('Status arsip surat berhasil diperbarui menjadi Sudah Upload.')
-                                ->success()
-                                ->send();
-                        }),
-
-                    Action::make('download_scan')
-                        ->label('Lihat Scan')
-                        ->icon('heroicon-o-paper-clip')
-                        ->color('gray')
-                        ->visible(fn (Surat $record) => ! empty($record->file_scan))
-                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_scan), shouldOpenInNewTab: true),
+                    EditAction::make()
+                        ->label('Edit')
+                        ->icon('heroicon-o-pencil-square'),
 
                     DeleteAction::make()
                         ->label('Hapus')
                         ->icon('heroicon-o-trash')
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->modalHeading('Hapus Arsip Surat')
-                        ->modalDescription('Tindakan ini akan menghapus arsip surat beserta semua file-nya secara permanen dan tidak dapat dibatalkan.')
-                        ->modalSubmitActionLabel('Ya, Hapus')
+                        ->modalHeading('Hapus Arsip Surat?')
+                        ->modalDescription('Arsip surat ini akan dihapus dari sistem. Tindakan ini tidak dapat dibatalkan.')
+                        ->modalSubmitActionLabel('Hapus')
+                        ->modalCancelActionLabel('Batal')
                         ->action(function (Surat $record): void {
-                            // Hapus file-file terkait dari storage
-                            foreach (['file_docx', 'file_pdf', 'file_scan'] as $field) {
-                                if (! empty($record->$field)) {
-                                    Storage::disk('public')->delete($record->$field);
-                                }
+                            if (! empty($record->file_dokumen)) {
+                                Storage::disk('public')->delete($record->file_dokumen);
                             }
-
                             $record->delete();
 
                             Notification::make()
-                                ->title('Arsip Surat Dihapus')
-                                ->body('Surat berhasil dihapus beserta seluruh file-nya.')
+                                ->title('Arsip surat berhasil dihapus.')
                                 ->success()
                                 ->send();
                         }),
                 ])
-                ->label('Akses')
-                ->button()
-                ->color('gray')
-                ->size('sm'),
+                    ->label('Aksi')
+                    ->button()
+                    ->color('gray')
+                    ->size('sm'),
             ])
 
             // ── Toolbar ───────────────────────────────────────────────
@@ -203,7 +164,7 @@ class SuratTable
             // ── Empty State ───────────────────────────────────────────
             ->emptyStateIcon('heroicon-o-archive-box')
             ->emptyStateHeading('Belum ada arsip surat')
-            ->emptyStateDescription('Arsip surat yang dibuat melalui pembuatan surat akan muncul di sini.')
+            ->emptyStateDescription('Klik tombol "Tambah Arsip Surat" untuk mulai mengarsipkan dokumen surat.')
 
             // ── Visual ────────────────────────────────────────────────
             ->striped()

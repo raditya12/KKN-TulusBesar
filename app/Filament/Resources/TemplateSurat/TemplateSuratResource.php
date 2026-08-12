@@ -30,6 +30,8 @@ class TemplateSuratResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Schema $schema): Schema
     {
         return TemplateSuratForm::configure($schema);
@@ -53,9 +55,9 @@ class TemplateSuratResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => ListTemplateSurat::route('/'),
+            'index' => ListTemplateSurat::route('/'),
             'create' => CreateTemplateSurat::route('/create'),
-            'edit'   => EditTemplateSurat::route('/{record}/edit'),
+            'edit' => EditTemplateSurat::route('/{record}/edit'),
         ];
     }
 }

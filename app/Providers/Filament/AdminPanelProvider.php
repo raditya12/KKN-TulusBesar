@@ -2,14 +2,11 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\DashboardLinksWidget;
-use App\Filament\Widgets\SuratStatsWidget;
+use App\Filament\Pages\DashboardPage;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use App\Filament\Pages\DashboardPage;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -35,10 +32,11 @@ class AdminPanelProvider extends PanelProvider
             ->font('Outfit')
             ->colors([
                 'primary' => Color::hex('#8C5A35'),
-                'gray'    => Color::Stone,
+                'gray' => Color::Stone,
             ])
             ->maxContentWidth('full')
             ->navigationGroups([
+                'Data Penduduk',
                 'Administrasi Surat',
                 'Administrasi',
                 'CMS',

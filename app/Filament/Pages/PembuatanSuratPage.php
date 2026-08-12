@@ -26,34 +26,45 @@ class PembuatanSuratPage extends Page
 
     protected static ?int $navigationSort = 3;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     // ── Form State ───────────────────────────────────────────────────────────────
     public ?int $jenis_surat_id = null;
+
     public ?string $nomor_surat = null;
+
     public ?string $tanggal_surat = null;
+
     public array $formData = [];
 
     // ── Template Metadata ────────────────────────────────────────────────────────
     public array $placeholders = [];
+
     public bool $hasTemplate = false;
+
     public ?string $templateFileName = null;
+
     public ?string $jenisSuratNama = null;
 
     // ── Edit State ───────────────────────────────────────────────────────────────
     public ?int $surat_id = null;
 
     protected $queryString = [
-        'surat_id'       => ['except' => null],
+        'surat_id' => ['except' => null],
         // Parameter ini diisi saat user kembali dari preview tanpa simpan
-        'restore_jenis'  => ['except' => null],
-        'restore_nomor'  => ['except' => null],
-        'restore_tgl'    => ['except' => null],
-        'restore_data'   => ['except' => null],  // base64-encoded JSON
+        'restore_jenis' => ['except' => null],
+        'restore_nomor' => ['except' => null],
+        'restore_tgl' => ['except' => null],
+        'restore_data' => ['except' => null],  // base64-encoded JSON
     ];
 
     public ?string $restore_jenis = null;
+
     public ?string $restore_nomor = null;
-    public ?string $restore_tgl   = null;
-    public ?string $restore_data  = null;
+
+    public ?string $restore_tgl = null;
+
+    public ?string $restore_data = null;
 
     public function mount(): void
     {
@@ -62,26 +73,26 @@ class PembuatanSuratPage extends Page
             $surat = Surat::find($this->surat_id);
             if ($surat) {
                 $this->jenis_surat_id = $surat->jenis_surat_id;
-                $this->nomor_surat    = $surat->nomor_surat;
-                $this->tanggal_surat  = date('Y-m-d');
-                $this->formData       = $surat->data_json ?? [];
+                $this->nomor_surat = $surat->nomor_surat;
+                $this->tanggal_surat = date('Y-m-d');
+                $this->formData = $surat->data_json ?? [];
 
                 $this->loadTemplateAndPlaceholders($this->jenis_surat_id, false);
             }
         } elseif ($this->restore_jenis) {
             // Kembali dari halaman preview tanpa simpan — restore form data
             $this->jenis_surat_id = (int) $this->restore_jenis;
-            $this->nomor_surat    = $this->restore_nomor ?? '';
-            $this->tanggal_surat  = $this->restore_tgl ?? date('Y-m-d');
-            $this->formData       = $this->restore_data
+            $this->nomor_surat = $this->restore_nomor ?? '';
+            $this->tanggal_surat = $this->restore_tgl ?? date('Y-m-d');
+            $this->formData = $this->restore_data
                 ? (json_decode(base64_decode($this->restore_data), true) ?? [])
                 : [];
 
             $this->loadTemplateAndPlaceholders($this->jenis_surat_id, false);
         } else {
             // Form baru
-            $this->tanggal_surat  = date('Y-m-d');
-            $this->nomor_surat    = '470 / ' . rand(100, 999) . ' / 35.07.19.2005 / ' . date('Y');
+            $this->tanggal_surat = date('Y-m-d');
+            $this->nomor_surat = '470 / '.rand(100, 999).' / 35.07.19.2005 / '.date('Y');
             $this->jenis_surat_id = null;
         }
     }
@@ -120,9 +131,10 @@ class PembuatanSuratPage extends Page
         if (! $template || ! $template->file_docx) {
             Notification::make()
                 ->title('Template Tidak Ditemukan')
-                ->body('Jenis surat "' . $jenisSurat->nama_surat . '" belum memiliki template Word (.docx) yang aktif.')
+                ->body('Jenis surat "'.$jenisSurat->nama_surat.'" belum memiliki template Word (.docx) yang aktif.')
                 ->warning()
                 ->send();
+
             return;
         }
 
@@ -131,9 +143,10 @@ class PembuatanSuratPage extends Page
         if (! file_exists($filePath)) {
             Notification::make()
                 ->title('File Template Hilang')
-                ->body('File template "' . basename($template->file_docx) . '" tidak ditemukan di storage.')
+                ->body('File template "'.basename($template->file_docx).'" tidak ditemukan di storage.')
                 ->danger()
                 ->send();
+
             return;
         }
 
@@ -156,7 +169,7 @@ class PembuatanSuratPage extends Page
             ->label('Preview Template')
             ->icon('heroicon-o-eye')
             ->color('info')
-            ->modalHeading(fn () => 'Preview Template: ' . ($this->jenisSuratNama ?? 'Surat'))
+            ->modalHeading(fn () => 'Preview Template: '.($this->jenisSuratNama ?? 'Surat'))
             ->modalWidth('4xl')
             ->modalSubmitAction(false)
             ->modalCancelAction(fn ($action) => $action->label('Tutup'))
@@ -170,25 +183,25 @@ class PembuatanSuratPage extends Page
                 }
 
                 $docxPath = Storage::disk('public')->path($template->file_docx);
-                
-                if (!file_exists($docxPath)) {
+
+                if (! file_exists($docxPath)) {
                     return view('filament.pages.partials.empty-template-error');
                 }
 
                 /** @var DocxService $docxService */
                 $docxService = app(DocxService::class);
-                
+
                 Storage::disk('public')->makeDirectory('temp-template-preview');
-                $pdfName = md5($docxPath . filemtime($docxPath)) . '.pdf';
-                $pdfPath = 'temp-template-preview/' . $pdfName;
+                $pdfName = md5($docxPath.filemtime($docxPath)).'.pdf';
+                $pdfPath = 'temp-template-preview/'.$pdfName;
                 $fullPdfPath = Storage::disk('public')->path($pdfPath);
 
-                if (!file_exists($fullPdfPath)) {
+                if (! file_exists($fullPdfPath)) {
                     $docxService->generatePdfFromDocx($docxPath, $fullPdfPath, useNativeWord: true);
                 }
 
                 return view('filament.pages.partials.template-preview-modal', [
-                    'pdfUrl' => Storage::url($pdfPath)
+                    'pdfUrl' => Storage::url($pdfPath),
                 ]);
             })
             ->visible(fn () => $this->hasTemplate);
@@ -209,16 +222,16 @@ class PembuatanSuratPage extends Page
                 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
             ];
             $m = (int) date('n', $timestamp);
-            $formattedDate = date('j', $timestamp) . ' ' . ($bulanIndo[$m] ?? date('F', $timestamp)) . ' ' . date('Y', $timestamp);
+            $formattedDate = date('j', $timestamp).' '.($bulanIndo[$m] ?? date('F', $timestamp)).' '.date('Y', $timestamp);
         }
 
         $merged = [
-            'nomor_surat'   => $this->nomor_surat,
+            'nomor_surat' => $this->nomor_surat,
             'tanggal_surat' => $formattedDate,
-            'Nomor_Surat'   => $this->nomor_surat,
+            'Nomor_Surat' => $this->nomor_surat,
             'Tanggal_Surat' => $formattedDate,
-            'tanggal'       => $formattedDate,
-            'Tanggal'       => $formattedDate,
+            'tanggal' => $formattedDate,
+            'Tanggal' => $formattedDate,
         ];
 
         foreach ($this->formData as $key => $val) {
@@ -255,33 +268,33 @@ class PembuatanSuratPage extends Page
     {
         $rules = [
             'jenis_surat_id' => ['required', 'exists:jenis_surat,id'],
-            'nomor_surat'    => ['required', 'string', 'max:255'],
-            'tanggal_surat'  => ['required', 'date'],
+            'nomor_surat' => ['required', 'string', 'max:255'],
+            'tanggal_surat' => ['required', 'date'],
         ];
 
         $attributes = [
             'jenis_surat_id' => 'Jenis Surat',
-            'nomor_surat'    => 'Nomor Surat',
-            'tanggal_surat'  => 'Tanggal Surat',
+            'nomor_surat' => 'Nomor Surat',
+            'tanggal_surat' => 'Tanggal Surat',
         ];
 
         foreach ($this->placeholders as $ph) {
-            $rules['formData.' . $ph] = ['required', 'string'];
-            $attributes['formData.' . $ph] = $this->getLabel($ph);
+            $rules['formData.'.$ph] = ['required', 'string'];
+            $attributes['formData.'.$ph] = $this->getLabel($ph);
         }
 
         $messages = [];
         foreach ($this->placeholders as $ph) {
             $label = $this->getLabel($ph);
-            $messages['formData.' . $ph . '.required'] = "Data {$label} wajib diisi.";
-            $messages['formData.' . $ph . '.string']   = "Data {$label} harus berupa teks.";
+            $messages['formData.'.$ph.'.required'] = "Data {$label} wajib diisi.";
+            $messages['formData.'.$ph.'.string'] = "Data {$label} harus berupa teks.";
         }
         $messages['jenis_surat_id.required'] = 'Jenis Surat wajib dipilih.';
-        $messages['jenis_surat_id.exists']   = 'Jenis Surat yang dipilih tidak valid.';
-        $messages['nomor_surat.required']    = 'Nomor Surat wajib diisi.';
-        $messages['nomor_surat.max']         = 'Nomor Surat terlalu panjang (maks. 255 karakter).';
-        $messages['tanggal_surat.required']  = 'Tanggal Surat wajib diisi.';
-        $messages['tanggal_surat.date']      = 'Format Tanggal Surat tidak valid.';
+        $messages['jenis_surat_id.exists'] = 'Jenis Surat yang dipilih tidak valid.';
+        $messages['nomor_surat.required'] = 'Nomor Surat wajib diisi.';
+        $messages['nomor_surat.max'] = 'Nomor Surat terlalu panjang (maks. 255 karakter).';
+        $messages['tanggal_surat.required'] = 'Tanggal Surat wajib diisi.';
+        $messages['tanggal_surat.date'] = 'Format Tanggal Surat tidak valid.';
 
         $this->validate($rules, $messages, $attributes);
     }
@@ -291,26 +304,27 @@ class PembuatanSuratPage extends Page
         $this->validateForm();
 
         $jenisSurat = JenisSurat::find($this->jenis_surat_id);
-        $safeName   = preg_replace('/[^A-Za-z0-9_\-]/', '_', $jenisSurat ? $jenisSurat->nama_surat : 'Surat');
-        $timestamp  = date('Ymd_His');
+        $safeName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $jenisSurat ? $jenisSurat->nama_surat : 'Surat');
+        $timestamp = date('Ymd_His');
 
         Storage::disk('public')->makeDirectory('temp-surat-preview');
 
-        $relativeDocxPath = 'temp-surat-preview/' . $safeName . '_' . $timestamp . '.docx';
-        $relativePdfPath  = 'temp-surat-preview/' . $safeName . '_' . $timestamp . '.pdf';
+        $relativeDocxPath = 'temp-surat-preview/'.$safeName.'_'.$timestamp.'.docx';
+        $relativePdfPath = 'temp-surat-preview/'.$safeName.'_'.$timestamp.'.pdf';
 
         $fullDocxPath = Storage::disk('public')->path($relativeDocxPath);
-        $fullPdfPath  = Storage::disk('public')->path($relativePdfPath);
+        $fullPdfPath = Storage::disk('public')->path($relativePdfPath);
 
         $template = TemplateSurat::where('jenis_surat_id', $this->jenis_surat_id)
             ->where('is_active', true)
             ->first();
 
-        if (!$template || !$template->file_docx) {
+        if (! $template || ! $template->file_docx) {
             Notification::make()
                 ->title('Template Tidak Ditemukan')
                 ->danger()
                 ->send();
+
             return;
         }
 
@@ -329,13 +343,13 @@ class PembuatanSuratPage extends Page
 
         // 3. Redirect ke halaman preview — belum simpan ke DB
         return redirect()->route('filament.admin.pages.preview-surat-page', [
-            'temp_docx'      => $relativeDocxPath,
-            'temp_pdf'       => file_exists($fullPdfPath) ? $relativePdfPath : null,
+            'temp_docx' => $relativeDocxPath,
+            'temp_pdf' => file_exists($fullPdfPath) ? $relativePdfPath : null,
             'jenis_surat_id' => $this->jenis_surat_id,
-            'nomor_surat'    => $this->nomor_surat,
-            'tanggal_surat'  => $this->tanggal_surat,
-            'form_data'      => base64_encode(json_encode($this->formData)),
-            'surat_id'       => $this->surat_id, // null jika baru
+            'nomor_surat' => $this->nomor_surat,
+            'tanggal_surat' => $this->tanggal_surat,
+            'form_data' => base64_encode(json_encode($this->formData)),
+            'surat_id' => $this->surat_id, // null jika baru
         ]);
     }
 
