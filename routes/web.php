@@ -10,6 +10,13 @@ use App\Models\VillageOfficial;
 use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
 
+Route::post('/custom-logout', function (\Illuminate\Http\Request $request) {
+    auth()->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/admin/login');
+})->name('custom.logout');
+
 Route::get('/', function () {
     $news = NewsArticle::latest('published_at')->take(3)->get();
     $umkms = Umkm::latest()->take(3)->get();
