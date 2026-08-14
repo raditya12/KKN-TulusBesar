@@ -20,7 +20,7 @@ class VillageDocumentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolderOpen;
 
-    protected static \UnitEnum|string|null $navigationGroup = 'CMS';
+    protected static \UnitEnum|string|null $navigationGroup = 'Administrasi Surat';
 
     protected static ?string $navigationLabel = 'Repositori Dokumen Publik';
     
