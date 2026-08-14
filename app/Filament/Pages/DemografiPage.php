@@ -60,37 +60,43 @@ class DemografiPage extends Page
             'Tidak Diketahui' => FamilyMember::whereNull('tanggal_lahir')->count(),
         ])->filter(fn ($v) => $v > 0);
 
-        // ── Per Dusun ────────────────────────────────────────────
+        // ── Per Dusun (Single aggregated query) ─────────────────
+        $wargaPerDusun = DB::table('family_members')
+            ->join('families', 'family_members.family_id', '=', 'families.id')
+            ->select('families.dusun', DB::raw('count(*) as total_warga'))
+            ->whereNotNull('families.dusun')
+            ->groupBy('families.dusun')
+            ->pluck('total_warga', 'dusun');
+
         $byDusun = Family::select('dusun', DB::raw('count(*) as total_kk'))
             ->whereNotNull('dusun')
             ->groupBy('dusun')
             ->orderByDesc('total_kk')
             ->get()
-            ->map(function ($r) {
-                $totalWarga = FamilyMember::whereHas('family', fn ($q) => $q->where('dusun', $r->dusun))->count();
+            ->map(fn ($r) => [
+                'dusun'       => $r->dusun,
+                'total_kk'    => $r->total_kk,
+                'total_warga' => $wargaPerDusun->get($r->dusun, 0),
+            ]);
 
-                return [
-                    'dusun' => $r->dusun,
-                    'total_kk' => $r->total_kk,
-                    'total_warga' => $totalWarga,
-                ];
-            });
+        // ── Per RW (Single aggregated query) ────────────────────
+        $wargaPerRw = DB::table('family_members')
+            ->join('families', 'family_members.family_id', '=', 'families.id')
+            ->select('families.rw', DB::raw('count(*) as total_warga'))
+            ->whereNotNull('families.rw')
+            ->groupBy('families.rw')
+            ->pluck('total_warga', 'rw');
 
-        // ── Per RW ──────────────────────────────────────────────
         $byRw = Family::select('rw', DB::raw('count(*) as total_kk'))
             ->whereNotNull('rw')
             ->groupBy('rw')
             ->orderBy('rw')
             ->get()
-            ->map(function ($r) {
-                $totalWarga = FamilyMember::whereHas('family', fn ($q) => $q->where('rw', $r->rw))->count();
-
-                return [
-                    'rw' => $r->rw,
-                    'total_kk' => $r->total_kk,
-                    'total_warga' => $totalWarga,
-                ];
-            });
+            ->map(fn ($r) => [
+                'rw'          => $r->rw,
+                'total_kk'    => $r->total_kk,
+                'total_warga' => $wargaPerRw->get($r->rw, 0),
+            ]);
 
         // ── Agama ────────────────────────────────────────────────
         $byAgama = FamilyMember::select('agama', DB::raw('count(*) as total'))

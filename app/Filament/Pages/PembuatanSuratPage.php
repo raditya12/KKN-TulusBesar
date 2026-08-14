@@ -214,9 +214,15 @@ class PembuatanSuratPage extends Page
 
         $merged = [
             'nomor_surat'   => $this->nomor_surat,
-            'tanggal_surat' => $formattedDate,
             'Nomor_Surat'   => $this->nomor_surat,
+            'nomor surat'   => $this->nomor_surat,
+            'Nomor Surat'   => $this->nomor_surat,
+            
+            'tanggal_surat' => $formattedDate,
             'Tanggal_Surat' => $formattedDate,
+            'tanggal surat' => $formattedDate,
+            'Tanggal Surat' => $formattedDate,
+            
             'tanggal'       => $formattedDate,
             'Tanggal'       => $formattedDate,
         ];
