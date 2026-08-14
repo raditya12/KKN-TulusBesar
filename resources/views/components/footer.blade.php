@@ -5,8 +5,8 @@
             
             <!-- Address (Left) -->
             <div class="flex flex-col sm:flex-row gap-4">
-                <div class="flex-shrink-0 w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg" style="border: 2px solid rgba(253, 147, 76, 0.3);">
-                    <img src="{{ asset('images/logo-malang.png') }}" alt="Logo Kabupaten Malang" class="w-full h-full object-contain drop-shadow-sm" onerror="this.style.display='none'">
+                <div class="flex-shrink-0 w-16 h-16 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg overflow-hidden" style="border: 2px solid rgba(253, 147, 76, 0.3);">
+                    <img src="{{ asset('images/logo desa.jpeg') }}" alt="Logo Desa Tulusbesar" class="w-full h-full object-contain drop-shadow-sm" onerror="this.style.display='none'">
                 </div>
                 <div>
                     <h3 class="font-bold text-lg mb-2" style="color: #ffffff;">Pemerintah Desa Tulusbesar</h3>

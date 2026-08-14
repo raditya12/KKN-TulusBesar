@@ -10,9 +10,11 @@
 
 <header x-data="{ mobileMenuOpen: false }" class="bg-primary-container/80 backdrop-blur-md dark:bg-primary-container/90 top-0 sticky z-50 border-b border-outline-variant/30 shadow-md shadow-primary/5 w-full">
     <div class="max-w-screen-2xl mx-auto px-4 md:px-container-margin py-3 flex justify-between items-center w-full">
-        <div class="font-display-md text-2xl md:text-3xl font-bold text-on-primary-container flex items-center gap-sm">
-            <span class="material-symbols-outlined text-[28px] md:text-[32px]" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
-            Tulusbesar
+        <div class="font-display-md text-2xl md:text-3xl font-bold text-on-primary-container flex items-center gap-2 md:gap-3">
+            <div class="flex-shrink-0 bg-white rounded-full flex items-center justify-center p-0.5 shadow-sm h-8 w-8 md:h-10 md:w-10 overflow-hidden">
+                <img src="{{ asset('images/logo desa.jpeg') }}" alt="Logo Desa Tulusbesar" class="w-full h-full object-contain">
+            </div>
+            <span>Tulusbesar</span>
         </div>
         
         <!-- Navigation - Hidden on mobile -->
