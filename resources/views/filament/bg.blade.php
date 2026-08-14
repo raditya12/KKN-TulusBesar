@@ -7,12 +7,15 @@
         background-position: center !important;
         background-attachment: fixed !important;
     }
-    
+
     /* Earthy overlay - lighter to not obscure content */
     body::before {
         content: '';
         position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: rgba(250, 245, 240, 0.88);
         z-index: -1;
     }
@@ -32,7 +35,7 @@
         backdrop-filter: blur(12px) !important;
         border-bottom: 1px solid rgba(140, 90, 53, 0.2) !important;
     }
-    
+
     .dark .fi-topbar {
         background: rgba(30, 20, 15, 0.95) !important;
         backdrop-filter: blur(12px) !important;
@@ -73,7 +76,8 @@
         max-width: 100% !important;
     }
 
-    .fi-page, .fi-main-ctn {
+    .fi-page,
+    .fi-main-ctn {
         width: 100% !important;
         max-width: 100% !important;
     }
@@ -89,6 +93,7 @@
         border: none !important;
         transition: transform 0.2s, box-shadow 0.2s !important;
     }
+
     .fi-btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(74, 43, 29, 0.3) !important;
@@ -106,6 +111,7 @@
     .fi-ta-col-wrp:has(img) {
         padding: 0 !important;
     }
+
     .fi-ta-col-wrp img {
         width: 100% !important;
         height: 200px !important;
@@ -113,6 +119,7 @@
         border-radius: 0.75rem 0.75rem 0 0 !important;
         display: block !important;
     }
+
     /* Card container styling */
     [class*="fi-ta-record"] {
         border-radius: 0.75rem !important;
@@ -121,6 +128,7 @@
         box-shadow: 0 2px 8px rgba(74, 43, 29, 0.08) !important;
         transition: box-shadow 0.2s, transform 0.2s !important;
     }
+
     [class*="fi-ta-record"]:hover {
         box-shadow: 0 8px 24px rgba(74, 43, 29, 0.15) !important;
         transform: translateY(-2px) !important;
@@ -147,6 +155,7 @@
         border: 2px solid white;
         pointer-events: none;
     }
+
     /* Badge for the main photo in multi-uploads */
     .filepond--list:has(.filepond--item + .filepond--item) .filepond--item[data-visual-order="1"]::after {
         content: "1 (Foto Utama)";
@@ -162,8 +171,8 @@
         setInterval(() => {
             document.querySelectorAll('.filepond--list').forEach(list => {
                 const items = Array.from(list.querySelectorAll('.filepond--item'));
-                if(items.length === 0) return;
-                
+                if (items.length === 0) return;
+
                 // Sort items by their actual vertical position on screen
                 items.sort((a, b) => {
                     const rectA = a.getBoundingClientRect();
@@ -175,7 +184,7 @@
                     // If they are on the same row, sort by horizontal position (left)
                     return rectA.left - rectB.left;
                 });
-                
+
                 // Now assign attributes based on visual order
                 items.forEach((item, index) => {
                     item.setAttribute('data-visual-order', index + 1);
