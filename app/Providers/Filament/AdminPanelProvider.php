@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile()
             ->brandName('Admin Tulusbesar')
+            ->favicon(asset('images/logo desa.jpeg'))
             ->font('Outfit')
             ->colors([
                 'primary' => Color::hex('#8C5A35'),
