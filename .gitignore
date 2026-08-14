@@ -26,3 +26,8 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Google Service Account credential — JANGAN COMMIT
+/storage/app/google/*.json
+
+convert_word.vbs

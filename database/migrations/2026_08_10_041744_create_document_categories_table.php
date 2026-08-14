@@ -6,19 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('template_surat', function (Blueprint $table) {
+        Schema::create('document_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jenis_surat_id')->constrained('jenis_surat')->cascadeOnDelete();
-            $table->string('file_docx');
-            $table->boolean('is_active')->default(true)->index();
+            $table->string('name');
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('template_surat');
+        Schema::dropIfExists('document_categories');
     }
 };

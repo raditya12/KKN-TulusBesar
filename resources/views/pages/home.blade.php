@@ -23,15 +23,23 @@
                 Harmoni kearifan lokal Javanese dan inovasi tata kelola cerdas dalam satu genggaman. Jelajahi keindahan budaya dan infrastruktur desa kami.
             </p>
             
-            <div class="flex flex-wrap items-center justify-center gap-md mt-md">
-                <a href="#" class="bg-tertiary-fixed hover:bg-tertiary-fixed-dim text-on-tertiary-fixed font-label-md px-xl py-md rounded-xl transition-all duration-300 shadow-xl shadow-tertiary-fixed/20 flex items-center gap-sm transform hover:-translate-y-1">
-                    <span class="material-symbols-outlined">explore</span>
-                    Jelajahi WebGIS
-                </a>
-                <a href="{{ '#profil' }}" class="bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 backdrop-blur-md border border-surface-container-lowest/30 text-on-primary font-label-md px-xl py-md rounded-xl transition-all duration-300 flex items-center gap-sm transform hover:-translate-y-1">
-                    <span class="material-symbols-outlined">info</span>
-                    Profil Desa
-                </a>
+
+        </div>
+    </section>
+
+    <!-- Repositori Dokumen (Layanan Publik Utama) -->
+    <section id="dokumen" class="py-16 md:py-24 bg-background relative z-20">
+        <div class="max-w-screen-xl mx-auto px-container-margin">
+            <div class="text-center mb-12 space-y-3">
+                <span class="font-label-md text-secondary tracking-widest uppercase">Layanan Mandiri Publik</span>
+                <h2 class="font-display-md text-4xl md:text-5xl font-bold text-on-background">Pelayanan Administrasi <span class="text-primary">Desa Tulusbesar</span></h2>
+                <p class="font-body-md text-on-surface-variant max-w-[48rem] mx-auto text-lg">
+                    Cari, baca persyaratan, dan unduh formulir dokumen pelayanan administrasi kependudukan Anda langsung dari rumah.
+                </p>
+            </div>
+            
+            <div class="bg-surface-container-lowest rounded-3xl shadow-xl shadow-primary/5 border border-outline-variant/30 overflow-hidden">
+                @livewire('document-repository')
             </div>
         </div>
     </section>

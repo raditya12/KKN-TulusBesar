@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\TourController;
+use App\Models\ActivityPhoto;
 use App\Models\CulturalSite;
 use App\Models\GisFeature;
 use App\Models\NewsArticle;
@@ -7,6 +9,13 @@ use App\Models\Umkm;
 use App\Models\VillageOfficial;
 use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/custom-logout', function (\Illuminate\Http\Request $request) {
+    auth()->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/admin/login');
+})->name('custom.logout');
 
 Route::get('/', function () {
     $news = NewsArticle::latest('published_at')->take(3)->get();
@@ -46,7 +55,8 @@ Route::get('/wisata', function () {
 })->name('wisata');
 
 Route::get('/sejarah', function () {
-    $activities = \App\Models\ActivityPhoto::latest()->get();
+    $activities = ActivityPhoto::latest()->get();
+
     return view('pages.sejarah', compact('activities'));
 })->name('sejarah');
 
@@ -56,7 +66,7 @@ Route::get('/peta', function () {
         ->whereNotNull('longitude')
         ->where('status', 'active')
         ->get();
-        
+
     $umkms = Umkm::whereNotNull('latitude')
         ->whereNotNull('longitude')
         ->get();
@@ -91,8 +101,14 @@ Route::get('/umkm/{slug}', function ($slug) {
 })->name('umkm.show');
 
 Route::get('/wisata/{slug}', function ($slug) {
-    $wisata = CulturalSite::where('slug', $slug)->firstOrFail();
+    $wisata = CulturalSite::where('slug', $slug)->where('status', 'active')->firstOrFail();
     $recommendations = CulturalSite::where('id', '!=', $wisata->id)->where('status', 'active')->latest()->take(4)->get();
 
     return view('pages.wisata-show', compact('wisata', 'recommendations'));
 })->name('wisata.show');
+
+// Tour status routes — protected by auth middleware
+Route::middleware('auth')->group(function () {
+    Route::post('/admin/tour/complete', [TourController::class, 'complete'])->name('tour.complete');
+    Route::post('/admin/tour/reset', [TourController::class, 'reset'])->name('tour.reset');
+});

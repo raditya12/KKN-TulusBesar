@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css">
 <style>
     /* Custom Javanese Earthy Theme for Filament */
     body {
@@ -184,3 +185,8 @@
         }, 150); // Fast enough to feel responsive during drag-and-drop
     });
 </script>
+
+<!-- Driver.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+<!-- System Tour Logic -->
+<script src="{{ asset('js/system-tour.js') }}"></script>
