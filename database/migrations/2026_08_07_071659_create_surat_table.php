@@ -11,7 +11,11 @@ return new class extends Migration
         Schema::create('surat', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_surat')->index();
+            $table->foreignId('jenis_surat_id')->constrained('jenis_surat')->cascadeOnDelete();
             $table->string('nama_pemohon')->index();
+            $table->json('data_json')->nullable();
+            $table->string('file_docx')->nullable();
+            $table->string('file_pdf')->nullable();
             $table->string('file_dokumen')->nullable();
             $table->timestamps();
         });

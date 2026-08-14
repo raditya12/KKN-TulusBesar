@@ -11,7 +11,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -55,19 +54,6 @@ class SuratTable
                     ->dateTime('d M Y, H:i')
                     ->sortable()
                     ->size('sm'),
-
-                TextColumn::make('status_scan')
-                    ->label('Status Scan')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'sudah_upload' => 'success',
-                        default        => 'warning',
-                    })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'sudah_upload' => 'Sudah Upload',
-                        default        => 'Belum Upload',
-                    })
-                    ->sortable(),
             ])
 
             // ── Search ───────────────────────────────────────────────
@@ -78,13 +64,6 @@ class SuratTable
                 SelectFilter::make('jenis_surat_id')
                     ->label('Jenis Surat')
                     ->options(fn () => JenisSurat::pluck('nama_surat', 'id')->toArray()),
-
-                SelectFilter::make('status_scan')
-                    ->label('Status Scan')
-                    ->options([
-                        'belum_upload' => 'Belum Upload',
-                        'sudah_upload' => 'Sudah Upload',
-                    ]),
 
                 Filter::make('created_at')
                     ->label('Rentang Tanggal')
@@ -127,41 +106,6 @@ class SuratTable
                         ->visible(fn (Surat $record) => ! empty($record->file_pdf))
                         ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_pdf), shouldOpenInNewTab: true),
 
-                    Action::make('upload_scan')
-                        ->label('Upload Scan')
-                        ->icon('heroicon-o-arrow-up-tray')
-                        ->color('success')
-                        ->modalHeading('Upload Berkas Hasil Scan Surat')
-                        ->modalDescription('Upload file hasil scan fisik surat yang telah ditandatangani dan distempel (Format: PDF, JPG, PNG).')
-                        ->form([
-                            FileUpload::make('file_scan')
-                                ->label('File Scan (PDF / JPG / PNG)')
-                                ->directory('arsip-surat/scan')
-                                ->disk('public')
-                                ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
-                                ->maxSize(15360) // 15MB
-                                ->required(),
-                        ])
-                        ->action(function (Surat $record, array $data): void {
-                            $record->update([
-                                'file_scan'   => $data['file_scan'],
-                                'status_scan' => 'sudah_upload',
-                            ]);
-
-                            Notification::make()
-                                ->title('Hasil Scan Berhasil Diupload')
-                                ->body('Status arsip surat berhasil diperbarui menjadi Sudah Upload.')
-                                ->success()
-                                ->send();
-                        }),
-
-                    Action::make('download_scan')
-                        ->label('Lihat Scan')
-                        ->icon('heroicon-o-paper-clip')
-                        ->color('gray')
-                        ->visible(fn (Surat $record) => ! empty($record->file_scan))
-                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_scan), shouldOpenInNewTab: true),
-
                     DeleteAction::make()
                         ->label('Hapus')
                         ->icon('heroicon-o-trash')
@@ -172,7 +116,7 @@ class SuratTable
                         ->modalSubmitActionLabel('Ya, Hapus')
                         ->action(function (Surat $record): void {
                             // Hapus file-file terkait dari storage
-                            foreach (['file_docx', 'file_pdf', 'file_scan'] as $field) {
+                            foreach (['file_docx', 'file_pdf', 'file_dokumen'] as $field) {
                                 if (! empty($record->$field)) {
                                     Storage::disk('public')->delete($record->$field);
                                 }
@@ -187,7 +131,7 @@ class SuratTable
                                 ->send();
                         }),
                 ])
-                ->label('Akses')
+                ->label('Aksi')
                 ->button()
                 ->color('gray')
                 ->size('sm'),

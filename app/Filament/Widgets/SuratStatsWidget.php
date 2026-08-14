@@ -13,22 +13,29 @@ class SuratStatsWidget extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        $total        = Surat::count();
-        $sudahUpload  = Surat::where('status_scan', 'sudah_upload')->count();
-        $belumUpload  = Surat::where('status_scan', 'belum_upload')->count();
+        $total    = Surat::count();
+        $bulanIni = Surat::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+        $hariIni  = Surat::whereDate('created_at', today())->count();
+
+        $namaBulan = now()->translatedFormat('F Y');
 
         return [
             Stat::make('Total Surat', $total)
                 ->description('Seluruh arsip surat')
-                ->color('gray'),
+                ->descriptionIcon('heroicon-o-archive-box')
+                ->color('primary'),
 
-            Stat::make('Sudah Upload Scan', $sudahUpload)
-                ->description('Surat yang sudah di-scan')
+            Stat::make('Surat Bulan Ini', $bulanIni)
+                ->description('Arsip surat bulan ' . $namaBulan)
+                ->descriptionIcon('heroicon-o-calendar-days')
                 ->color('success'),
 
-            Stat::make('Belum Upload Scan', $belumUpload)
-                ->description('Surat yang perlu di-scan')
-                ->color('warning'),
+            Stat::make('Surat Hari Ini', $hariIni)
+                ->description('Arsip surat dibuat hari ini')
+                ->descriptionIcon('heroicon-o-clock')
+                ->color('info'),
         ];
     }
 }

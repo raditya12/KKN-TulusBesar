@@ -37,13 +37,6 @@
         $orderedData = $dataJson;
     }
 
-    // Status badge color
-    $statusColor = match($record->status_scan) {
-        'belum_upload' => 'warning',
-        'sudah_upload' => 'success',
-        default        => 'gray',
-    };
-    $statusLabel = str_replace('_', ' ', ucfirst($record->status_scan));
 @endphp
 
 <x-filament-panels::page>
@@ -74,14 +67,6 @@
                     <div>
                         <p class="surat-label">Dibuat Pada</p>
                         <p class="surat-value">{{ $record->created_at->translatedFormat('d M Y, H:i') }}</p>
-                    </div>
-                    <div>
-                        <p class="surat-label">Status Scan</p>
-                        <div style="margin-top: 0.25rem;">
-                            <x-filament::badge :color="$statusColor">
-                                {{ $statusLabel }}
-                            </x-filament::badge>
-                        </div>
                     </div>
                 </div>
             </x-filament::section>

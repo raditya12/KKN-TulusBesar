@@ -66,14 +66,6 @@ class SuratResource extends Resource
                                 \Filament\Infolists\Components\TextEntry::make('created_at')
                                     ->label('Dibuat Pada')
                                     ->dateTime('d M Y, H:i'),
-                                \Filament\Infolists\Components\TextEntry::make('status_scan')
-                                    ->label('Status Scan')
-                                    ->badge()
-                                    ->color(fn (string $state): string => match ($state) {
-                                        'belum_upload' => 'warning',
-                                        'sudah_upload' => 'success',
-                                        default => 'gray',
-                                    }),
                             ]),
 
                         // Data Form — kolom kiri bawah, tapi di-stack dengan Section atas
