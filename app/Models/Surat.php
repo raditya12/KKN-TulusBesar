@@ -11,10 +11,20 @@ class Surat extends Model
 
     protected $fillable = [
         'nomor_surat',
-        'nama_pemohon',
         'jenis_surat_id',
+        'nama_pemohon',
+        'data_json',
+        'file_docx',
+        'file_pdf',
         'file_dokumen',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'data_json' => 'array',
+        ];
+    }
 
     public function jenisSurat(): BelongsTo
     {

@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Surat\Pages;
 
 use App\Filament\Resources\Surat\SuratResource;
-use Filament\Actions\CreateAction;
+use App\Filament\Widgets\SuratStatsWidget;
 use Filament\Resources\Pages\ListRecords;
 
 class ListSurat extends ListRecords
@@ -12,15 +12,13 @@ class ListSurat extends ListRecords
 
     public function getSubheading(): ?string
     {
-        return 'Kelola dan cari dokumen arsip surat Desa Tulusbesar.';
+        return 'Kelola dan temukan arsip surat dengan cepat';
     }
 
-    protected function getHeaderActions(): array
+    protected function getHeaderWidgets(): array
     {
         return [
-            CreateAction::make()
-                ->label('Tambah Arsip Surat')
-                ->icon('heroicon-o-plus-circle'),
+            SuratStatsWidget::class,
         ];
     }
 }

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JenisSurat extends Model
 {
@@ -33,7 +32,17 @@ class JenisSurat extends Model
         return $query->where('is_active', true);
     }
 
-    public function surats(): HasMany
+    public function templateSurat(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(TemplateSurat::class, 'jenis_surat_id')->where('is_active', true);
+    }
+
+    public function templates(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(TemplateSurat::class, 'jenis_surat_id');
+    }
+
+    public function surats(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Surat::class, 'jenis_surat_id');
     }

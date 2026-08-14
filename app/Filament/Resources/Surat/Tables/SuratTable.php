@@ -9,7 +9,6 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Notifications\Notification;
@@ -37,52 +36,34 @@ class SuratTable
                     ->fontFamily('mono')
                     ->size('sm'),
 
+                TextColumn::make('jenisSurat.nama_surat')
+                    ->label('Jenis Surat')
+                    ->badge()
+                    ->color('primary')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('nama_pemohon')
                     ->label('Nama Pemohon')
                     ->searchable()
                     ->sortable()
                     ->weight('semibold'),
 
-                TextColumn::make('jenisSurat.nama_surat')
-                    ->label('Jenis Surat')
-                    ->badge()
-                    ->color('primary')
-                    ->sortable()
-                    ->placeholder('-'),
-
                 TextColumn::make('created_at')
-                    ->label('Tanggal Arsip')
+                    ->label('Tanggal')
                     ->dateTime('d M Y, H:i')
                     ->sortable()
                     ->size('sm'),
-
-                TextColumn::make('file_dokumen')
-                    ->label('Dokumen')
-                    ->formatStateUsing(function ($state) {
-                        if (! $state) {
-                            return '-';
-                        }
-                        $ext = strtoupper(pathinfo($state, PATHINFO_EXTENSION));
-
-                        return $ext ?: 'FILE';
-                    })
-                    ->badge()
-                    ->color(fn ($state) => match (strtolower(pathinfo($state ?? '', PATHINFO_EXTENSION))) {
-                        'pdf' => 'danger',
-                        'docx', 'doc' => 'info',
-                        default => 'gray',
-                    }),
             ])
 
             // ── Search ───────────────────────────────────────────────
-            ->searchPlaceholder('Cari nomor surat atau nama pemohon...')
+            ->searchPlaceholder('Cari nama pemohon atau nomor surat...')
 
             // ── Filters ──────────────────────────────────────────────
             ->filters([
                 SelectFilter::make('jenis_surat_id')
                     ->label('Jenis Surat')
-                    ->options(fn () => JenisSurat::active()->pluck('nama_surat', 'id')->toArray())
-                    ->placeholder('Semua Jenis'),
+                    ->options(fn () => JenisSurat::pluck('nama_surat', 'id')->toArray()),
 
                 Filter::make('created_at')
                     ->label('Rentang Tanggal')
@@ -105,53 +86,55 @@ class SuratTable
 
             // ── Record Actions ────────────────────────────────────────
             ->recordActions([
+                // Tombol utama: Detail (paling penting)
                 ViewAction::make()
                     ->label('Detail'),
 
+                // Dropdown semua aksi sekunder
                 ActionGroup::make([
-                    Action::make('lihat_dokumen')
-                        ->label('Lihat Dokumen')
-                        ->icon('heroicon-o-eye')
+                    Action::make('download_docx')
+                        ->label('Unduh DOCX')
+                        ->icon('heroicon-o-document-text')
                         ->color('info')
-                        ->visible(fn (Surat $record) => ! empty($record->file_dokumen))
-                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_dokumen), shouldOpenInNewTab: true),
+                        ->visible(fn (Surat $record) => ! empty($record->file_docx))
+                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_docx), shouldOpenInNewTab: true),
 
-                    Action::make('download_dokumen')
-                        ->label('Download Dokumen')
-                        ->icon('heroicon-o-arrow-down-tray')
-                        ->color('primary')
-                        ->visible(fn (Surat $record) => ! empty($record->file_dokumen))
-                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_dokumen), shouldOpenInNewTab: true),
-
-                    EditAction::make()
-                        ->label('Edit')
-                        ->icon('heroicon-o-pencil-square'),
+                    Action::make('download_pdf')
+                        ->label('Unduh PDF')
+                        ->icon('heroicon-o-document')
+                        ->color('danger')
+                        ->visible(fn (Surat $record) => ! empty($record->file_pdf))
+                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_pdf), shouldOpenInNewTab: true),
 
                     DeleteAction::make()
                         ->label('Hapus')
                         ->icon('heroicon-o-trash')
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->modalHeading('Hapus Arsip Surat?')
-                        ->modalDescription('Arsip surat ini akan dihapus dari sistem. Tindakan ini tidak dapat dibatalkan.')
-                        ->modalSubmitActionLabel('Hapus')
-                        ->modalCancelActionLabel('Batal')
+                        ->modalHeading('Hapus Arsip Surat')
+                        ->modalDescription('Tindakan ini akan menghapus arsip surat beserta semua file-nya secara permanen dan tidak dapat dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Hapus')
                         ->action(function (Surat $record): void {
-                            if (! empty($record->file_dokumen)) {
-                                Storage::disk('public')->delete($record->file_dokumen);
+                            // Hapus file-file terkait dari storage
+                            foreach (['file_docx', 'file_pdf', 'file_dokumen'] as $field) {
+                                if (! empty($record->$field)) {
+                                    Storage::disk('public')->delete($record->$field);
+                                }
                             }
+
                             $record->delete();
 
                             Notification::make()
-                                ->title('Arsip surat berhasil dihapus.')
+                                ->title('Arsip Surat Dihapus')
+                                ->body('Surat berhasil dihapus beserta seluruh file-nya.')
                                 ->success()
                                 ->send();
                         }),
                 ])
-                    ->label('Aksi')
-                    ->button()
-                    ->color('gray')
-                    ->size('sm'),
+                ->label('Aksi')
+                ->button()
+                ->color('gray')
+                ->size('sm'),
             ])
 
             // ── Toolbar ───────────────────────────────────────────────
@@ -164,7 +147,7 @@ class SuratTable
             // ── Empty State ───────────────────────────────────────────
             ->emptyStateIcon('heroicon-o-archive-box')
             ->emptyStateHeading('Belum ada arsip surat')
-            ->emptyStateDescription('Klik tombol "Tambah Arsip Surat" untuk mulai mengarsipkan dokumen surat.')
+            ->emptyStateDescription('Arsip surat yang dibuat melalui pembuatan surat akan muncul di sini.')
 
             // ── Visual ────────────────────────────────────────────────
             ->striped()

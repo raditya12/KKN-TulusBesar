@@ -28,20 +28,6 @@
                     <span class="text-[0.7rem] font-bold text-gray-500 uppercase tracking-wider block mb-1">Dibuat Pada</span>
                     <span class="text-sm font-medium text-gray-800 block">{{ $record->created_at->translatedFormat('d M Y, H:i') }}</span>
                 </div>
-
-                <div>
-                    <span class="text-[0.7rem] font-bold text-gray-500 uppercase tracking-wider block mb-1">Status Scan</span>
-                    @php
-                        $statusColor = match($record->status_scan) {
-                            'belum_upload' => 'bg-warning-50 text-warning-700 ring-warning-600/20',
-                            'sudah_upload' => 'bg-success-50 text-success-700 ring-success-600/20',
-                            default => 'bg-gray-50 text-gray-700 ring-gray-600/20',
-                        };
-                    @endphp
-                    <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $statusColor }}">
-                        {{ str_replace('_', ' ', $record->status_scan) }}
-                    </span>
-                </div>
             </div>
         </div>
 
