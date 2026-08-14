@@ -41,4 +41,9 @@ class JenisSurat extends Model
     {
         return $this->hasMany(TemplateSurat::class, 'jenis_surat_id');
     }
+
+    public function surats(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Surat::class, 'jenis_surat_id');
+    }
 }

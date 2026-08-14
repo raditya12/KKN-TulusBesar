@@ -42,26 +42,46 @@ class PembuatanSuratPage extends Page
     public ?int $surat_id = null;
 
     protected $queryString = [
-        'surat_id' => ['except' => null],
+        'surat_id'       => ['except' => null],
+        // Parameter ini diisi saat user kembali dari preview tanpa simpan
+        'restore_jenis'  => ['except' => null],
+        'restore_nomor'  => ['except' => null],
+        'restore_tgl'    => ['except' => null],
+        'restore_data'   => ['except' => null],  // base64-encoded JSON
     ];
+
+    public ?string $restore_jenis = null;
+    public ?string $restore_nomor = null;
+    public ?string $restore_tgl   = null;
+    public ?string $restore_data  = null;
 
     public function mount(): void
     {
         if ($this->surat_id) {
+            // Edit surat yang sudah ada di DB
             $surat = Surat::find($this->surat_id);
             if ($surat) {
                 $this->jenis_surat_id = $surat->jenis_surat_id;
-                $this->nomor_surat = $surat->nomor_surat;
-                
-                // Parse date from data_json or fallback to today
-                $this->tanggal_surat = date('Y-m-d');
-                $this->formData = $surat->data_json ?? [];
-                
+                $this->nomor_surat    = $surat->nomor_surat;
+                $this->tanggal_surat  = date('Y-m-d');
+                $this->formData       = $surat->data_json ?? [];
+
                 $this->loadTemplateAndPlaceholders($this->jenis_surat_id, false);
             }
+        } elseif ($this->restore_jenis) {
+            // Kembali dari halaman preview tanpa simpan — restore form data
+            $this->jenis_surat_id = (int) $this->restore_jenis;
+            $this->nomor_surat    = $this->restore_nomor ?? '';
+            $this->tanggal_surat  = $this->restore_tgl ?? date('Y-m-d');
+            $this->formData       = $this->restore_data
+                ? (json_decode(base64_decode($this->restore_data), true) ?? [])
+                : [];
+
+            $this->loadTemplateAndPlaceholders($this->jenis_surat_id, false);
         } else {
-            $this->tanggal_surat = date('Y-m-d');
-            $this->nomor_surat = '470 / ' . rand(100, 999) . ' / 35.07.19.2005 / ' . date('Y');
+            // Form baru
+            $this->tanggal_surat  = date('Y-m-d');
+            $this->nomor_surat    = '470 / ' . rand(100, 999) . ' / 35.07.19.2005 / ' . date('Y');
             $this->jenis_surat_id = null;
         }
     }
@@ -250,7 +270,20 @@ class PembuatanSuratPage extends Page
             $attributes['formData.' . $ph] = $this->getLabel($ph);
         }
 
-        $this->validate($rules, [], $attributes);
+        $messages = [];
+        foreach ($this->placeholders as $ph) {
+            $label = $this->getLabel($ph);
+            $messages['formData.' . $ph . '.required'] = "Data {$label} wajib diisi.";
+            $messages['formData.' . $ph . '.string']   = "Data {$label} harus berupa teks.";
+        }
+        $messages['jenis_surat_id.required'] = 'Jenis Surat wajib dipilih.';
+        $messages['jenis_surat_id.exists']   = 'Jenis Surat yang dipilih tidak valid.';
+        $messages['nomor_surat.required']    = 'Nomor Surat wajib diisi.';
+        $messages['nomor_surat.max']         = 'Nomor Surat terlalu panjang (maks. 255 karakter).';
+        $messages['tanggal_surat.required']  = 'Tanggal Surat wajib diisi.';
+        $messages['tanggal_surat.date']      = 'Format Tanggal Surat tidak valid.';
+
+        $this->validate($rules, $messages, $attributes);
     }
 
     public function generateSurat()
@@ -261,11 +294,10 @@ class PembuatanSuratPage extends Page
         $safeName   = preg_replace('/[^A-Za-z0-9_\-]/', '_', $jenisSurat ? $jenisSurat->nama_surat : 'Surat');
         $timestamp  = date('Ymd_His');
 
-        Storage::disk('public')->makeDirectory('arsip-surat/docx');
-        Storage::disk('public')->makeDirectory('arsip-surat/pdf');
+        Storage::disk('public')->makeDirectory('temp-surat-preview');
 
-        $relativeDocxPath = 'arsip-surat/docx/' . $safeName . '_' . $timestamp . '.docx';
-        $relativePdfPath  = 'arsip-surat/pdf/' . $safeName . '_' . $timestamp . '.pdf';
+        $relativeDocxPath = 'temp-surat-preview/' . $safeName . '_' . $timestamp . '.docx';
+        $relativePdfPath  = 'temp-surat-preview/' . $safeName . '_' . $timestamp . '.pdf';
 
         $fullDocxPath = Storage::disk('public')->path($relativeDocxPath);
         $fullPdfPath  = Storage::disk('public')->path($relativePdfPath);
@@ -285,52 +317,26 @@ class PembuatanSuratPage extends Page
         /** @var DocxService $docxService */
         $docxService = app(DocxService::class);
 
-        // 1. Generate DOCX Final
+        // 1. Generate DOCX dari template + isi form
         $docxService->generateDocx(
             Storage::disk('public')->path($template->file_docx),
             $this->getMergedValues(),
             $fullDocxPath
         );
 
-        // 2. Generate PDF Final
+        // 2. Generate PDF untuk preview
         $docxService->generatePdfFromDocx($fullDocxPath, $fullPdfPath, useNativeWord: true);
 
-        // 3. Simpan / Update Database (Arsip)
-        $data = [
-            'nomor_surat'    => $this->nomor_surat,
+        // 3. Redirect ke halaman preview — belum simpan ke DB
+        return redirect()->route('filament.admin.pages.preview-surat-page', [
+            'temp_docx'      => $relativeDocxPath,
+            'temp_pdf'       => file_exists($fullPdfPath) ? $relativePdfPath : null,
             'jenis_surat_id' => $this->jenis_surat_id,
-            'nama_pemohon'   => $this->extractNamaPemohon(),
-            'data_json'      => $this->formData,
-            'file_docx'      => $relativeDocxPath,
-            'file_pdf'       => file_exists($fullPdfPath) ? $relativePdfPath : null,
-        ];
-
-        if ($this->surat_id) {
-            $surat = Surat::find($this->surat_id);
-            if ($surat) {
-                // Delete old files if they exist and are different
-                if ($surat->file_docx && Storage::disk('public')->exists($surat->file_docx)) {
-                    Storage::disk('public')->delete($surat->file_docx);
-                }
-                if ($surat->file_pdf && Storage::disk('public')->exists($surat->file_pdf)) {
-                    Storage::disk('public')->delete($surat->file_pdf);
-                }
-                
-                $surat->update($data);
-            } else {
-                $surat = Surat::create($data);
-            }
-        } else {
-            $surat = Surat::create($data);
-        }
-
-        Notification::make()
-            ->title('Surat Berhasil Di-generate & Diarsipkan')
-            ->success()
-            ->send();
-
-        // 4. Redirect ke Halaman Preview
-        return redirect()->route('filament.admin.pages.preview-surat-page', ['record' => $surat->id]);
+            'nomor_surat'    => $this->nomor_surat,
+            'tanggal_surat'  => $this->tanggal_surat,
+            'form_data'      => base64_encode(json_encode($this->formData)),
+            'surat_id'       => $this->surat_id, // null jika baru
+        ]);
     }
 
     public function getViewData(): array
