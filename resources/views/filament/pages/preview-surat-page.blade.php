@@ -29,13 +29,7 @@
                 Download Word
             </x-filament::button>
 
-            <x-filament::button
-                wire:click="downloadPdf"
-                color="danger"
-                icon="heroicon-o-arrow-down-tray"
-            >
-                Download PDF
-            </x-filament::button>
+
         </div>
 
         @if($this->isTempPreview)
