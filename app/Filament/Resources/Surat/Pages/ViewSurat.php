@@ -15,6 +15,11 @@ class ViewSurat extends ViewRecord
 {
     protected static string $resource = SuratResource::class;
 
+    public function getMaxContentWidth(): \Filament\Support\Enums\Width | string | null
+    {
+        return \Filament\Support\Enums\Width::Full;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -222,9 +222,6 @@ class PembuatanSuratPage extends Page
             'Tanggal_Surat' => $formattedDate,
             'tanggal surat' => $formattedDate,
             'Tanggal Surat' => $formattedDate,
-            
-            'tanggal'       => $formattedDate,
-            'Tanggal'       => $formattedDate,
         ];
 
         foreach ($this->formData as $key => $val) {
@@ -294,6 +291,18 @@ class PembuatanSuratPage extends Page
 
     public function generateSurat()
     {
+        // Jika ada Nomor Surat dari form dinamis, gunakan itu
+        $dynamicNomor = null;
+        foreach ($this->formData as $key => $val) {
+            if (strtolower(str_replace(['_', '-', ' '], '', $key)) === 'nomorsurat') {
+                $dynamicNomor = $val;
+                break;
+            }
+        }
+        if ($dynamicNomor) {
+            $this->nomor_surat = $dynamicNomor;
+        }
+
         $this->validateForm();
 
         $jenisSurat = JenisSurat::find($this->jenis_surat_id);
