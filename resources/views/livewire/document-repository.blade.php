@@ -44,7 +44,7 @@
                             'req_text' => $doc->requirements_text,
                             'files' => collect($doc->file_paths ?? [])->map(fn($path) => [
                                 'name' => basename($path),
-                                'url' => \Illuminate\Support\Facades\Storage::url($path),
+                                'url' => route('download.file', ['path' => $path]),
                                 'ext' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
                                 'size' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path) ? round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB' : 'Tidak Ditemukan',
                                 'exists' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
@@ -133,7 +133,7 @@
                                             'req_text' => $doc->requirements_text,
                                             'files' => collect($doc->file_paths ?? [])->map(fn($path) => [
                                                 'name' => basename($path),
-                                                'url' => \Illuminate\Support\Facades\Storage::url($path),
+                                                'url' => route('download.file', ['path' => $path]),
                                                 'ext' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
                                                 'size' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path) ? round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB' : 'Tidak Ditemukan',
                                                 'exists' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path)

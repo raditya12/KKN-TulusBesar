@@ -122,6 +122,18 @@ Route::get('/storage/{path}', function ($path) {
     return response()->file($fullPath);
 })->where('path', '.*');
 
+// Rute khusus unduh (Bypass LiteSpeed static cache)
+Route::get('/download-file', function (\Illuminate\Http\Request $request) {
+    $path = $request->query('path');
+    if (!$path) abort(404);
+    
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    return response()->download($fullPath);
+})->name('download.file');
+
 Route::get('/check-db', function () {
     $doc = \App\Models\VillageDocument::latest()->first();
     $filesOnDisk = \Illuminate\Support\Facades\Storage::disk('public')->files('village-documents');
