@@ -104,7 +104,7 @@
                 <!-- 3D Booklet Layout -->
                 <div class="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-0 [perspective:2500px]">
                     <!-- Page 1 (Left) -->
-                    <div @click="lightboxOpen = true; lightboxImage = '{{ asset('images/paket-wisata/paket1.jpg') }}'" class="cursor-pointer group relative w-full max-w-[600px] lg:max-w-[650px] transition-all duration-700 ease-out [transform:rotateY(0deg)] lg:[transform:rotateY(10deg)] lg:origin-right hover:[transform:rotateY(0deg)_scale(1.03)] lg:hover:z-20 shadow-xl hover:shadow-2xl rounded-2xl lg:rounded-l-2xl lg:rounded-r-none overflow-hidden border-4 md:border-8 border-white bg-white">
+                    <div @click="lightboxOpen = true; lightboxImage = '{{ asset('images/paket-wisata/paket1.jpg') }}'" class="cursor-pointer group relative w-full max-w-[600px] lg:max-w-[650px] transition-all duration-700 ease-out lg:[transform:rotateY(10deg)] lg:origin-right lg:hover:[transform:rotateY(0deg)_scale(1.03)] lg:hover:z-20 shadow-xl hover:shadow-2xl rounded-2xl lg:rounded-l-2xl lg:rounded-r-none overflow-hidden border-4 md:border-8 border-white bg-white">
                         <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center backdrop-blur-[2px]">
                             <span class="material-symbols-outlined text-white text-[64px] drop-shadow-xl">zoom_in</span>
                         </div>
@@ -112,7 +112,7 @@
                     </div>
                     
                     <!-- Page 2 (Right) -->
-                    <div @click="lightboxOpen = true; lightboxImage = '{{ asset('images/paket-wisata/paket2.jpg') }}'" class="cursor-pointer group relative w-full max-w-[600px] lg:max-w-[650px] transition-all duration-700 ease-out [transform:rotateY(0deg)] lg:[transform:rotateY(-10deg)] lg:origin-left hover:[transform:rotateY(0deg)_scale(1.03)] lg:hover:z-20 shadow-xl hover:shadow-2xl rounded-2xl lg:rounded-r-2xl lg:rounded-l-none overflow-hidden border-4 md:border-8 border-white bg-white">
+                    <div @click="lightboxOpen = true; lightboxImage = '{{ asset('images/paket-wisata/paket2.jpg') }}'" class="cursor-pointer group relative w-full max-w-[600px] lg:max-w-[650px] transition-all duration-700 ease-out lg:[transform:rotateY(-10deg)] lg:origin-left lg:hover:[transform:rotateY(0deg)_scale(1.03)] lg:hover:z-20 shadow-xl hover:shadow-2xl rounded-2xl lg:rounded-r-2xl lg:rounded-l-none overflow-hidden border-4 md:border-8 border-white bg-white">
                         <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center backdrop-blur-[2px]">
                             <span class="material-symbols-outlined text-white text-[64px] drop-shadow-xl">zoom_in</span>
                         </div>
@@ -416,7 +416,7 @@
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-90"
-                 class="fixed inset-0 z-[9999] bg-black/95 flex flex-col">
+                 class="fixed inset-0 z-[99999] bg-black bg-opacity-95 flex flex-col" style="transform: translateZ(9999px);">
                  
                 <!-- Close Button -->
                 <button @click="lightboxOpen = false" class="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-black/50 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors z-50 shadow-lg border border-white/20">
