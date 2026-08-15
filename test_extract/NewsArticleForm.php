@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Filament\Resources\NewsArticles\Schemas;
+
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
+
+class NewsArticleForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Grid::make(['default' => 1, 'md' => 3])->schema([
+                    Section::make('Konten Berita')
+                        ->description('Masukkan judul dan isi berita utama.')
+                        ->columns(2)
+                        ->schema([
+                            TextInput::make('title')
+                                ->label('Judul Berita')
+                                ->helperText('Tuliskan judul berita yang menarik.')
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
+                            TextInput::make('slug')
+                                ->label('Tautan (Slug)')
+                                ->helperText('Terisi otomatis dari judul, atau isi manual dengan format-kata-kunci.')
+                                ->required(),
+                            RichEditor::make('content')
+                                ->label('Isi Berita')
+                                ->helperText('Tuliskan isi detail dari berita atau pengumuman.')
+                                ->fileAttachmentsDirectory('news-images')
+                                ->required()
+                                ->columnSpanFull(),
+                        ])->columnSpan(2),
+
+                    Section::make('Media & Publikasi')
+                        ->description('Kelola gambar dan tanggal rilis.')
+                        ->schema([
+                            FileUpload::make('images')
+                                ->multiple()
+                                ->reorderable()
+                                ->label('Gambar Utama')
+                                ->helperText('Unggah gambar pendukung untuk berita ini (opsional).')
+                                ->disk('public')
+                                ->image()
+                                ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
+                                    $filename = $file->getClientOriginalName();
+                                    $path = 'news-images/' . $filename;
+                                    \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+                                    return $path;
+                                })
+                                ->imagePreviewHeight('200')
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                ->maxSize(5120),
+                            TextInput::make('video_link')
+                                ->label('Tautan Video (YouTube)')
+                                ->helperText('Masukkan tautan video YouTube (opsional).')
+                                ->url()
+                                ->maxLength(255),
+                            DateTimePicker::make('published_at')
+                                ->label('Tanggal Publikasi')
+                                ->helperText('Kapan berita ini diterbitkan?'),
+                        ])->columnSpan(1),
+                ]),
+            ]);
+    }
+}
