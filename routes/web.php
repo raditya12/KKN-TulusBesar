@@ -113,6 +113,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/tour/reset', [TourController::class, 'reset'])->name('tour.reset');
 });
 
+// Fallback jika symlink di disable oleh Jagoan Hosting
+Route::get('/storage/{path}', function ($path) {
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    return response()->file($fullPath);
+})->where('path', '.*');
+
 Route::get('/fix-symlink-real', function () {
     $target = storage_path('app/public');
     $link = '/home/tulusbe1/public_html/storage';
