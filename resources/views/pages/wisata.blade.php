@@ -82,6 +82,53 @@
             </div>
         </section>
 
+        <!-- Highlight: Paket Wisata 3D Booklet -->
+        <section class="py-16 md:py-24 bg-surface-container-lowest relative overflow-hidden border-b border-outline-variant/30" x-show="activeFilter === 'semua'" x-transition>
+            <!-- Decorative elements -->
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-tertiary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 pointer-events-none"></div>
+            
+            <div class="max-w-screen-xl mx-auto px-4 md:px-container-margin relative z-10">
+                <div class="text-center mb-12 md:mb-20">
+                    <span class="inline-block font-label-md text-primary bg-primary/10 border border-primary/20 px-4 py-1.5 rounded-full tracking-widest uppercase mb-4 shadow-sm">
+                        Penawaran Spesial
+                    </span>
+                    <h2 class="font-display-md text-4xl md:text-5xl font-bold text-on-background mb-6">
+                        Paket Wisata <span class="text-primary">Tulusbesar</span>
+                    </h2>
+                    <p class="font-body-md text-on-surface-variant text-lg max-w-2xl mx-auto leading-relaxed">
+                        Rasakan pengalaman otentik berbaur dengan budaya, seni, dan sejarah secara langsung. Pilih paket wisata eksklusif kami dan ciptakan perjalanan tak terlupakan!
+                    </p>
+                </div>
+
+                <!-- 3D Booklet Layout -->
+                <div class="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-0 [perspective:2500px]">
+                    <!-- Page 1 (Left) -->
+                    <div class="w-full lg:w-1/2 max-w-[600px] transition-all duration-700 ease-out [transform:rotateY(0deg)] lg:[transform:rotateY(10deg)] lg:origin-right hover:[transform:rotateY(0deg)_scale(1.02)] lg:hover:z-20 shadow-2xl rounded-2xl overflow-hidden border-8 border-white bg-white">
+                        <img src="{{ asset('images/paket-wisata/paket1.jpg') }}" alt="Brosur Paket Wisata Halaman 1" class="w-full h-auto object-cover">
+                    </div>
+                    
+                    <!-- Book Spine Decoration (Visible on Desktop) -->
+                    <div class="hidden lg:block w-4 h-[600px] bg-gradient-to-r from-gray-300 via-gray-100 to-gray-300 shadow-inner z-10 rounded-full -mx-2"></div>
+
+                    <!-- Page 2 (Right) -->
+                    <div class="w-full lg:w-1/2 max-w-[600px] transition-all duration-700 ease-out [transform:rotateY(0deg)] lg:[transform:rotateY(-10deg)] lg:origin-left hover:[transform:rotateY(0deg)_scale(1.02)] lg:hover:z-20 shadow-2xl rounded-2xl overflow-hidden border-8 border-white bg-white">
+                        <img src="{{ asset('images/paket-wisata/paket2.jpg') }}" alt="Brosur Paket Wisata Halaman 2" class="w-full h-auto object-cover">
+                    </div>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="mt-16 flex justify-center">
+                    <a href="https://wa.me/6281225826217" target="_blank" rel="noopener noreferrer" 
+                       class="group relative inline-flex items-center justify-center gap-3 bg-primary hover:bg-primary-fixed-dim text-on-primary font-label-lg px-10 py-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(var(--color-primary),0.3)] transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+                        <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+                        <span class="material-symbols-outlined relative z-10 text-[24px]">support_agent</span>
+                        <span class="relative z-10 font-bold tracking-wide">Hubungi Kami Sekarang</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <!-- Navigation / Filter Bar -->
         @php
             $customCategories = $sites->pluck('category')->unique()->filter(fn($c) => !in_array($c, ['sejarah', 'budaya']));
