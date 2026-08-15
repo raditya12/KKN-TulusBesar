@@ -46,7 +46,7 @@
                                 'name' => basename($path),
                                 'url' => \Illuminate\Support\Facades\Storage::url($path),
                                 'ext' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
-                                'size' => round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB'
+                                'size' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path) ? round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB' : 'Tidak Ditemukan'
                             ])->toArray()
                         ];
                     @endphp
@@ -134,7 +134,7 @@
                                                 'name' => basename($path),
                                                 'url' => \Illuminate\Support\Facades\Storage::url($path),
                                                 'ext' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
-                                                'size' => round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB'
+                                                'size' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path) ? round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB' : 'Tidak Ditemukan'
                                             ])->toArray()
                                         ];
                                     @endphp
