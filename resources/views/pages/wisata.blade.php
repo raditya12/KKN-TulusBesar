@@ -416,15 +416,20 @@
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-90"
-                 class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 md:p-8 backdrop-blur-sm">
+                 class="fixed inset-0 z-[9999] bg-black/95 flex flex-col">
                  
                 <!-- Close Button -->
-                <button @click="lightboxOpen = false" class="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors z-10 shadow-lg">
+                <button @click="lightboxOpen = false" class="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-black/50 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors z-50 shadow-lg border border-white/20">
                     <span class="material-symbols-outlined text-[32px]">close</span>
                 </button>
                 
-                <!-- Full Image -->
-                <img :src="lightboxImage" alt="Zoomed View" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10" @click.away="lightboxOpen = false">
+                <!-- Scrollable Image Container for Mobile Panning -->
+                <div class="w-full h-full overflow-auto flex items-center justify-center p-4 md:p-8">
+                    <!-- Image is wider on mobile (min-w-[150%]) to allow panning and reading text clearly -->
+                    <img :src="lightboxImage" alt="Zoomed View" 
+                         class="min-w-[150%] md:min-w-0 max-w-none md:max-w-full h-auto md:max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10" 
+                         @click.away="lightboxOpen = false">
+                </div>
             </div>
         </template>
     </div>
