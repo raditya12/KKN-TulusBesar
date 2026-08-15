@@ -21,4 +21,12 @@ class ListSurat extends ListRecords
             SuratStatsWidget::class,
         ];
     }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \Filament\Actions\CreateAction::make()
+                ->label('Tambah Arsip'),
+        ];
+    }
 }

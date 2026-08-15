@@ -22,19 +22,19 @@ Route::get('/', function () {
     $umkms = Umkm::latest()->take(3)->get();
     $profile = VillageProfile::first();
 
-    // Kumpulkan semua gambar dari semua konten untuk slideshow
+    // Kumpulkan semua gambar dari semua konten untuk slideshow (hanya select image_path)
     $allImages = collect()
         ->merge(
-            NewsArticle::whereNotNull('image_path')->latest('published_at')->get()
-                ->map(fn ($n) => asset('storage/'.$n->image_path))
+            NewsArticle::whereNotNull('image_path')->latest('published_at')->pluck('image_path')
+                ->map(fn ($path) => asset('storage/'.$path))
         )
         ->merge(
-            Umkm::whereNotNull('image_path')->latest()->get()
-                ->map(fn ($u) => asset('storage/'.$u->image_path))
+            Umkm::whereNotNull('image_path')->latest()->pluck('image_path')
+                ->map(fn ($path) => asset('storage/'.$path))
         )
         ->merge(
-            CulturalSite::whereNotNull('image_path')->where('status', 'active')->latest()->get()
-                ->map(fn ($s) => asset('storage/'.$s->image_path))
+            CulturalSite::whereNotNull('image_path')->where('status', 'active')->latest()->pluck('image_path')
+                ->map(fn ($path) => asset('storage/'.$path))
         )
         ->values()
         ->toArray();

@@ -32,27 +32,10 @@
                 @enderror
             </div>
 
-            <!-- 2. Nomor Surat -->
-            <div style="margin-bottom: 1.25rem;">
-                <label for="nomor_surat" style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #4b5563; margin-bottom: 0.375rem;">
-                    Nomor Surat <span style="color: #ef4444;">*</span>
-                </label>
-                <input
-                    type="text"
-                    id="nomor_surat"
-                    wire:model="nomor_surat"
-                    placeholder="Contoh: 470 / 012 / 35.07.19.2005 / 2026"
-                    style="display: block; width: 100%; padding: 0.625rem 0.875rem; font-size: 0.875rem; border-radius: 0.5rem; border: 1px solid #d1d5db; background-color: #ffffff; color: #111827; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);"
-                />
-                @error('nomor_surat')
-                    <p style="font-size: 0.75rem; color: #dc2626; margin-top: 0.25rem; font-weight: 500;">{{ $message }}</p>
-                @enderror
-            </div>
-
             <!-- 3. Tanggal Surat -->
             <div style="margin-bottom: 1.25rem;">
                 <label for="tanggal_surat" style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #4b5563; margin-bottom: 0.375rem;">
-                    Tanggal Surat <span style="color: #ef4444;">*</span>
+                    Tanggal Surat Dibuat <span style="color: #ef4444;">*</span>
                 </label>
                 <input
                     type="date"
