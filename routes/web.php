@@ -135,9 +135,8 @@ Route::get('/download-file', function (\Illuminate\Http\Request $request) {
         abort(404);
     }
     
-    // Gunakan file() agar gambar bisa tampil di <img> tag, 
-    // tombol unduh di HTML sudah ada atribut 'download' sehingga tetap akan terunduh
-    return response()->file($fullPath);
+    // Gunakan download() agar nama file aslinya digunakan saat diunduh
+    return response()->download($fullPath, basename($path));
 })->name('download.file');
 
 Route::get('/check-db', function () {

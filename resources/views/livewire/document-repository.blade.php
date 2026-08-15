@@ -247,7 +247,7 @@
                                     <template x-for="file in doc.files">
                                         <div>
                                             <template x-if="file.exists">
-                                                <a :href="file.url" target="_blank" download class="flex items-center gap-3 p-3 rounded-2xl bg-surface-variant/30 hover:bg-surface-variant border border-outline-variant/30 transition-colors group">
+                                                <a :href="file.url" target="_blank" :download="file.name" class="flex items-center gap-3 p-3 rounded-2xl bg-surface-variant/30 hover:bg-surface-variant border border-outline-variant/30 transition-colors group">
                                                     <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                                                         <span class="material-symbols-outlined">description</span>
                                                     </div>
