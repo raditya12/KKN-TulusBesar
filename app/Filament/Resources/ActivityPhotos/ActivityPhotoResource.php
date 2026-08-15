@@ -22,11 +22,11 @@ class ActivityPhotoResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'description';
 
-    protected static ?string $modelLabel = 'Foto Kegiatan';
+    protected static ?string $modelLabel = 'Album Sejarah';
 
-    protected static ?string $pluralModelLabel = 'Foto Kegiatan';
+    protected static ?string $pluralModelLabel = 'Album Sejarah';
 
-    protected static ?string $navigationLabel = 'Foto Kegiatan';
+    protected static ?string $navigationLabel = 'Album Sejarah';
 
     protected static \UnitEnum|string|null $navigationGroup = 'CMS';
 
