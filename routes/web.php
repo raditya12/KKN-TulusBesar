@@ -117,3 +117,19 @@ Route::get('/fix-storage', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');
     return 'Symlink berhasil dibuat! Silakan hapus route ini.';
 });
+
+Route::get('/debug-storage', function () {
+    $results = [];
+    $results['storage_path'] = storage_path('app/public');
+    $results['public_path'] = public_path('storage');
+    $results['disk_root'] = config('filesystems.disks.public.root');
+    $results['put_test'] = \Illuminate\Support\Facades\Storage::disk('public')->put('village-documents/test.txt', 'test');
+    $results['exists_test'] = \Illuminate\Support\Facades\Storage::disk('public')->exists('village-documents/test.txt');
+    $results['files_in_village_docs'] = \Illuminate\Support\Facades\Storage::disk('public')->files('village-documents');
+    return response()->json($results);
+});
+
+Route::get('/fix-storage', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    return 'Symlink berhasil dibuat! Silakan hapus route ini.';
+});
