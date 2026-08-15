@@ -159,3 +159,7 @@ Route::get('/debug-copy', function () {
         return response()->json(['error' => $e->getMessage()]);
     }
 });
+Route::get('/clear-cache', function() {
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    return 'Cache cleared!';
+});
