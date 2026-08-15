@@ -408,22 +408,24 @@
         <x-footer />
 
         <!-- Lightbox Modal -->
-        <div x-show="lightboxOpen" style="display: none;"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 scale-90"
-             x-transition:enter-end="opacity-100 scale-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100 scale-100"
-             x-transition:leave-end="opacity-0 scale-90"
-             class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-8 backdrop-blur-sm">
-             
-            <!-- Close Button -->
-            <button @click="lightboxOpen = false" class="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors z-10 shadow-lg">
-                <span class="material-symbols-outlined text-[32px]">close</span>
-            </button>
-            
-            <!-- Full Image -->
-            <img :src="lightboxImage" alt="Zoomed View" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10" @click.away="lightboxOpen = false">
-        </div>
+        <template x-teleport="body">
+            <div x-show="lightboxOpen" style="display: none;"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-90"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-90"
+                 class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 md:p-8 backdrop-blur-sm">
+                 
+                <!-- Close Button -->
+                <button @click="lightboxOpen = false" class="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors z-10 shadow-lg">
+                    <span class="material-symbols-outlined text-[32px]">close</span>
+                </button>
+                
+                <!-- Full Image -->
+                <img :src="lightboxImage" alt="Zoomed View" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10" @click.away="lightboxOpen = false">
+            </div>
+        </template>
     </div>
 @endsection
