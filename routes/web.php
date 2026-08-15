@@ -127,11 +127,17 @@ Route::get('/download-file', function (\Illuminate\Http\Request $request) {
     $path = $request->query('path');
     if (!$path) abort(404);
     
+    // Hapus slash di awal jika ada (efek dari FilesystemAdapter)
+    $path = ltrim($path, '/');
+    
     $fullPath = storage_path('app/public/' . $path);
     if (!file_exists($fullPath)) {
         abort(404);
     }
-    return response()->download($fullPath);
+    
+    // Gunakan file() agar gambar bisa tampil di <img> tag, 
+    // tombol unduh di HTML sudah ada atribut 'download' sehingga tetap akan terunduh
+    return response()->file($fullPath);
 })->name('download.file');
 
 Route::get('/check-db', function () {

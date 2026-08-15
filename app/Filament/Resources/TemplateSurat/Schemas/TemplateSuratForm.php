@@ -42,8 +42,13 @@ class TemplateSuratForm
 
                                     FileUpload::make('file_docx')
                                         ->label('File Template (DOCX)')
-                                        ->directory('template-surat')
                                         ->disk('public')
+                                        ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
+                                            $filename = $file->getClientOriginalName();
+                                            $path = 'template-surat/' . $filename;
+                                            \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+                                            return $path;
+                                        })
                                         ->acceptedFileTypes([
                                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                             'application/msword',

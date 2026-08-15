@@ -51,7 +51,12 @@ class NewsArticleForm
                                 ->helperText('Unggah gambar pendukung untuk berita ini (opsional).')
                                 ->disk('public')
                                 ->image()
-                                ->directory('news-images')
+                                ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
+                                    $filename = $file->getClientOriginalName();
+                                    $path = 'news-images/' . $filename;
+                                    \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+                                    return $path;
+                                })
                                 ->imagePreviewHeight('200')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120),
