@@ -112,3 +112,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/tour/complete', [TourController::class, 'complete'])->name('tour.complete');
     Route::post('/admin/tour/reset', [TourController::class, 'reset'])->name('tour.reset');
 });
+
+Route::get('/fix-storage', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    return 'Symlink berhasil dibuat! Silakan hapus route ini.';
+});
