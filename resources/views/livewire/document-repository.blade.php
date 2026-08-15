@@ -46,7 +46,8 @@
                                 'name' => basename($path),
                                 'url' => \Illuminate\Support\Facades\Storage::url($path),
                                 'ext' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
-                                'size' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path) ? round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB' : 'Tidak Ditemukan'
+                                'size' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path) ? round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB' : 'Tidak Ditemukan',
+                                'exists' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
                             ])->toArray()
                         ];
                     @endphp
@@ -134,7 +135,8 @@
                                                 'name' => basename($path),
                                                 'url' => \Illuminate\Support\Facades\Storage::url($path),
                                                 'ext' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
-                                                'size' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path) ? round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB' : 'Tidak Ditemukan'
+                                                'size' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path) ? round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB' : 'Tidak Ditemukan',
+                                                'exists' => \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
                                             ])->toArray()
                                         ];
                                     @endphp
@@ -243,18 +245,33 @@
                             <template x-if="doc.files && doc.files.length > 0">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <template x-for="file in doc.files">
-                                        <a :href="file.url" target="_blank" download class="flex items-center gap-3 p-3 rounded-2xl bg-surface-variant/30 hover:bg-surface-variant border border-outline-variant/30 transition-colors group">
-                                            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                                                <span class="material-symbols-outlined">description</span>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <div class="font-label-md text-on-surface line-clamp-1 group-hover:text-primary transition-colors" x-text="file.name"></div>
-                                                <div class="font-body-sm text-on-surface-variant text-[11px]" x-text="file.ext + ' • ' + file.size"></div>
-                                            </div>
-                                            <div class="shrink-0 text-primary">
-                                                <span class="material-symbols-outlined">download</span>
-                                            </div>
-                                        </a>
+                                        <div>
+                                            <template x-if="file.exists">
+                                                <a :href="file.url" target="_blank" download class="flex items-center gap-3 p-3 rounded-2xl bg-surface-variant/30 hover:bg-surface-variant border border-outline-variant/30 transition-colors group">
+                                                    <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                                        <span class="material-symbols-outlined">description</span>
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="font-label-md text-on-surface line-clamp-1 group-hover:text-primary transition-colors" x-text="file.name"></div>
+                                                        <div class="font-body-sm text-on-surface-variant text-[11px]" x-text="file.ext + ' • ' + file.size"></div>
+                                                    </div>
+                                                    <div class="shrink-0 text-primary">
+                                                        <span class="material-symbols-outlined">download</span>
+                                                    </div>
+                                                </a>
+                                            </template>
+                                            <template x-if="!file.exists">
+                                                <div class="flex items-center gap-3 p-3 rounded-2xl bg-error/10 border border-error/30 opacity-75 cursor-not-allowed">
+                                                    <div class="w-10 h-10 rounded-xl bg-error/20 text-error flex items-center justify-center shrink-0">
+                                                        <span class="material-symbols-outlined">warning</span>
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="font-label-md text-on-surface line-clamp-1 line-through" x-text="file.name"></div>
+                                                        <div class="font-body-sm text-error text-[11px]">File fisik belum ada di server</div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
                                     </template>
                                 </div>
                             </template>

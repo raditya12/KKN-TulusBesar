@@ -328,7 +328,7 @@
                             <div class="group relative flex items-center gap-4 bg-white/80 dark:bg-surface-container-lowest/80 backdrop-blur-md p-4 rounded-2xl border border-outline-variant/30 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 w-full sm:w-max overflow-hidden cursor-default">
                                 <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 @if($official->image_path)
-                                    <img src="{{ asset('storage/' . $official->image_path) }}" alt="{{ $official->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary/20 shadow-sm relative z-10">
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($official->image_path) }}" alt="{{ $official->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary/20 shadow-sm relative z-10">
                                 @else
                                     <!-- Smart Avatar using initials -->
                                     <div class="w-16 h-16 rounded-full bg-primary-container text-primary font-bold flex items-center justify-center text-xl border-2 border-primary/20 shadow-sm relative z-10">
@@ -419,7 +419,7 @@
                         @if($index === 0)
                         <div class="absolute top-sm right-sm z-10 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm px-2 py-1 rounded-md shadow-md">Terbaru</div>
                         @endif
-                        <img src="{{ empty($berita->image_path) ? asset('images/dummy/hero.jpg') : (Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : asset('storage/' . $berita->image_path)) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ empty($berita->image_path) ? asset('images/dummy/hero.jpg') : (Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : \Illuminate\Support\Facades\Storage::disk('public')->url($berita->image_path)) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <div class="p-lg flex-grow flex flex-col">
                         <div class="flex items-center gap-sm text-on-surface-variant font-label-sm mb-sm">
