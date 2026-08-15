@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="w-full overflow-y-auto custom-scrollbar" x-data="{ activeFilter: 'semua' }">
+    <div class="w-full overflow-y-auto custom-scrollbar" x-data="{ activeFilter: 'semua', lightboxOpen: false, lightboxImage: '' }" :class="lightboxOpen ? 'overflow-hidden' : ''">
 
         @php
             // Kumpulkan semua foto yang sudah terupload dari data situs budaya
@@ -104,12 +104,18 @@
                 <!-- 3D Booklet Layout -->
                 <div class="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-0 [perspective:2500px]">
                     <!-- Page 1 (Left) -->
-                    <div class="w-full max-w-[500px] lg:max-w-[550px] transition-all duration-700 ease-out [transform:rotateY(0deg)] lg:[transform:rotateY(10deg)] lg:origin-right hover:[transform:rotateY(0deg)_scale(1.03)] lg:hover:z-20 shadow-xl hover:shadow-2xl rounded-2xl lg:rounded-l-2xl lg:rounded-r-none overflow-hidden border-4 md:border-8 border-white bg-white">
+                    <div @click="lightboxOpen = true; lightboxImage = '{{ asset('images/paket-wisata/paket1.jpg') }}'" class="cursor-pointer group relative w-full max-w-[600px] lg:max-w-[650px] transition-all duration-700 ease-out [transform:rotateY(0deg)] lg:[transform:rotateY(10deg)] lg:origin-right hover:[transform:rotateY(0deg)_scale(1.03)] lg:hover:z-20 shadow-xl hover:shadow-2xl rounded-2xl lg:rounded-l-2xl lg:rounded-r-none overflow-hidden border-4 md:border-8 border-white bg-white">
+                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center backdrop-blur-[2px]">
+                            <span class="material-symbols-outlined text-white text-[64px] drop-shadow-xl">zoom_in</span>
+                        </div>
                         <img src="{{ asset('images/paket-wisata/paket1.jpg') }}" alt="Brosur Paket Wisata Halaman 1" class="w-full h-auto object-cover">
                     </div>
                     
                     <!-- Page 2 (Right) -->
-                    <div class="w-full max-w-[500px] lg:max-w-[550px] transition-all duration-700 ease-out [transform:rotateY(0deg)] lg:[transform:rotateY(-10deg)] lg:origin-left hover:[transform:rotateY(0deg)_scale(1.03)] lg:hover:z-20 shadow-xl hover:shadow-2xl rounded-2xl lg:rounded-r-2xl lg:rounded-l-none overflow-hidden border-4 md:border-8 border-white bg-white">
+                    <div @click="lightboxOpen = true; lightboxImage = '{{ asset('images/paket-wisata/paket2.jpg') }}'" class="cursor-pointer group relative w-full max-w-[600px] lg:max-w-[650px] transition-all duration-700 ease-out [transform:rotateY(0deg)] lg:[transform:rotateY(-10deg)] lg:origin-left hover:[transform:rotateY(0deg)_scale(1.03)] lg:hover:z-20 shadow-xl hover:shadow-2xl rounded-2xl lg:rounded-r-2xl lg:rounded-l-none overflow-hidden border-4 md:border-8 border-white bg-white">
+                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center backdrop-blur-[2px]">
+                            <span class="material-symbols-outlined text-white text-[64px] drop-shadow-xl">zoom_in</span>
+                        </div>
                         <img src="{{ asset('images/paket-wisata/paket2.jpg') }}" alt="Brosur Paket Wisata Halaman 2" class="w-full h-auto object-cover">
                     </div>
                 </div>
@@ -400,5 +406,24 @@
         </section>
 
         <x-footer />
+
+        <!-- Lightbox Modal -->
+        <div x-show="lightboxOpen" style="display: none;"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-90"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-90"
+             class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-8 backdrop-blur-sm">
+             
+            <!-- Close Button -->
+            <button @click="lightboxOpen = false" class="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors z-10 shadow-lg">
+                <span class="material-symbols-outlined text-[32px]">close</span>
+            </button>
+            
+            <!-- Full Image -->
+            <img :src="lightboxImage" alt="Zoomed View" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10" @click.away="lightboxOpen = false">
+        </div>
     </div>
 @endsection
