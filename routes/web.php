@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use App\Http\Controllers\TourController;
 use App\Models\ActivityPhoto;
@@ -131,6 +131,31 @@ Route::get('/check-db', function () {
         'db_file_paths' => $doc ? $doc->file_paths : null,
         'db_raw' => $doc ? $doc->getAttributes()['file_paths'] ?? null : null,
         'files_on_disk' => $filesOnDisk,
+        'livewire_tmp' => \Illuminate\Support\Facades\Storage::disk('local')->files('livewire-tmp'),
         'disk_root' => config('filesystems.disks.public.root')
     ]);
+});
+
+Route::get('/debug-copy', function () {
+    try {
+        $tempFile = \Illuminate\Http\UploadedFile::fake()->create('test-copy.pdf', 100);
+        $path = $tempFile->store('livewire-tmp', 'local');
+        
+        $newPath = 'village-documents/moved-copy.pdf';
+        
+        // Simulasikan cara Filament (menggunakan copy antar disk tidak bisa langsung jika beda instance config, 
+        // tapi Filament menggunakan Flysystem's visibility atau move).
+        // Kita test copy lokal.
+        $absOld = storage_path('app/' . $path);
+        $absNew = storage_path('app/public/' . $newPath);
+        
+        $phpCopy = copy($absOld, $absNew);
+        
+        return response()->json([
+            'php_copy_success' => $phpCopy,
+            'file_exists' => file_exists($absNew)
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
 });
