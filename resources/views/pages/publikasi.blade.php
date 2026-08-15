@@ -110,7 +110,7 @@
                 <div class="col-span-full flex flex-col items-center justify-center py-16 text-center bg-surface-container-lowest rounded-3xl border-2 border-outline-variant/30 border-dashed">
                     <span class="material-symbols-outlined text-[48px] text-outline mb-4">newspaper</span>
                     <h3 class="font-headline-md text-xl font-bold text-on-surface mb-2">Belum Ada Berita Terbaru</h3>
-                    <p class="font-body-md text-on-surface-variant max-w-md mx-auto">Saat ini belum ada publikasi berita atau informasi kegiatan terbaru dari desa. Silakan kunjungi kembali halaman ini nanti.</p>
+                    <p class="font-body-md text-on-surface-variant max-w-[28rem] mx-auto">Saat ini belum ada publikasi berita atau informasi kegiatan terbaru dari desa. Silakan kunjungi kembali halaman ini nanti.</p>
                 </div>
                 @endforelse
             </div>
