@@ -25,11 +25,14 @@ class VillageDocumentForm
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
-                        TextInput::make('name')
+                        TextInput::make('category_name')
                             ->required()
                             ->maxLength(255)
                             ->label('Nama Kategori'),
                     ])
+                    ->createOptionUsing(function (array $data): int {
+                        return \App\Models\DocumentCategory::create(['name' => $data['category_name']])->id;
+                    })
                     ->required(),
                 Textarea::make('description')
                     ->label('Deskripsi')
