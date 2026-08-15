@@ -36,19 +36,29 @@ class VillageDocumentForm
                     ->columnSpanFull(),
                 FileUpload::make('file_paths')
                     ->label('File Dokumen')
-                    ->directory('village-documents')
                     ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                     ->maxSize(10240) // 10MB
                     ->multiple()
                     ->downloadable()
                     ->preserveFilenames()
+                    ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
+                        $filename = $file->getClientOriginalName();
+                        $path = 'village-documents/' . $filename;
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+                        return $path;
+                    })
                     ->required()
                     ->columnSpanFull(),
                 FileUpload::make('requirement_image_path')
                     ->label('Gambar Persyaratan / SOP')
                     ->image()
-                    ->directory('village-documents/requirements')
                     ->maxSize(5120) // 5MB
+                    ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
+                        $filename = $file->getClientOriginalName();
+                        $path = 'village-documents/requirements/' . $filename;
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+                        return $path;
+                    })
                     ->columnSpanFull(),
                 RichEditor::make('requirements_text')
                     ->label('Keterangan Persyaratan (Opsional)')
