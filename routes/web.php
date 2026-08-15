@@ -113,6 +113,23 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/tour/reset', [TourController::class, 'reset'])->name('tour.reset');
 });
 
+Route::get('/fix-symlink-real', function () {
+    $target = storage_path('app/public');
+    $link = '/home/tulusbe1/public_html/storage';
+    
+    if (file_exists($link)) {
+        // Jika berupa symlink lama atau file, hapus dulu
+        if (is_link($link) || !is_dir($link)) {
+            unlink($link);
+        } else {
+            return 'GAGAL: Hapus dulu folder "storage" (yang berisi folder-folder) di dalam public_html melalui File Manager.';
+        }
+    }
+    
+    symlink($target, $link);
+    return 'BERHASIL: Symlink berhasil dibuat langsung di public_html/storage!';
+});
+
 Route::get('/fix-storage', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');
     return 'Symlink berhasil dibuat! Silakan hapus route ini.';
