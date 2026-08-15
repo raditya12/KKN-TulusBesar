@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 
 use App\Http\Controllers\TourController;
 use App\Models\ActivityPhoto;
@@ -122,104 +122,15 @@ Route::get('/storage/{path}', function ($path) {
     return response()->file($fullPath);
 })->where('path', '.*');
 
-Route::get('/debug-upload', function () {
-    try {
-        $tempFile = \Illuminate\Http\UploadedFile::fake()->create('test-upload.pdf', 100);
-        $path = $tempFile->store('livewire-tmp', 'local');
-        
-        $newPath = 'village-documents/moved-test.pdf';
-        $success = \Illuminate\Support\Facades\Storage::disk('public')->put(
-            $newPath,
-            \Illuminate\Support\Facades\Storage::disk('local')->get($path)
-        );
-        
-        return response()->json([
-            'temp_path' => $path,
-            'moved_success' => $success,
-            'file_exists' => \Illuminate\Support\Facades\Storage::disk('public')->exists($newPath)
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
-});
-
-// Fallback jika symlink di disable oleh Jagoan Hosting
-Route::get('/storage/{path}', function ($path) {
-    $fullPath = storage_path('app/public/' . $path);
-    if (!file_exists($fullPath)) {
-        abort(404);
-    }
-    return response()->file($fullPath);
-})->where('path', '.*');
-
-Route::get('/fix-symlink-real', function () {
-    $target = storage_path('app/public');
-    $link = '/home/tulusbe1/public_html/storage';
+Route::get('/check-db', function () {
+    $doc = \App\Models\VillageDocument::latest()->first();
+    $filesOnDisk = \Illuminate\Support\Facades\Storage::disk('public')->files('village-documents');
     
-    if (file_exists($link)) {
-        // Jika berupa symlink lama atau file, hapus dulu
-        if (is_link($link) || !is_dir($link)) {
-            unlink($link);
-        } else {
-            return 'GAGAL: Hapus dulu folder "storage" (yang berisi folder-folder) di dalam public_html melalui File Manager.';
-        }
-    }
-    
-    symlink($target, $link);
-    return 'BERHASIL: Symlink berhasil dibuat langsung di public_html/storage!';
-});
-
-Route::get('/fix-storage', function () {
-    \Illuminate\Support\Facades\Artisan::call('storage:link');
-    return 'Symlink berhasil dibuat! Silakan hapus route ini.';
-});
-
-Route::get('/debug-storage', function () {
-    $results = [];
-    $results['storage_path'] = storage_path('app/public');
-    $results['public_path'] = public_path('storage');
-    $results['disk_root'] = config('filesystems.disks.public.root');
-    $results['put_test'] = \Illuminate\Support\Facades\Storage::disk('public')->put('village-documents/test.txt', 'test');
-    $results['exists_test'] = \Illuminate\Support\Facades\Storage::disk('public')->exists('village-documents/test.txt');
-    $results['files_in_village_docs'] = \Illuminate\Support\Facades\Storage::disk('public')->files('village-documents');
-    return response()->json($results);
-});
-
-Route::get('/fix-storage', function () {
-    \Illuminate\Support\Facades\Artisan::call('storage:link');
-    return 'Symlink berhasil dibuat! Silakan hapus route ini.';
-});// Tour status routes — protected by auth middleware
-Route::middleware('auth')->group(function () {
-    Route::post('/admin/tour/complete', [TourController::class, 'complete'])->name('tour.complete');
-    Route::post('/admin/tour/reset', [TourController::class, 'reset'])->name('tour.reset');
-});
-
-// Fallback jika symlink di disable oleh Jagoan Hosting
-Route::get('/storage/{path}', function ($path) {
-    $fullPath = storage_path('app/public/' . $path);
-    if (!file_exists($fullPath)) {
-        abort(404);
-    }
-    return response()->file($fullPath);
-})->where('path', '.*');
-
-Route::get('/debug-upload', function () {
-    try {
-        $tempFile = \Illuminate\Http\UploadedFile::fake()->create('test-upload.pdf', 100);
-        $path = $tempFile->store('livewire-tmp', 'local');
-        
-        $newPath = 'village-documents/moved-test.pdf';
-        $success = \Illuminate\Support\Facades\Storage::disk('public')->put(
-            $newPath,
-            \Illuminate\Support\Facades\Storage::disk('local')->get($path)
-        );
-        
-        return response()->json([
-            'temp_path' => $path,
-            'moved_success' => $success,
-            'file_exists' => \Illuminate\Support\Facades\Storage::disk('public')->exists($newPath)
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
+    return response()->json([
+        'latest_doc_title' => $doc ? $doc->title : 'No docs',
+        'db_file_paths' => $doc ? $doc->file_paths : null,
+        'db_raw' => $doc ? $doc->getAttributes()['file_paths'] ?? null : null,
+        'files_on_disk' => $filesOnDisk,
+        'disk_root' => config('filesystems.disks.public.root')
+    ]);
 });
