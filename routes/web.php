@@ -181,3 +181,7 @@ Route::get('/clear-cache', function() {
     \Illuminate\Support\Facades\Artisan::call('optimize:clear');
     return 'Cache cleared!';
 });
+Route::get('/migrate-db', function() {
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    return 'Database migrated successfully!';
+});
