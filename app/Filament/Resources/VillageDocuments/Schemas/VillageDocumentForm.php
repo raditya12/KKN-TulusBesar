@@ -34,11 +34,14 @@ class VillageDocumentForm
                 Textarea::make('description')
                     ->label('Deskripsi')
                     ->columnSpanFull(),
-                FileUpload::make('file_path')
+                FileUpload::make('file_paths')
                     ->label('File Dokumen')
                     ->directory('village-documents')
                     ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                     ->maxSize(10240) // 10MB
+                    ->multiple()
+                    ->downloadable()
+                    ->preserveFilenames()
                     ->required()
                     ->columnSpanFull(),
                 FileUpload::make('requirement_image_path')

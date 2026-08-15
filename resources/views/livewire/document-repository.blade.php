@@ -42,7 +42,12 @@
                             'description' => $doc->description,
                             'req_img' => $doc->requirement_image_path ? \Illuminate\Support\Facades\Storage::url($doc->requirement_image_path) : null,
                             'req_text' => $doc->requirements_text,
-                            'file_url' => \Illuminate\Support\Facades\Storage::url($doc->file_path)
+                            'files' => collect($doc->file_paths ?? [])->map(fn($path) => [
+                                'name' => basename($path),
+                                'url' => \Illuminate\Support\Facades\Storage::url($path),
+                                'ext' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
+                                'size' => round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB'
+                            ])->toArray()
                         ];
                     @endphp
                     <div class="p-4 flex flex-col gap-4 hover:bg-surface-container/30 transition-colors">
@@ -125,7 +130,12 @@
                                             'description' => $doc->description,
                                             'req_img' => $doc->requirement_image_path ? \Illuminate\Support\Facades\Storage::url($doc->requirement_image_path) : null,
                                             'req_text' => $doc->requirements_text,
-                                            'file_url' => \Illuminate\Support\Facades\Storage::url($doc->file_path)
+                                            'files' => collect($doc->file_paths ?? [])->map(fn($path) => [
+                                                'name' => basename($path),
+                                                'url' => \Illuminate\Support\Facades\Storage::url($path),
+                                                'ext' => strtoupper(pathinfo($path, PATHINFO_EXTENSION)),
+                                                'size' => round(\Illuminate\Support\Facades\Storage::disk('public')->size($path) / 1024, 2) . ' KB'
+                                            ])->toArray()
                                         ];
                                     @endphp
                                     <button type="button" @click="doc = {{ json_encode($docData) }}; showModal = true" class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-label-md hover:bg-primary/90 transition-colors shadow-sm whitespace-nowrap">
@@ -213,7 +223,7 @@
                             </div>
                         </template>
 
-                        <!-- Tautan Poster SOP jika ada -->
+                    <!-- Tautan Poster SOP jika ada -->
                         <template x-if="doc.req_img">
                             <div class="mt-4 flex items-center gap-2">
                                 <span class="material-symbols-outlined text-on-surface-variant text-lg">image</span>
@@ -222,16 +232,45 @@
                                 </a>
                             </div>
                         </template>
+
+                        <!-- Berkas Unduhan -->
+                        <div class="mt-8">
+                            <h4 class="font-title-lg text-primary mb-4 flex items-center gap-2 border-b border-outline-variant/30 pb-3">
+                                <span class="material-symbols-outlined text-secondary-container text-2xl">download_for_offline</span> 
+                                Formulir & Dokumen
+                            </h4>
+                            
+                            <template x-if="doc.files && doc.files.length > 0">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <template x-for="file in doc.files">
+                                        <a :href="file.url" target="_blank" download class="flex items-center gap-3 p-3 rounded-2xl bg-surface-variant/30 hover:bg-surface-variant border border-outline-variant/30 transition-colors group">
+                                            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                                <span class="material-symbols-outlined">description</span>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-label-md text-on-surface line-clamp-1 group-hover:text-primary transition-colors" x-text="file.name"></div>
+                                                <div class="font-body-sm text-on-surface-variant text-[11px]" x-text="file.ext + ' • ' + file.size"></div>
+                                            </div>
+                                            <div class="shrink-0 text-primary">
+                                                <span class="material-symbols-outlined">download</span>
+                                            </div>
+                                        </a>
+                                    </template>
+                                </div>
+                            </template>
+                            <template x-if="!doc.files || doc.files.length === 0">
+                                <div class="p-4 text-center text-on-surface-variant font-body-sm bg-surface-variant/30 rounded-2xl">
+                                    Tidak ada file formulir yang tersedia.
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="p-6 border-t border-outline-variant/30 flex flex-col sm:flex-row justify-end gap-3 sticky bottom-0 bg-surface/95 backdrop-blur z-10">
-                    <button type="button" @click="showModal = false" class="order-2 sm:order-1 px-6 py-3 rounded-2xl font-label-lg text-on-surface bg-surface-variant hover:bg-surface-variant/80 transition-colors w-full sm:w-auto">
+                <div class="p-6 border-t border-outline-variant/30 flex justify-end sticky bottom-0 bg-surface/95 backdrop-blur z-10">
+                    <button type="button" @click="showModal = false" class="px-8 py-2.5 rounded-2xl font-label-lg text-on-surface bg-surface-variant hover:bg-surface-variant/80 transition-colors">
                         Tutup
                     </button>
-                    <a :href="doc.file_url" target="_blank" download class="order-1 sm:order-2 px-6 py-3 rounded-2xl font-label-lg text-on-primary bg-primary hover:bg-primary/90 transition-all flex justify-center items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 w-full sm:w-auto">
-                        <span class="material-symbols-outlined text-[24px]">download</span> UNDUH FORMULIR
-                    </a>
                 </div>
             </div>
         </div>
