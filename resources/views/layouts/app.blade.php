@@ -9,12 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     
+    @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    <!-- Alpine.js Plugins -->
+    <!-- Alpine.js Plugins (Core is loaded by Livewire) -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-background text-on-background h-screen overflow-hidden flex flex-col font-body-md antialiased">
     
@@ -29,5 +29,6 @@
     <!-- Footer Component (Optional, can be placed inside content if full height is needed for WebGIS) -->
     {{-- <x-footer /> --}}
 
+    @livewireScripts
 </body>
 </html>
