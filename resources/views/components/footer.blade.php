@@ -3,18 +3,35 @@
     <div class="max-w-screen-2xl mx-auto px-4 md:px-12 py-12 w-full">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
             
-            <!-- Address (Left) -->
-            <div class="flex flex-col sm:flex-row gap-4">
-                <div class="flex-shrink-0 w-16 h-16 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg overflow-hidden" style="border: 2px solid rgba(253, 147, 76, 0.3);">
-                    <img src="{{ asset('images/logo desa.jpeg') }}" alt="Logo Desa Tulusbesar" class="w-full h-full object-contain drop-shadow-sm" onerror="this.style.display='none'">
+            <!-- Address and Identity (Left) -->
+            <div class="flex flex-col gap-6">
+                <!-- Desa Identity -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-shrink-0 w-16 h-16 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg overflow-hidden" style="border: 2px solid rgba(253, 147, 76, 0.3);">
+                        <img src="{{ asset('images/logo desa.jpeg') }}" alt="Logo Desa Tulusbesar" class="w-full h-full object-contain drop-shadow-sm" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2" style="color: #ffffff;">Pemerintah Desa Tulusbesar</h3>
+                        <div class="text-sm space-y-1 leading-relaxed" style="color: rgba(255, 255, 255, 0.9);">
+                            <p>Kantor Desa Tulusbesar</p>
+                            <p>Kecamatan Tumpang, Kabupaten Malang</p>
+                            <p>Provinsi Jawa Timur</p>
+                            <p>Kode Pos: 65156</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="font-bold text-lg mb-2" style="color: #ffffff;">Pemerintah Desa Tulusbesar</h3>
-                    <div class="text-sm space-y-1 leading-relaxed" style="color: rgba(255, 255, 255, 0.9);">
-                        <p>Kantor Desa Tulusbesar</p>
-                        <p>Kecamatan Tumpang, Kabupaten Malang</p>
-                        <p>Provinsi Jawa Timur</p>
-                        <p>Kode Pos: 65156</p>
+
+                <!-- Polinema Identity -->
+                <div class="flex flex-col sm:flex-row gap-4 border-t pt-4" style="border-color: rgba(255,255,255,0.1);">
+                    <div class="flex-shrink-0 w-16 h-16 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg overflow-hidden" style="border: 2px solid rgba(253, 147, 76, 0.3);">
+                        <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Politeknik Negeri Malang" class="w-full h-full object-contain drop-shadow-sm" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2" style="color: #ffffff;">Politeknik Negeri Malang</h3>
+                        <div class="text-sm space-y-1 leading-relaxed" style="color: rgba(255, 255, 255, 0.9);">
+                            <p>Mahasiswa KKN Polinema 2026</p>
+                            <p>Jurusan Teknologi Informasi</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -121,7 +138,7 @@
     <!-- Copyright -->
     <div class="py-4 w-full" style="background-color: #31170a; border-top: 1px solid rgba(255,255,255,0.05);">
         <div class="max-w-screen-2xl mx-auto px-4 md:px-8 text-center text-sm font-medium" style="color: rgba(255,255,255,0.7);">
-            &copy; 2026 Mahasiswa KKN Jurusan Teknologi Informasi.
+            &copy; KKN Polinema 2026 Jurusan Teknologi Informasi
         </div>
     </div>
 </footer>
