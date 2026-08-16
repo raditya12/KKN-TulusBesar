@@ -26,15 +26,15 @@ Route::get('/', function () {
     $allImages = collect()
         ->merge(
             NewsArticle::whereNotNull('image_path')->latest('published_at')->pluck('image_path')
-                ->map(fn ($path) => url('/download-file?path='.$path))
+                ->map(fn ($path) => asset('storage/'.$path))
         )
         ->merge(
             Umkm::whereNotNull('image_path')->latest()->pluck('image_path')
-                ->map(fn ($path) => url('/download-file?path='.$path))
+                ->map(fn ($path) => asset('storage/'.$path))
         )
         ->merge(
             CulturalSite::whereNotNull('image_path')->where('status', 'active')->latest()->pluck('image_path')
-                ->map(fn ($path) => url('/download-file?path='.$path))
+                ->map(fn ($path) => asset('storage/'.$path))
         )
         ->values()
         ->toArray();

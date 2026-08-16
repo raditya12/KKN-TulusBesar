@@ -111,6 +111,7 @@ class CulturalSiteForm
                                 ->label('Foto Situs')
                                 ->helperText('Unggah foto lokasi.')
                                 ->image()
+                                ->disk('public')
                                 ->directory('cultural-sites')
                                 ->preserveFilenames()
                                 ->imagePreviewHeight('250')

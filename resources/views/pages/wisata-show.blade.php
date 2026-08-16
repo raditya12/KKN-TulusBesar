@@ -47,7 +47,7 @@
                                  x-transition:leave="transition-opacity duration-1000"
                                  x-transition:leave-start="opacity-100"
                                  x-transition:leave-end="opacity-0">
-                                <img src="{{ Str::startsWith($img, 'images/dummy/') ? asset($img) : url('/download-file?path=' . $img) }}" alt="{{ $wisata->name }} - Slide {{ $index + 1 }}" class="w-full h-full object-cover">
+                                <img src="{{ Str::startsWith($img, 'images/dummy/') ? asset($img) : \Illuminate\Support\Facades\Storage::disk('public')->url($img) }}" alt="{{ $wisata->name }} - Slide {{ $index + 1 }}" class="w-full h-full object-cover">
                             </div>
                             @endforeach
                             
@@ -70,7 +70,7 @@
                                 <span class="material-symbols-outlined">chevron_right</span>
                             </button>
                         @else
-                            <img src="{{ empty($wisata->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($wisata->image_path, 'images/dummy/') ? asset($wisata->image_path) : url('/download-file?path=' . $wisata->image_path)) }}" alt="{{ $wisata->name }}" class="w-full h-full object-cover">
+                            <img src="{{ empty($wisata->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($wisata->image_path, 'images/dummy/') ? asset($wisata->image_path) : \Illuminate\Support\Facades\Storage::disk('public')->url($wisata->image_path)) }}" alt="{{ $wisata->name }}" class="w-full h-full object-cover">
                         @endif
                     </div>
 
@@ -116,7 +116,7 @@
                                 @foreach($recommendations as $rec)
                                 <a href="{{ route('wisata.show', $rec->slug) }}" class="group flex gap-4 items-start">
                                     <div class="w-24 h-24 shrink-0 rounded-xl overflow-hidden bg-surface-variant">
-                                        <img src="{{ empty($rec->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($rec->image_path, 'images/dummy/') ? asset($rec->image_path) : url('/download-file?path=' . $rec->image_path)) }}" alt="{{ $rec->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                        <img src="{{ empty($rec->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($rec->image_path, 'images/dummy/') ? asset($rec->image_path) : \Illuminate\Support\Facades\Storage::disk('public')->url($rec->image_path)) }}" alt="{{ $rec->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                     </div>
                                     <div class="flex-1">
                                         <h4 class="font-headline-sm text-lg font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-2 mb-1">{{ $rec->name }}</h4>

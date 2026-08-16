@@ -6,10 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Umkm extends Model
 {
-    protected $casts = [
-        'images' => 'array',
-    ];
-
     protected $guarded = [];
     protected $appends = ['images'];
 

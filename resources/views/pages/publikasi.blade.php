@@ -8,7 +8,7 @@
             ->filter(fn($n) => !empty($n->image_path))
             ->map(fn($n) => Str::startsWith($n->image_path, 'images/dummy/')
                 ? asset($n->image_path)
-                : url('/download-file?path=' . $n->image_path)
+                : \Illuminate\Support\Facades\Storage::disk('public')->url($n->image_path)
             )
             ->values()
             ->toArray();
@@ -92,7 +92,7 @@
                 <!-- News Card -->
                 <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/30 group hover:shadow-lg transition-all flex flex-col">
                     <div class="h-48 overflow-hidden relative">
-                        <img src="{{ empty($berita->image_path) ? asset('images/dummy/hero.jpg') : (Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : url('/download-file?path=' . $berita->image_path)) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ empty($berita->image_path) ? asset('images/dummy/hero.jpg') : (Str::startsWith($berita->image_path, 'images/dummy/') ? asset($berita->image_path) : \Illuminate\Support\Facades\Storage::disk('public')->url($berita->image_path)) }}" alt="{{ $berita->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <div class="p-5 flex-grow flex flex-col">
                         <div class="flex items-center gap-2 text-on-surface-variant font-label-sm mb-2">
