@@ -44,15 +44,24 @@ class VillageDocumentForm
                     ->multiple()
                     ->downloadable()
                     ->preserveFilenames()
-                    ->directory('village-documents')
+                    ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
+                        $filename = $file->getClientOriginalName();
+                        $path = 'village-documents/' . $filename;
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+                        return $path;
+                    })
                     ->required()
                     ->columnSpanFull(),
                 FileUpload::make('requirement_image_path')
                     ->label('Gambar Persyaratan / SOP')
                     ->image()
                     ->maxSize(5120) // 5MB
-                    ->directory('village-documents/requirements')
-                    ->preserveFilenames()
+                    ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
+                        $filename = $file->getClientOriginalName();
+                        $path = 'village-documents/requirements/' . $filename;
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+                        return $path;
+                    })
                     ->columnSpanFull(),
                 RichEditor::make('requirements_text')
                     ->label('Keterangan Persyaratan (Opsional)')
