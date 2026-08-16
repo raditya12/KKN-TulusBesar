@@ -21,6 +21,11 @@ class JenisSuratTable
                     ->sortable()
                     ->weight('semibold'),
 
+                TextColumn::make('kode_surat')
+                    ->label('Kode Surat')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('deskripsi')
                     ->label('Deskripsi')
                     ->limit(80)
