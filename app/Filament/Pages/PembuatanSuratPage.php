@@ -294,7 +294,8 @@ class PembuatanSuratPage extends Page
         // Jika ada Nomor Surat dari form dinamis, gunakan itu
         $dynamicNomor = null;
         foreach ($this->formData as $key => $val) {
-            if (strtolower(str_replace(['_', '-', ' '], '', $key)) === 'nomorsurat') {
+            $cleanKey = strtolower(str_replace(['_', '-', ' '], '', $key));
+            if (in_array($cleanKey, ['nomorsurat', 'nosurat', 'nomor', 'no', 'nomersurat', 'nomer'])) {
                 $dynamicNomor = $val;
                 break;
             }
