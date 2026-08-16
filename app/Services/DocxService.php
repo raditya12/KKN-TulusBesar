@@ -304,8 +304,8 @@ class DocxService
                 @page { margin: 15mm 15mm 15mm 15mm; }
                 body { font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.3; color: #000000; }
                 img { max-width: 90px !important; height: auto !important; display: inline-block; vertical-align: middle; }
-                table { width: 100% !important; border-collapse: collapse; margin-top: 4px; margin-bottom: 4px; border: none !important; }
-                td, th { padding: 3px 5px; font-family: "Times New Roman", Times, serif; font-size: 11pt; vertical-align: top; border: none !important; }
+                table { border-collapse: collapse; margin-top: 2px; margin-bottom: 2px; border: none !important; }
+                td, th { padding: 0px 4px; font-family: "Times New Roman", Times, serif; font-size: 11pt; vertical-align: top; border: none !important; }
                 p { margin: 2px 0; }
             </style>';
 
@@ -315,7 +315,10 @@ class DocxService
                 $htmlContent = $customCss . $htmlContent;
             }
 
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($htmlContent);
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($htmlContent)->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+            ]);
             $pdf->setPaper('A4', 'portrait');
             file_put_contents($outputPdfPath, $pdf->output());
 

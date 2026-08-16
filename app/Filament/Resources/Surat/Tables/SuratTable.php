@@ -99,12 +99,7 @@ class SuratTable
                         ->visible(fn (Surat $record) => ! empty($record->file_docx))
                         ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_docx), shouldOpenInNewTab: true),
 
-                    Action::make('download_pdf')
-                        ->label('Unduh PDF')
-                        ->icon('heroicon-o-document')
-                        ->color('danger')
-                        ->visible(fn (Surat $record) => ! empty($record->file_pdf))
-                        ->url(fn (Surat $record) => Storage::disk('public')->url($record->file_pdf), shouldOpenInNewTab: true),
+
 
                     DeleteAction::make()
                         ->label('Hapus')
