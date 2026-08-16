@@ -20,8 +20,6 @@ class ActivityPhotoResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'description';
-
     protected static ?string $modelLabel = 'Album Sejarah';
 
     protected static ?string $pluralModelLabel = 'Album Sejarah';

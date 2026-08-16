@@ -8,4 +8,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateActivityPhoto extends CreateRecord
 {
     protected static string $resource = ActivityPhotoResource::class;
+
+    protected ?string $maxWidth = 'full';
 }
