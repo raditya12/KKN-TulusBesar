@@ -10,7 +10,7 @@
                 ->map(
                     fn($s) => Str::startsWith($s->image_path, 'images/dummy/')
                     ? asset($s->image_path)
-                    : \Illuminate\Support\Facades\Storage::disk('public')->url($s->image_path)
+                    : asset('storage/' . $s->image_path)
                 )
                 ->values()
                 ->toArray();
@@ -197,7 +197,7 @@
                                 <div
                                     class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-500 z-10 mix-blend-multiply">
                                 </div>
-                                <img src="{{ empty($site->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : \Illuminate\Support\Facades\Storage::disk('public')->url($site->image_path)) }}"
+                                <img src="{{ empty($site->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : asset('storage/' . $site->image_path)) }}"
                                     alt="{{ $site->name }}"
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.3]">
                             </div>
@@ -248,7 +248,7 @@
                                     <div
                                         class="absolute inset-0 {{ $loop->even ? 'bg-secondary/10' : 'bg-tertiary/10' }} group-hover:bg-transparent transition-colors duration-500 z-10">
                                     </div>
-                                    <img src="{{ empty($site->image_path) ? asset('images/dummy/tradisi1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : \Illuminate\Support\Facades\Storage::disk('public')->url($site->image_path)) }}"
+                                    <img src="{{ empty($site->image_path) ? asset('images/dummy/tradisi1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : asset('storage/' . $site->image_path)) }}"
                                         alt="{{ $site->name }}"
                                         class="w-full h-[300px] md:h-[400px] object-cover transform transition-transform duration-700 group-hover:scale-105">
 
@@ -331,7 +331,7 @@
                                     <div
                                         class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-500 z-10 mix-blend-multiply">
                                     </div>
-                                    <img src="{{ empty($site->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : \Illuminate\Support\Facades\Storage::disk('public')->url($site->image_path)) }}"
+                                    <img src="{{ empty($site->image_path) ? asset('images/dummy/wisata1.jpg') : (Str::startsWith($site->image_path, 'images/dummy/') ? asset($site->image_path) : asset('storage/' . $site->image_path)) }}"
                                         alt="{{ $site->name }}"
                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.3]">
                                 </div>
