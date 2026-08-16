@@ -406,7 +406,7 @@
                     <h2 class="font-display-md text-4xl font-bold text-on-background">Kabar <span class="text-secondary">Desa</span></h2>
                     <p class="font-body-md text-on-surface-variant text-lg">Ikuti perkembangan terbaru, pengumuman, dan publikasi kegiatan kemasyarakatan Desa Tulusbesar.</p>
                 </div>
-                <a href="#" class="font-label-md text-secondary hover:text-secondary-fixed-dim transition-colors flex items-center gap-xs">
+                <a href="{{ route('publikasi') }}" class="font-label-md text-secondary hover:text-secondary-fixed-dim transition-colors flex items-center gap-xs">
                     Lihat Semua Berita <span class="material-symbols-outlined text-[18px]">arrow_right_alt</span>
                 </a>
             </div>
