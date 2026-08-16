@@ -8,7 +8,7 @@
             ->filter(fn($u) => !empty($u->image_path))
             ->map(fn($u) => Str::startsWith($u->image_path, 'images/dummy/')
                 ? asset($u->image_path)
-                : asset('storage/' . $u->image_path)
+                : url('/download-file?path=' . $u->image_path)
             )
             ->values()
             ->toArray();
@@ -99,7 +99,7 @@
                 <div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-outline-variant/30 flex flex-col group">
                     <div class="h-56 relative overflow-hidden">
                         <div class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-500 z-10 mix-blend-multiply"></div>
-                        <img src="{{ empty($umkm->image_path) ? asset('images/dummy/umkm1.jpg') : (Str::startsWith($umkm->image_path, 'images/dummy/') ? asset($umkm->image_path) : asset('storage/' . $umkm->image_path)) }}" alt="{{ $umkm->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.2]">
+                        <img src="{{ empty($umkm->image_path) ? asset('images/dummy/umkm1.jpg') : (Str::startsWith($umkm->image_path, 'images/dummy/') ? asset($umkm->image_path) : url('/download-file?path=' . $umkm->image_path)) }}" alt="{{ $umkm->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 sepia-[0.2]">
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
                         <div class="font-label-sm text-secondary uppercase tracking-widest mb-2">{{ $umkm->category }}</div>

@@ -569,7 +569,7 @@
                     @foreach($activities as $activity)
                     <div class="border-b-2 border-r-2 border-primary/30 p-4 md:p-8 flex flex-col group hover:bg-primary/5 transition-colors">
                         <div class="aspect-[4/3] overflow-hidden rounded-xl shadow-md mb-6 relative">
-                            <img src="{{ asset('storage/' . $activity->image_path) }}" alt="Kegiatan Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <img src="{{ url('/download-file?path=' . $activity->image_path) }}" alt="Kegiatan Desa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         </div>
                         @if($activity->description)
                         <div class="text-center flex-grow flex items-center justify-center px-4">
