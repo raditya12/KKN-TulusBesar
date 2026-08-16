@@ -18,7 +18,7 @@ class NewsArticleForm
     {
         return $schema
             ->components([
-                Grid::make(['default' => 1, 'md' => 3])->schema([
+                Grid::make(['default' => 1, 'md' => 3])->columnSpan('full')->schema([
                     Section::make('Konten Berita')
                         ->description('Masukkan judul dan isi berita utama.')
                         ->columns(2)

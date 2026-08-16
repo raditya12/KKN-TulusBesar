@@ -9,6 +9,8 @@ class CreateNewsArticle extends CreateRecord
 {
     protected static string $resource = NewsArticleResource::class;
 
+    protected ?string $maxWidth = 'full';
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');

@@ -9,6 +9,8 @@ class CreateUmkm extends CreateRecord
 {
     protected static string $resource = UmkmResource::class;
 
+    protected ?string $maxWidth = 'full';
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');

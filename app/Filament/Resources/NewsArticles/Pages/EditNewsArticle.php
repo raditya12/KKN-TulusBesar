@@ -17,6 +17,8 @@ class EditNewsArticle extends EditRecord
         ];
     }
 
+    protected ?string $maxWidth = 'full';
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');

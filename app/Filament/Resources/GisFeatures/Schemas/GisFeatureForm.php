@@ -15,7 +15,7 @@ class GisFeatureForm
     {
         return $schema
             ->components([
-                Grid::make(1)->schema([
+                Grid::make(1)->columnSpan('full')->schema([
                     Section::make('Informasi Fasilitas')
                         ->description('Data fasilitas umum atau titik penting.')
                         ->schema([

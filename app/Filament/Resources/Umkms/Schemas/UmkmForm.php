@@ -17,7 +17,7 @@ class UmkmForm
     {
         return $schema
             ->components([
-                Grid::make(['default' => 1])->schema([
+                Grid::make(['default' => 1])->columnSpan('full')->schema([
                     Section::make('Informasi Usaha')
                         ->description('Data profil dan kategori UMKM.')
                         ->columns(['default' => 1, 'md' => 2])

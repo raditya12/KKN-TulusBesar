@@ -18,10 +18,7 @@ class EditCulturalSite extends EditRecord
         ];
     }
 
-    public function getMaxContentWidth(): Width|string|null
-    {
-        return 'full';
-    }
+    protected ?string $maxWidth = 'full';
 
     public function hasFullWidthFormActions(): bool
     {

@@ -10,10 +10,7 @@ class CreateCulturalSite extends CreateRecord
 {
     protected static string $resource = CulturalSiteResource::class;
 
-    public function getMaxContentWidth(): Width|string|null
-    {
-        return 'full';
-    }
+    protected ?string $maxWidth = 'full';
 
     public function hasFullWidthFormActions(): bool
     {

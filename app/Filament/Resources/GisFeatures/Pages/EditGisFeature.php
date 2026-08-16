@@ -10,6 +10,8 @@ class EditGisFeature extends EditRecord
 {
     protected static string $resource = GisFeatureResource::class;
 
+    protected ?string $maxWidth = 'full';
+
     protected function getHeaderActions(): array
     {
         return [

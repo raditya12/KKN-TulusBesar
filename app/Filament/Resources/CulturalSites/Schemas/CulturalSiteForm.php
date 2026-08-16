@@ -20,7 +20,7 @@ class CulturalSiteForm
     {
         return $schema
             ->components([
-                Grid::make(['default' => 1])->schema([
+                Grid::make(['default' => 1])->columnSpan('full')->schema([
                     Section::make('Informasi Situs')
                         ->description('Data utama situs budaya atau wisata.')
                         ->columns(['default' => 1, 'md' => 2])

@@ -10,6 +10,8 @@ class EditUmkm extends EditRecord
 {
     protected static string $resource = UmkmResource::class;
 
+    protected ?string $maxWidth = 'full';
+
     protected function getHeaderActions(): array
     {
         return [
