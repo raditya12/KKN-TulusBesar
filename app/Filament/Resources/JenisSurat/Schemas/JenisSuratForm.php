@@ -11,6 +11,12 @@ class JenisSuratForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
+            TextInput::make('kode_surat')
+                ->label('Kode Surat')
+                ->placeholder('Contoh: SKD, SKU')
+                ->required()
+                ->maxLength(255),
+                
             TextInput::make('nama_surat')
                 ->label('Nama Surat')
                 ->placeholder('Contoh: Surat Keterangan Domisili')
