@@ -74,12 +74,8 @@ class SuratResource extends Resource
                         FileUpload::make('file_docx')
                             ->label('Upload Word (Opsional)')
                             ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'])
-                            ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
-                                $filename = $file->getClientOriginalName();
-                                $path = 'arsip-surat/docx/' . $filename;
-                                \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
-                                return $path;
-                            })
+                            ->directory('arsip-surat/docx')
+                            ->preserveFilenames()
                             ->nullable(),
                     ])
                     ->columns(2),

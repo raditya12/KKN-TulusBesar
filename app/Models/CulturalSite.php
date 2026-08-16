@@ -12,6 +12,9 @@ class CulturalSite extends Model
     use HasFactory;
 
 
+    protected $casts = [
+        'images' => 'array',
+    ];
 
     protected $fillable = [
         'name',
@@ -36,6 +39,7 @@ class CulturalSite extends Model
 
     public function setImagesAttribute($value)
     {
+        \Illuminate\Support\Facades\Log::info('setImagesAttribute received: ', (array)$value);
         $this->attributes['image_path'] = is_array($value) ? json_encode(array_values($value)) : null;
     }
 

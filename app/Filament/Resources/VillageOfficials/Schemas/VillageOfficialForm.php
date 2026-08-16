@@ -31,12 +31,8 @@ class VillageOfficialForm
                         FileUpload::make('image_path')
                             ->label('Foto Profil')
                             ->image()
-                            ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
-                                $filename = $file->getClientOriginalName();
-                                $path = 'officials/' . $filename;
-                                \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
-                                return $path;
-                            })
+                            ->directory('officials')
+                            ->preserveFilenames()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(5120)
                             ->columnSpanFull(),

@@ -71,12 +71,8 @@ class UmkmForm
                                 ->helperText('Unggah foto produk atau tempat usaha.')
                                 ->disk('public')
                                 ->image()
-                                ->saveUploadedFileUsing(function (\Illuminate\Http\UploadedFile $file): string {
-                                    $filename = $file->getClientOriginalName();
-                                    $path = 'umkm-images/' . $filename;
-                                    \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
-                                    return $path;
-                                })
+                                ->directory('umkm-images')
+                                ->preserveFilenames()
                                 ->imagePreviewHeight('250')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120)
