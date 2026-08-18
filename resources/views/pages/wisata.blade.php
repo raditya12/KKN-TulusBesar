@@ -211,8 +211,7 @@
                                         <span class="material-symbols-outlined text-[16px]">directions</span> Rute Lokasi
                                     </a>
                                 @endif
-                                @php $siteDescCard1 = preg_replace('/\s+/', ' ', trim(strip_tags(preg_replace('/<\/(p|li|h[1-6]|div)>/i', ' ', str_replace(['<br>', '<br/>', '<br />'], ' ', $site->description))))); @endphp
-                                <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-4 break-words min-w-0">{{ $siteDescCard1 }}</p>
+                                <div class="font-body-sm text-on-surface-variant line-clamp-4 mb-4 break-words min-w-0 card-desc-preview">{!! $site->description !!}</div>
                                 <a href="{{ route('wisata.show', $site->slug) }}"
                                     class="w-full mt-auto bg-primary/5 hover:bg-primary text-primary hover:text-on-primary font-label-md py-3 rounded-xl transition-colors border border-primary/20 hover:border-primary flex items-center justify-center gap-2">
                                     Selengkapnya <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -282,8 +281,7 @@
                                 <h3
                                     class="font-display-md text-3xl font-bold text-on-background {{ $loop->even ? 'text-secondary' : 'text-tertiary' }}">
                                     {{ $site->name }}</h3>
-                                @php $siteDescCard2 = preg_replace('/\s+/', ' ', trim(strip_tags(preg_replace('/<\/(p|li|h[1-6]|div)>/i', ' ', str_replace(['<br>', '<br/>', '<br />'], ' ', $site->description))))); @endphp
-                                <p class="font-body-md text-on-surface-variant text-lg leading-relaxed text-left line-clamp-4 break-words min-w-0">{{ $siteDescCard2 }}</p>
+                                <div class="font-body-md text-on-surface-variant text-lg leading-relaxed text-left line-clamp-4 break-words min-w-0 card-desc-preview">{!! $site->description !!}</div>
                                 <a href="{{ route('wisata.show', $site->slug) }}"
                                     class="inline-flex items-center gap-2 mt-4 font-label-md text-primary hover:text-primary-fixed-dim transition-colors">
                                     Baca Selengkapnya <span class="material-symbols-outlined text-[18px]">arrow_right_alt</span>
@@ -343,8 +341,7 @@
                                             <span class="material-symbols-outlined text-[16px]">directions</span> Rute Lokasi
                                         </a>
                                     @endif
-                                    @php $siteDescCard3 = preg_replace('/\s+/', ' ', trim(strip_tags(preg_replace('/<\/(p|li|h[1-6]|div)>/i', ' ', str_replace(['<br>', '<br/>', '<br />'], ' ', $site->description))))); @endphp
-                                    <p class="font-body-sm text-on-surface-variant line-clamp-3 mb-4 break-words min-w-0">{{ $siteDescCard3 }}</p>
+                                    <div class="font-body-sm text-on-surface-variant line-clamp-4 mb-4 break-words min-w-0 card-desc-preview">{!! $site->description !!}</div>
                                     <a href="{{ route('wisata.show', $site->slug) }}"
                                         class="w-full mt-auto bg-primary/5 hover:bg-primary text-primary hover:text-on-primary font-label-md py-3 rounded-xl transition-colors border border-primary/20 hover:border-primary flex items-center justify-center gap-2">
                                         Selengkapnya <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
