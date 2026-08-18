@@ -129,22 +129,3 @@
 .map-pin-active {
     animation: pulse-pin 2s infinite;
 }
-
-/* Card description preview - HTML dari rich text editor */
-.card-desc-preview p {
-    margin-bottom: 0.2rem;
-}
-.card-desc-preview p:last-child {
-    margin-bottom: 0;
-}
-.card-desc-preview ul,
-.card-desc-preview ol {
-    margin: 0;
-    padding-left: 1rem;
-}
-.card-desc-preview li {
-    margin-bottom: 0.1rem;
-}
-.card-desc-preview strong {
-    font-weight: 600;
-}
