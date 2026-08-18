@@ -104,9 +104,9 @@
                     <div class="p-6 flex-grow flex flex-col">
                         <div class="font-label-sm text-secondary uppercase tracking-widest mb-2">{{ $umkm->category }}</div>
                         <h3 class="font-headline-md text-2xl font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">{{ $umkm->name }}</h3>
-                        <p class="font-body-sm text-on-surface-variant text-justify flex-grow line-clamp-3 mb-4">
-                            {!! strip_tags($umkm->description) !!}
-                        </p>
+                        {{-- Description --}}
+                        <p class="font-body-sm text-on-surface-variant text-left line-clamp-3 flex-grow mb-4 break-words min-w-0">{!! strip_tags($umkm->description) !!}</p>
+
                         <a href="{{ route('umkm.show', $umkm->slug) }}" class="w-full bg-surface-container hover:bg-primary text-primary hover:text-on-primary font-label-sm py-2 rounded-xl transition-colors border border-outline-variant/50 hover:border-primary flex items-center justify-center gap-2 mt-auto">
                             Selengkapnya <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                         </a>

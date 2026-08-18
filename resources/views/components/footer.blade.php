@@ -21,8 +21,11 @@
                     </div>
                 </div>
 
+                <!-- Divider -->
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 0;">
+
                 <!-- Polinema Identity -->
-                <div class="flex flex-col sm:flex-row gap-4 border-t pt-4" style="border-color: rgba(255,255,255,0.1);">
+                <div class="flex flex-col sm:flex-row gap-4">
                     <div class="flex-shrink-0 w-16 h-16 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg overflow-hidden" style="border: 2px solid rgba(253, 147, 76, 0.3);">
                         <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Politeknik Negeri Malang" class="w-full h-full object-contain drop-shadow-sm" onerror="this.style.display='none'">
                     </div>
@@ -41,11 +44,11 @@
                 <h3 class="font-bold text-lg mb-4" style="color: #ffffff;">Hubungi Kami</h3>
                 
                 <div class="space-y-3">
-                    <a href="tel:0341" class="flex items-center gap-3 transition-colors group" style="color: rgba(255, 255, 255, 0.9);">
+                    <a href="tel:+6281333114564" class="flex items-center gap-3 transition-colors group" style="color: rgba(255, 255, 255, 0.9);">
                         <div class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" onmouseover="this.style.backgroundColor='#fd934c'; this.style.borderColor='#fd934c'; this.style.color='#ffffff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)';">
                             <span class="material-symbols-outlined text-[16px]">call</span>
                         </div>
-                        <span class="text-sm group-hover:underline">(0341) -</span>
+                        <span class="text-sm group-hover:underline">0813-3311-4564</span>
                     </a>
                     
                     <a href="mailto:pemdes.tulusbesar@gmail.com" class="flex items-center gap-3 transition-colors group" style="color: rgba(255, 255, 255, 0.9);">
@@ -117,18 +120,11 @@
                         $totalItems = count($menuItems);
                     @endphp
                     
-                    @if ($currentIndex === 5)
-                        <a href="{{ $menuItems[0]['route'] }}" class="transition-colors w-max hover:underline" style="color: rgba(255,255,255,0.9);" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='rgba(255,255,255,0.9)';">{{ $menuItems[0]['label'] }}</a>
-                        <a href="{{ $menuItems[4]['route'] }}" class="transition-colors w-max hover:underline" style="color: rgba(255,255,255,0.9);" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='rgba(255,255,255,0.9)';">{{ $menuItems[4]['label'] }}</a>
-                    @else
-                        @for ($i = 1; $i <= 3; $i++)
-                            @php
-                                $nextIndex = ($currentIndex + $i) % $totalItems;
-                                $nextItem = $menuItems[$nextIndex];
-                            @endphp
-                            <a href="{{ $nextItem['route'] }}" class="transition-colors w-max hover:underline" style="color: rgba(255,255,255,0.9);" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='rgba(255,255,255,0.9)';">{{ $nextItem['label'] }}</a>
-                        @endfor
-                    @endif
+                    @foreach ($menuItems as $index => $item)
+                        @if ($index !== $currentIndex)
+                            <a href="{{ $item['route'] }}" class="transition-colors w-max hover:underline" style="color: rgba(255,255,255,0.9);" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='rgba(255,255,255,0.9)';">{{ $item['label'] }}</a>
+                        @endif
+                    @endforeach
                 </div>
             </div>
 

@@ -100,7 +100,7 @@
                             <time>{{ \Carbon\Carbon::parse($berita->published_at ?? $berita->created_at)->translatedFormat('d M Y') }}</time>
                         </div>
                         <h3 class="font-headline-md text-lg font-bold text-on-surface mb-2 line-clamp-2 group-hover:text-primary transition-colors flex-grow">{{ $berita->title }}</h3>
-                        <p class="font-body-sm text-on-surface-variant line-clamp-2 mb-4 text-justify">{!! strip_tags($berita->content) !!}</p>
+                        <p class="font-body-sm text-on-surface-variant text-left line-clamp-2 mb-4 break-words min-w-0">{!! strip_tags($berita->content) !!}</p>
                         <a href="{{ route('berita.show', $berita->slug) }}" class="w-full bg-surface-container hover:bg-primary text-primary hover:text-on-primary font-label-sm py-2 rounded-xl transition-colors border border-outline-variant/50 hover:border-primary flex items-center justify-center gap-2 mt-auto">
                             Selengkapnya <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                         </a>
